@@ -1,4 +1,14 @@
-install: pnpm install
-dev: pnpm run dev
-build: pnpm run build
-build_path: dist
+# MGX Configuration File
+project:
+  name: oc-pipeline-frontend
+  type: frontend
+  framework: react-vite
+
+scripts:
+  dev:
+    command: vite
+    port: 5173
+  build:
+    command: tsc && vite build
+  preview:
+    command: vite preview
