@@ -2,7 +2,7 @@
 import { supabase } from './supabase';
 
 class ApiClient {
-  // Authentication methods now use Supabase Auth
+  // Authentication methods using Supabase Auth
   async login(email: string, password: string) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -40,6 +40,25 @@ class ApiClient {
     };
   }
 
+  async loginWithGoogle() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data;
+  }
+
   async logout() {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -71,8 +90,6 @@ class ApiClient {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    // For now, these endpoints will use Supabase Functions or direct database queries
-    // If you have a separate backend API, update the base URL accordingly
     const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -92,61 +109,106 @@ class ApiClient {
 
   // Dashboard - Using Supabase direct queries
   async getDashboard() {
-    // Get current user
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
 
-    // Query dashboard data from Supabase
-    const { data: projects, error } = await supabase
+    // Query Supabase tables directly
+    const { data: projects, error: projectsError } = await supabase
       .from('projects')
       .select('*')
       .limit(10);
 
-    if (error) throw new Error(error.message);
+    if (projectsError) throw projectsError;
 
     return {
-      projects: projects || [],
       stats: {
-        total_projects: projects?.length || 0,
-        active_projects: projects?.filter((p) => p.status === 'active').length || 0,
+        totalProjects: projects?.length || 0,
+        activeProjects: projects?.filter((p) => p.status === 'active').length || 0,
+        completedProjects: projects?.filter((p) => p.status === 'completed').length || 0,
       },
+      recentProjects: projects || [],
     };
   }
 
-  // Projects - Using Supabase direct queries
-  async getProjects(params?: { limit?: number; offset?: number; status?: string }) {
-    const { limit = 50, offset = 0, status } = params || {};
+  // Projects
+  async getProjects(filters?: any) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
 
-    let query = supabase.from('projects').select('*', { count: 'exact' });
+    let query = supabase.from('projects').select('*');
 
-    if (status) {
-      query = query.eq('status', status);
+    if (filters?.status) {
+      query = query.eq('status', filters.status);
     }
 
-    const { data, error, count } = await query
-      .range(offset, offset + limit - 1)
-      .order('created_at', { ascending: false });
+    const { data, error } = await query;
+    if (error) throw error;
 
-    if (error) throw new Error(error.message);
-
-    return {
-      projects: data || [],
-      total: count || 0,
-    };
+    return data || [];
   }
 
   async getProject(id: string) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
     const { data, error } = await supabase
       .from('projects')
       .select('*')
       .eq('id', id)
       .single();
 
-    if (error) throw new Error(error.message);
-
+    if (error) throw error;
     return data;
+  }
+
+  async createProject(project: any) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    const { data, error } = await supabase
+      .from('projects')
+      .insert([{ ...project, created_by: user.id }])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  async updateProject(id: string, updates: any) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    const { data, error } = await supabase
+      .from('projects')
+      .update({ ...updates, updated_by: user.id, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  async deleteProject(id: string) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    const { error } = await supabase.from('projects').delete().eq('id', id);
+
+    if (error) throw error;
   }
 }
 

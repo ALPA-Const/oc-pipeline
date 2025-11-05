@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { apiClient } from '../lib/api';
-import type { User, AuthResponse } from '../types';
+import { supabase } from '../lib/supabase';
+import type { User } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
@@ -8,6 +9,7 @@ interface AuthContextType {
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, name: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -20,19 +22,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check for existing token on mount
-    const token = localStorage.getItem('auth_token');
-    const savedUser = localStorage.getItem('user');
-    
-    if (token && savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (e) {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user');
-      }
-    }
-    setLoading(false);
+    // Check for existing session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -41,7 +45,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(null);
       const response = await apiClient.login(email, password);
       setUser(response.user);
-      localStorage.setItem('user', JSON.stringify(response.user));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
       throw err;
@@ -56,7 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(null);
       const response = await apiClient.signup(email, password, name);
       setUser(response.user);
-      localStorage.setItem('user', JSON.stringify(response.user));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Signup failed');
       throw err;
@@ -65,10 +67,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const loginWithGoogle = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      await apiClient.loginWithGoogle();
+      // User will be redirected to Google
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Google login failed');
+      setLoading(false);
+      throw err;
+    }
+  };
+
   const logout = () => {
     apiClient.logout();
     setUser(null);
-    localStorage.removeItem('user');
   };
 
   return (
@@ -79,6 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error,
         login,
         signup,
+        loginWithGoogle,
         logout,
         isAuthenticated: !!user,
       }}
