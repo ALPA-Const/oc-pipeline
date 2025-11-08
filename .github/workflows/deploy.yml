@@ -1,4 +1,4 @@
-name: Deploy
+﻿name: Deploy
 
 on:
   push:
@@ -49,6 +49,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - run: pnpm install --prefer-offline
       - run: pnpm run build
+      - name: Build backend (ensure devDeps present)
+        working-directory: ./backend
+        run: pnpm run render-build
 
   deploy:
     needs: build
