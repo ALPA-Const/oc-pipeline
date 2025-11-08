@@ -1,4 +1,4 @@
-import express, { Router, Request, Response } from 'express';
+﻿import express, { Router, Request, Response } from 'express';
 import { login, signup, logout, getSession, googleAuth } from '../controllers/authController';
 import { authenticate } from '../middleware/auth';
 
@@ -41,7 +41,7 @@ router.get('/callback', (_req: Request, res: Response) => {
     return res.status(400).json({ error: 'Missing authorization code' });
   }
   
-  res.json({
+  return res.json({
     success: true,
     message: 'OAuth callback received',
     code,
