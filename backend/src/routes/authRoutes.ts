@@ -12,7 +12,7 @@ router.get('/session', authenticate, getSession);
 router.post('/google', googleAuth);
 
 // OAuth redirect routes
-router.get('/google', (req: Request, res: Response) => {
+router.get('/google', (_req: Request, res: Response) => {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const redirectUri = `${process.env.FRONTEND_URL}/auth/callback`;
   const scope = 'openid profile email';
@@ -21,7 +21,7 @@ router.get('/google', (req: Request, res: Response) => {
   res.redirect(authUrl);
 });
 
-router.get('/microsoft', (req: Request, res: Response) => {
+router.get('/microsoft', (_req: Request, res: Response) => {
   const clientId = process.env.MICROSOFT_CLIENT_ID;
   const redirectUri = `${process.env.FRONTEND_URL}/auth/callback`;
   const scope = 'openid profile email';
@@ -30,8 +30,8 @@ router.get('/microsoft', (req: Request, res: Response) => {
   res.redirect(authUrl);
 });
 
-router.get('/callback', (req: Request, res: Response) => {
-  const { code, error } = req.query;
+router.get('/callback', (_req: Request, res: Response) => {
+  const { code, error } = _req.query;
   
   if (error) {
     return res.status(400).json({ error: 'OAuth error', details: error });
