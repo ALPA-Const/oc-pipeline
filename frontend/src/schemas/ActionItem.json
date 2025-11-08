@@ -1,0 +1,201 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alpa-construction.com/schemas/ActionItem.json",
+  "title": "ActionItem",
+  "description": "Actionable task or issue requiring attention",
+  "type": "object",
+  "required": [
+    "id",
+    "org_id",
+    "project_id",
+    "title",
+    "category",
+    "severity",
+    "status",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique action item identifier (UUID v4)"
+    },
+    "org_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Organization ID (for RLS isolation)"
+    },
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated project ID"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Action item title"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 5000,
+      "description": "Detailed description"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "budget_overrun",
+        "schedule_delay",
+        "safety_incident",
+        "quality_defect",
+        "compliance_issue",
+        "change_order",
+        "rfi",
+        "submittal",
+        "inspection",
+        "milestone",
+        "other"
+      ],
+      "description": "Action item category"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low"],
+      "description": "Severity level (affects sort order)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["open", "in_progress", "blocked", "resolved", "closed", "cancelled"],
+      "description": "Current status"
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Priority ranking (1=highest, 5=lowest)"
+    },
+    "due_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Due date/time (ISO 8601, UTC)"
+    },
+    "assigned_to": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "Assigned user ID"
+    },
+    "assigned_role": {
+      "type": ["string", "null"],
+      "enum": ["admin", "exec", "pm", "pe", "super", "precon", "sub", "client", null],
+      "description": "Assigned role (if not specific user)"
+    },
+    "resolution": {
+      "type": "object",
+      "properties": {
+        "resolved_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Resolution timestamp (ISO 8601, UTC)"
+        },
+        "resolved_by": {
+          "type": "string",
+          "format": "uuid",
+          "description": "User who resolved the item"
+        },
+        "resolution_notes": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    },
+    "impact": {
+      "type": "object",
+      "properties": {
+        "budget_impact": {
+          "type": "number",
+          "description": "Financial impact (positive or negative)"
+        },
+        "schedule_impact_days": {
+          "type": "integer",
+          "description": "Schedule impact in days (positive=delay, negative=acceleration)"
+        }
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "filename", "url"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "filename": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "mime_type": {
+            "type": "string"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "maxItems": 50
+    },
+    "comments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "user_id", "text", "created_at"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation timestamp (ISO 8601, UTC)"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp (ISO 8601, UTC)"
+    },
+    "created_by": {
+      "type": "string",
+      "format": "uuid",
+      "description": "User ID who created the action item"
+    },
+    "updated_by": {
+      "type": "string",
+      "format": "uuid",
+      "description": "User ID who last updated the action item"
+    }
+  },
+  "additionalProperties": false
+}
