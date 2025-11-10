@@ -2,41 +2,54 @@
 import { supabase } from './supabase';
 
 class ApiClient {
-  // Authentication methods using Supabase Auth
+  private getApiUrl(): string {
+    return import.meta.env.VITE_API_URL || 'https://oc-pipeline.onrender.com';
+  }
+
+  // Authentication methods using Backend API
   async login(email: string, password: string) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    const response = await fetch(`${this.getApiUrl()}/api/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
     });
 
-    if (error) {
-      throw new Error(error.message);
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Login failed');
     }
 
+    const data = await response.json();
     return {
-      token: data.session?.access_token || '',
+      token: data.token || '',
       user: data.user,
     };
   }
 
   async signup(email: string, password: string, name: string) {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          name,
-        },
+    const response = await fetch(`${this.getApiUrl()}/api/auth/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({ 
+        email, 
+        password, 
+        fullName: name 
+      }),
     });
 
-    if (error) {
-      throw new Error(error.message);
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Signup failed');
     }
 
+    const data = await response.json();
     return {
-      token: data.session?.access_token || '',
-      user: data.user,
+      token: data.token || '',
+      user: { email: data.email, id: data.userId },
     };
   }
 
@@ -74,7 +87,7 @@ class ApiClient {
     return session?.access_token || null;
   }
 
-  // Generic request method for API calls (uses Supabase session token)
+  // Generic request method for API calls
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
@@ -90,7 +103,7 @@ class ApiClient {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+    const API_BASE_URL = this.getApiUrl();
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
@@ -107,14 +120,13 @@ class ApiClient {
     return response.json();
   }
 
-  // Dashboard - Using Supabase direct queries
+  // Dashboard
   async getDashboard() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
 
-    // Query Supabase tables directly
     const { data: projects, error: projectsError } = await supabase
       .from('projects')
       .select('*')
