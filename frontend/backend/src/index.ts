@@ -1,29 +1,40 @@
+// 1) Load environment variables first
+import dotenv from 'dotenv';
+dotenv.config();
+
+// 2) Then import everything else
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import compression from 'compression';
-import dotenv from 'dotenv';
+
 import authRoutes from './routes/authRoutes';
 import projectsRoutes from './routes/projectsRoutes';
 import actionItemsRoutes from './routes/actionItemsRoutes';
 import eventsRoutes from './routes/eventsRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler';
-
-dotenv.config();
+import { errorHandler /* , notFoundHandler */ } from './middleware/errorHandler';
 
 const app: Application = express();
-const PORT = process.env.PORT || 4000;
 
-// Security middleware
+// Ensure PORT is a number (fixes TS error)
+const PORT: number = parseInt(process.env.PORT ?? '', 10) || 4000;
+
+// ───────────────────── Middleware ─────────────────────
+
+// Security headers
 app.use(helmet());
 
-// CORS configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
-  'https://ocpipeline.vercel.app',
-  'http://localhost:5173',
-];
+// Robust CORS allow-list with fallback
+const envOrigins = (process.env.ALLOWED_ORIGINS ?? '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
+const allowedOrigins = envOrigins.length
+  ? envOrigins
+  : ['https://ocpipeline.vercel.app', 'http://localhost:5173'];
 
 app.use(
   cors({
@@ -38,17 +49,18 @@ app.use(
   })
 );
 
-// Body parsing middleware
+// Body parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Compression middleware
+// Compression
 app.use(compression());
 
-// Logging middleware
+// Request logging
 app.use(morgan('combined'));
 
-// Health check endpoint
+// ───────────────────── Health ─────────────────────
+
 app.get('/health', (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
@@ -58,8 +70,9 @@ app.get('/health', (_req: Request, res: Response) => {
   });
 });
 
-// Google OAuth Login Route
-app.get('/auth/google', (req: Request, res: Response) => {
+// ───────────────────── OAuth placeholders ─────────────────────
+
+app.get('/auth/google', (_req: Request, res: Response) => {
   const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({
     client_id: process.env.GOOGLE_CLIENT_ID || '',
     redirect_uri: `${process.env.FRONTEND_URL}/auth/callback`,
@@ -71,51 +84,7 @@ app.get('/auth/google', (req: Request, res: Response) => {
   res.redirect(googleAuthUrl);
 });
 
-// OAuth Callback Route (handles both Google and Microsoft)
-app.get('/auth/callback', async (req: Request, res: Response) => {
-  try {
-    const { code, state, error } = req.query;
-
-    // Check for OAuth errors
-    if (error) {
-      return res.status(400).json({
-        error: 'OAuth Error',
-        message: error,
-      });
-    }
-
-    if (!code) {
-      return res.status(400).json({
-        error: 'Missing Authorization Code',
-        message: 'No authorization code provided',
-      });
-    }
-
-    // For now, return success message
-    // In production, you would:
-    // 1. Exchange code for tokens
-    // 2. Get user info from provider
-    // 3. Create/update user in database
-    // 4. Generate JWT token
-    // 5. Redirect to frontend with token
-
-    res.json({
-      success: true,
-      message: 'OAuth callback received',
-      code: code,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    console.error('OAuth callback error:', error);
-    res.status(500).json({
-      error: 'Callback Processing Error',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
-  }
-});
-
-// Microsoft OAuth Login Route
-app.get('/auth/microsoft', (req: Request, res: Response) => {
+app.get('/auth/microsoft', (_req: Request, res: Response) => {
   const microsoftAuthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${new URLSearchParams({
     client_id: process.env.MICROSOFT_CLIENT_ID || '',
     redirect_uri: `${process.env.FRONTEND_URL}/auth/callback`,
@@ -127,14 +96,50 @@ app.get('/auth/microsoft', (req: Request, res: Response) => {
   res.redirect(microsoftAuthUrl);
 });
 
-// API routes
+app.get('/auth/callback', async (req: Request, res: Response) => {
+  try {
+    const { code, state, error } = req.query as {
+      code?: string;
+      state?: string;
+      error?: string;
+    };
+
+    if (error) {
+      return res.status(400).json({ error: 'OAuth Error', message: error });
+    }
+
+    if (!code) {
+      return res
+        .status(400)
+        .json({ error: 'Missing Authorization Code', message: 'No authorization code provided' });
+    }
+
+    // Placeholder success response
+    return res.json({
+      success: true,
+      message: 'OAuth callback received',
+      code,
+      state,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (e) {
+    console.error('OAuth callback error:', e);
+    return res.status(500).json({
+      error: 'Callback Processing Error',
+      message: e instanceof Error ? e.message : 'Unknown error',
+    });
+  }
+});
+
+// ───────────────────── API routes ─────────────────────
+
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectsRoutes);
 app.use('/api/action-items', actionItemsRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// 404 handler - for any undefined routes
+// 404 handler for undefined routes
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     error: 'Route not found',
@@ -143,15 +148,16 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// Error handler
+// Central error handler
 app.use(errorHandler);
 
-// Start server - FIXED: Bind to 0.0.0.0 for Render deployment
+// ───────────────────── Start server ─────────────────────
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on 0.0.0.0:${PORT}`);
   console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔗 Health check: http://0.0.0.0:${PORT}/health`);
-  console.log(`🔐 OAuth routes enabled: /auth/google, /auth/microsoft, /auth/callback`);
+  console.log(`🔐 OAuth routes: /auth/google, /auth/microsoft, /auth/callback`);
 });
 
 export default app;
