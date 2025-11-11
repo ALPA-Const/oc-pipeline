@@ -1,18 +1,16 @@
-﻿import express, { Router, Request, Response } from 'express';
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
+import express, { Router } from 'express';
 import { login, signup, logout, getSession, googleAuth } from '../controllers/authController';
 import { authenticate } from '../middleware/auth';
 
 const router: Router = express.Router();
 
-// Existing routes
 router.post('/login', login);
 router.post('/signup', signup);
 router.post('/logout', authenticate, logout);
 router.get('/session', authenticate, getSession);
 router.post('/google', googleAuth);
 
+<<<<<<< HEAD
 // OAuth redirect routes
 router.get('/google', (_req: Request, res: Response) => {
   const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -173,3 +171,6 @@ router.post('/api/auth/exchange', async (_req: Request, res: Response) => {
 });
 
 export default router;
+=======
+export default router;
+>>>>>>> 0ae908a9982154ad08b6d8e8bc0942487d3fc0be
