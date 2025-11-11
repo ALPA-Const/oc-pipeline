@@ -96,7 +96,7 @@ app.get('/auth/microsoft', (_req: Request, res: Response) => {
   res.redirect(microsoftAuthUrl);
 });
 
-app.get('/auth/callback', async (req: Request, res: Response) => {
+app.get('/auth/callback', async (_req: Request, res: Response) => {
   try {
     const { code, state, error } = req.query as {
       code?: string;
@@ -140,7 +140,7 @@ app.use('/api/events', eventsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
 // 404 handler for undefined routes
-app.use((req: Request, res: Response) => {
+app.use((_req: Request, res: Response) => {
   res.status(404).json({
     error: 'Route not found',
     path: req.path,

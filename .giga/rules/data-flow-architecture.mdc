@@ -1,63 +1,61 @@
 ---
-description: Defines data flow patterns and component interactions for construction project pipeline management
+description: Documents data flows and component interactions for construction project pipeline management systems
 ---
 
 
 # data-flow-architecture
 
-The data flow architecture implements construction industry-specific pipeline management with real-time updates and state synchronization:
+The data flow architecture centers around a bidirectional pipeline management system with real-time updates across components:
 
-## Core Data Flow Components
+## Core Data Flows
 
-1. Pipeline State Management
-src/stores/pipeline.store.ts
-- Centralized state store for construction project pipeline
-- Real-time stage transition updates with validation
-- Bidirectional sync between Kanban board and metrics panels
-- Publishes stage change events to metrics calculators
+1. Dashboard Analytics Stream
+- BiddingAnalyticsPanel → Pipeline Store → WhatIfDrawer
+- Real-time capacity threshold monitoring (80%, 100%)
+- Pipeline velocity metrics propagation
+- Interactive simulation parameter updates
 
-2. Metrics Processing Pipeline 
-src/services/metrics/metrics.service.ts
-- Subscribes to pipeline state changes
-- Processes construction KPI updates in real-time:
-  - Win rate recalculation
-  - Pipeline velocity metrics
-  - Capacity utilization 
-  - Geographic distribution
-- Pushes updated metrics to dashboard components
+2. Pipeline Stage Management Flow
+- KanbanBoard → Pipeline Store → Project Cards
+- Stage transition validation checks
+- Aggregate metrics calculation per stage
+- Project health status propagation
+- Stalled project detection notifications
 
-3. What-If Analysis Flow
-src/components/dashboard/WhatIfDrawer.tsx
-- Isolated state management for scenario modeling
-- Parallel metrics calculation pipeline
-- Real-time projection updates based on parameter changes
-- State synchronization with main pipeline on scenario application
+3. Geographic Distribution Channel
+- BarDistributionChart → MapContext → Regional Analytics
+- Set-aside pattern distribution
+- Regional concentration metrics
+- State-level aggregation updates
 
-4. Project Distribution Analysis
-src/components/dashboard/BarDistributionChart.tsx
-- Geographic data aggregation pipeline
-- Real-time regional metrics updates
-- Two-way binding with pipeline filters
-- State sync with map visualization components
+## State Management Patterns
 
-## State Update Patterns
+1. Dashboard Context
+- Centralized filter state
+- KPI synchronization across views
+- Audit logging for metric changes
 
-1. Pipeline Stage Updates:
-```
-KanbanBoard -> PipelineStore -> MetricsService -> DashboardComponents
-```
+2. Pipeline Store
+- Stage-based project organization
+- Health status calculations
+- Value aggregation by phase
+- Transition validation rules
 
-2. What-If Analysis:
-```
-WhatIfDrawer -> ScenarioStore -> ProjectionService -> MetricsPanel
-```
+## Component Interaction Flows
 
-3. Geographic Distribution:
-```
-PipelineStore -> GeoService -> MapView <-> DistributionChart
-```
+1. Annual Target Updates
+- Target tracking propagation
+- Progress visualization updates
+- Status indicator thresholds
+- Completion percentage calculation
 
-All components implement optimistic updates with rollback capability for maintaining data consistency during stage transitions and metric recalculations.
+2. Project Data Validation
+- Schema validation events
+- Field-level warning system
+- Data quality propagation
+- Custom formatting rules
+
+The architecture emphasizes real-time synchronization between pipeline components while maintaining strict validation and business rule enforcement at each data flow junction.
 
 $END$
 

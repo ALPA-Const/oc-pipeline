@@ -1,63 +1,88 @@
 ---
-description: Documents pipeline stage progression models and transition rules for construction project workflows
+description: Documents pipeline stage progression and validation rules for construction projects through opportunity, preconstruction, execution and closeout phases
 ---
 
 
 # pipeline-workflow-model
 
-Pipeline Stage Categories:
+## Pipeline Stage Architecture
+
+Four primary pipeline stages with defined transitions and validations:
 
 1. Opportunity Pipeline
-- Lead Generation → Initial Assessment
-- Proposal Development → RFP Response 
-- Negotiation → Contract Review
-- Final Award/Loss Decision
+- Lead Generation → Proposal → Negotiation → Award/Lost
+- Win probability calculations at each substage
+- Required fields: bid amount, due date, competition analysis
+- Automatic stalling detection after 30 days without progress
 
-2. Preconstruction Pipeline
-- Planning Phase → Scope Definition
-- Design Development → Drawing Review
-- Permitting → Regulatory Approval
-- Construction Readiness → Site Prep
+2. Preconstruction Pipeline  
+- Planning → Design → Permitting → Ready
+- Design document tracking
+- Permit status validation
+- Resource allocation requirements
+- Stage-specific approvals needed for progression
 
-3. Execution Pipeline  
-- Mobilization → Resource Deployment
-- Active Construction → Progress Tracking
-- Punch List → Deficiency Resolution
-- Substantial Completion → Owner Acceptance
+3. Execution Pipeline
+- Mobilization → Construction → Punch List → Substantial 
+- Progress tracking against milestones
+- Change order workflow integration
+- Schedule variance monitoring
+- Resource utilization tracking
 
 4. Closeout Pipeline
-- Final Inspection → Authority Review
-- Documentation → Record Assembly
-- Warranty Period → Support Window
-- Project Completion → Archive
+- Final Inspection → Documentation → Warranty → Complete
+- Inspection checklist validation
+- Required documentation verification
+- Warranty period tracking
+- Final payment milestone tracking
 
-Stage Transition Rules:
-- Opportunity → Preconstruction requires signed contract
-- Preconstruction → Execution requires permits and bonding
-- Execution → Closeout requires owner acceptance
-- Each stage has specific duration thresholds and validation criteria
+## Stage Transition Rules
 
-Health Indicators:
-- Stalled: >30 days in stage without progress
-- At Risk: Approaching stage duration threshold
-- On Track: Within expected timeframes
-- Ahead: Below average duration metrics
+Stage Progression Requirements:
+- Financial approval thresholds by stage
+- Mandatory document attachments
+- Role-based transition authorization
+- Audit logging of all stage changes
 
-Stage-Specific Metrics:
-- Value weighted by stage progression
-- Win probability calculations
-- Capacity utilization tracking
-- Geographic distribution analysis
+## Key Validation Points
+
+1. Opportunity Stage
+- Bid package completeness check
+- Competition analysis requirements
+- Win probability calculation
+- Resource availability verification
+
+2. Preconstruction Stage  
+- Design document version control
+- Permit status verification
+- Budget approval requirements
+- Schedule baseline validation
+
+3. Execution Stage
+- Progress payment validation
+- Change order approval workflow
+- Schedule update requirements
+- Resource allocation checks
+
+4. Closeout Stage
+- Punch list completion verification
+- Warranty documentation requirements
+- Final payment conditions
+- Project archive requirements
+
+## Pipeline Health Monitoring
+
+Stalled Project Detection:
+- Stage-specific duration thresholds
+- Automated notifications for stalled projects
+- Escalation workflows for overdue stages
+- Historical duration analysis
+
+Stage Health Indicators:
+- Value-weighted stage metrics
+- Conversion rate tracking
+- Cycle time monitoring
 - Bottleneck identification
-- Cycle time measurements
-
-Validation Requirements:
-- Stage entry criteria verification
-- Document completion checks
-- Financial approval thresholds
-- Resource availability confirmation
-- Regulatory compliance validation
-- Quality control signoffs
 
 $END$
 

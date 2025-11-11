@@ -1,54 +1,44 @@
 ---
-description: Defines calculation rules and formulas for construction project pipeline metrics, KPIs, and financial projections
+description: Specifications for calculating and processing business metrics, KPIs, and analytics for construction project pipeline management
 ---
 
 
 # metrics-engine
 
-The metrics engine implements specialized construction pipeline analytics and KPI calculations:
+Core Metrics Calculation Engine (Importance Score: 90)
+- Pipeline velocity metrics with 90-day rolling window calculations
+- Weighted project values based on stage and probability
+- Construction-specific KPIs including bid success rates and regional performance
+- Capacity modeling with what-if scenario support
+- Geographic distribution analysis with regional concentration metrics
 
-Core Metric Components:
+Key Pipeline Analytics (Importance Score: 85)
+- Stage conversion rates with industry benchmarks
+- Project stalling detection with custom thresholds
+- Bottleneck identification using variance analysis
+- Health scoring system for pipeline stages
+- Value distribution tracking across project phases
 
-1. Pipeline Value Calculations
-- Weighted pipeline value = Σ(project_value * stage_weight * win_probability)
-- Stage weights: Opportunity (0.2), Preconstruction (0.5), Execution (0.8), Closeout (1.0)
-- Win probability adjustments based on 90-day rolling performance
+Financial Projections Engine (Importance Score: 80)
+- Fiscal year-end projections with adjustable parameters
+- Award size distribution analysis
+- Monthly award pace calculations
+- Capacity utilization forecasting
+- Revenue impact modeling for bid scenarios
 
-2. Velocity Metrics
-- Pipeline velocity = (awarded_projects / submitted_projects) per time period
-- Stage transition times with construction-specific thresholds
-- Stall detection using industry standard durations:
-  - Opportunity: >45 days
-  - Preconstruction: >90 days
-  - Execution: Based on project size
-  - Closeout: >30 days
+Performance Monitoring System (Importance Score: 75)
+- Annual target tracking with percentage completion
+- Project distribution patterns by geography and type
+- Stage-specific performance metrics
+- Pipeline velocity variance monitoring
+- Bid capacity threshold warnings (80%, 100%)
 
-3. Financial Projections
-- Fiscal year-end projection = YTD_awards + (monthly_pace * months_remaining)
-- Monthly pace calculation using 90-day rolling window
-- Capacity utilization = planned_hours / available_resource_hours
-- Geographic distribution weighting by project concentration
-
-4. Health Indicators
-- Stage-specific bottleneck detection
-- Critical path variance analysis
-- Resource allocation optimization
-- Market segment concentration risk scores
-
-File Structure:
-
-/services/metrics/
-- pipeline-metrics.ts: Core calculation engine
-- health-scores.ts: Project health algorithms  
-- projections.ts: Financial forecasting logic
-- velocity.ts: Pipeline speed calculations
-
-/components/dashboard/
-- MetricsPanel.tsx: Real-time metrics display
-- ProjectionCard.tsx: Financial projection visualization
-- VelocityChart.tsx: Pipeline speed trending
-
-The engine provides real-time construction-specific analytics focused on pipeline performance, financial outcomes, and resource optimization.
+The metrics engine implements specialized calculations for:
+- Construction bid performance tracking
+- Government contracting win rates
+- Project pipeline health assessment
+- Geographic market penetration
+- Resource capacity planning
 
 $END$
 

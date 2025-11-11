@@ -1,227 +1,235 @@
-// API Client for OC Pipeline
-import { supabase } from './supabase';
+// src/lib/api.ts
+import { supabase } from "./supabase";
+import type { DashboardData, Project } from "./database.types";
 
+/**
+ * Central API Client for OC Pipeline
+ * Handles authentication, project CRUD, and dashboard analytics.
+ */
 class ApiClient {
+  /**
+   * Safely get backend API URL
+   */
   private getApiUrl(): string {
-    return import.meta.env.VITE_API_URL || 'https://oc-pipeline.onrender.com';
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const finalUrl =
+      apiUrl && apiUrl.trim().length > 0 ? apiUrl.trim() : "http://localhost:4000";
+    if (import.meta.env.DEV) console.log("🔗 API URL:", finalUrl);
+    return finalUrl;
   }
 
-  // Authentication methods using Backend API
+  // ---------------------------------------------------
+  // 🔐 AUTHENTICATION
+  // ---------------------------------------------------
+
   async login(email: string, password: string) {
     const response = await fetch(`${this.getApiUrl()}/api/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Login failed');
-    }
+    const data = await this.safeJson(response);
+    if (!response.ok) throw new Error(data.error || "Login failed");
 
-    const data = await response.json();
     return {
-      token: data.token || '',
+      token: data.token || "",
       user: data.user,
     };
   }
 
   async signup(email: string, password: string, name: string) {
     const response = await fetch(`${this.getApiUrl()}/api/auth/signup`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
-        email, 
-        password, 
-        fullName: name 
-      }),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, fullName: name }),
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Signup failed');
-    }
+    const data = await this.safeJson(response);
+    if (!response.ok) throw new Error(data.error || "Signup failed");
 
-    const data = await response.json();
     return {
-      token: data.token || '',
+      token: data.token || "",
       user: { email: data.email, id: data.userId },
     };
   }
 
   async loginWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        },
+        queryParams: { access_type: "offline", prompt: "consent" },
       },
     });
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
+    if (error) throw new Error(error.message);
     return data;
   }
 
   async logout() {
     const { error } = await supabase.auth.signOut();
-    if (error) {
-      throw new Error(error.message);
+    if (error) throw new Error(error.message);
+  }
+
+  // ---------------------------------------------------
+  // 🧩 HELPERS
+  // ---------------------------------------------------
+
+  private async getSessionToken(): Promise<string | null> {
+    const { data } = await supabase.auth.getSession();
+    return data.session?.access_token || null;
+  }
+
+  private async safeJson(response: Response): Promise<any> {
+    try {
+      return await response.json();
+    } catch {
+      return {};
     }
   }
 
-  // Helper method to get current session token
-  private async getSessionToken(): Promise<string | null> {
+  private async requireAuth() {
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    return session?.access_token || null;
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error) throw error;
+    if (!user) throw new Error("Not authenticated");
+    return user;
   }
 
-  // Generic request method for API calls
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const token = await this.getSessionToken();
 
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...options.headers,
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...(options.headers as Record<string, string>),
     };
+    if (token) headers["Authorization"] = `Bearer ${token}`;
 
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const API_BASE_URL = this.getApiUrl();
-
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(`${this.getApiUrl()}${endpoint}`, {
       ...options,
       headers,
     });
 
+    const data = await this.safeJson(response);
     if (!response.ok) {
-      const error = await response.json().catch(() => ({
-        message: 'An error occurred',
-      }));
-      throw new Error(error.message || `HTTP ${response.status}`);
+      throw new Error(data.message || `HTTP ${response.status}`);
     }
 
-    return response.json();
+    return data as T;
   }
 
-  // Dashboard
-  async getDashboard() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+  // ---------------------------------------------------
+  // 📊 DASHBOARD
+  // ---------------------------------------------------
 
-    const { data: projects, error: projectsError } = await supabase
-      .from('projects')
-      .select('*')
+  async getDashboard(): Promise<DashboardData> {
+    const user = await this.requireAuth();
+
+    const { data: projects, error } = await supabase
+      .from("projects")
+      .select("id, name, status, value, deadline, type")
       .limit(10);
 
-    if (projectsError) throw projectsError;
+    if (error) throw error;
+
+    const totalProjects = projects?.length ?? 0;
+    const activeProjects = projects?.filter((p) => p.status === "active").length ?? 0;
+    const completedProjects =
+      projects?.filter((p) => p.status === "completed").length ?? 0;
+
+    // Default KPI placeholders
+    const budget = 0;
+    const schedule = 0;
+    const cost = 0;
+    const quality = 0;
+    const revenue = 0; // ✅ Added missing field
+    const profit = 0;  // ✅ Added missing field
 
     return {
-      stats: {
-        totalProjects: projects?.length || 0,
-        activeProjects: projects?.filter((p) => p.status === 'active').length || 0,
-        completedProjects: projects?.filter((p) => p.status === 'completed').length || 0,
+      kpis: {
+        totalProjects,
+        activeProjects,
+        completedProjects,
+        budget,
+        schedule,
+        cost,
+        quality,
+        revenue,
+        profit,
       },
-      recentProjects: projects || [],
+      recentProjects: (projects as Project[]) || [],
     };
   }
 
-  // Projects
-  async getProjects(filters?: any) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+  // ---------------------------------------------------
+  // 📁 PROJECTS
+  // ---------------------------------------------------
 
-    let query = supabase.from('projects').select('*');
+  async getProjects(filters?: { status?: string }): Promise<Project[]> {
+    const user = await this.requireAuth();
 
-    if (filters?.status) {
-      query = query.eq('status', filters.status);
-    }
+    let query = supabase.from("projects").select("*");
+    if (filters?.status) query = query.eq("status", filters.status);
 
     const { data, error } = await query;
     if (error) throw error;
-
-    return data || [];
+    return (data as Project[]) || [];
   }
 
-  async getProject(id: string) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+  async getProject(id: string): Promise<Project> {
+    await this.requireAuth();
 
     const { data, error } = await supabase
-      .from('projects')
-      .select('*')
-      .eq('id', id)
+      .from("projects")
+      .select("*")
+      .eq("id", id)
       .single();
 
     if (error) throw error;
-    return data;
+    return data as Project;
   }
 
-  async createProject(project: any) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+  async createProject(project: Partial<Project>): Promise<Project> {
+    const user = await this.requireAuth();
 
     const { data, error } = await supabase
-      .from('projects')
+      .from("projects")
       .insert([{ ...project, created_by: user.id }])
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return data as Project;
   }
 
-  async updateProject(id: string, updates: any) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+  async updateProject(id: string, updates: Partial<Project>): Promise<Project> {
+    const user = await this.requireAuth();
 
     const { data, error } = await supabase
-      .from('projects')
-      .update({ ...updates, updated_by: user.id, updated_at: new Date().toISOString() })
-      .eq('id', id)
+      .from("projects")
+      .update({
+        ...updates,
+        updated_by: user.id,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return data as Project;
   }
 
-  async deleteProject(id: string) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+  async deleteProject(id: string): Promise<void> {
+    await this.requireAuth();
 
-    const { error } = await supabase.from('projects').delete().eq('id', id);
-
+    const { error } = await supabase.from("projects").delete().eq("id", id);
     if (error) throw error;
   }
 }
 
+// ✅ Export a single shared instance
 export const apiClient = new ApiClient();

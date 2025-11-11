@@ -80,7 +80,7 @@ async function anonymizeUserData(userId: string, requestingUserId: string): Prom
  * Express/Vite handler
  * In production, this would be a proper API route
  */
-export default async function handler(req: Request, userId: string): Promise<Response> {
+export default async function handler(_req: Request, userId: string): Promise<Response> {
   try {
     // Only allow DELETE method
     if (req.method !== 'DELETE') {

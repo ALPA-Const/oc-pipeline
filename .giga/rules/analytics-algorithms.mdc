@@ -1,5 +1,5 @@
 ---
-description: Analytics algorithms specification for construction project pipeline analytics and bid management calculations
+description: Specification for analyzing analytics and algorithmic components of construction pipeline management system
 ---
 
 
@@ -7,45 +7,43 @@ description: Analytics algorithms specification for construction project pipelin
 
 Core Analytics Components:
 
-1. Win Rate Calculation Engine
-Path: src/services/metrics/win-rate.service.ts
-- Rolling 90-day window calculations for bid success rates
-- Weighted win probability scoring based on project attributes
-- Sector-specific success rate normalization
-- Historical trend analysis with seasonal adjustments
-Importance Score: 90
+1. Win Rate Calculator (Importance: 90)
+- Implements 90-day rolling window calculations for bid success rates
+- Adjusts win probabilities based on historical performance by project type
+- Computes confidence intervals for projected win rates
+- Factors in project size and geographic distribution
 
-2. Pipeline Velocity Analytics 
-Path: src/services/metrics/velocity.service.ts
-- Stage transition time calculations with bottleneck detection
-- Cycle time analysis for bid-to-award process
-- Stage-specific duration modeling
-- Stall detection with variance thresholds
-Importance Score: 85
+2. Capacity Utilization Engine (Importance: 85) 
+- Models resource allocation across concurrent projects
+- Projects capacity limits based on active and pending bids
+- Triggers warnings at 80% and 100% thresholds
+- Accounts for project type-specific resource requirements
 
-3. Capacity Utilization Modeling
-Path: src/utils/calculations/capacity.ts
-- Resource allocation forecasting across project stages
-- Utilization rate calculations with FTE modeling
-- Scenario-based capacity planning algorithms
-- Geographic resource distribution analysis
-Importance Score: 85
+3. What-If Analysis System (Importance: 90)
+- Simulates fiscal year-end scenarios with adjustable parameters:
+  - Win rate variations
+  - Award size modifications
+  - Timeline shifts
+  - Resource allocation changes
+- Recalculates all dependent KPIs in real-time
 
-4. What-If Analysis Engine
-Path: src/services/metrics/simulation.ts
-- Win rate impact simulations on pipeline value
-- Award size scenario modeling
-- Resource requirement projections
-- Financial outcome forecasting
-Importance Score: 80
+4. Pipeline Velocity Calculator (Importance: 85)
+- Measures stage-to-stage transition speeds
+- Identifies bottlenecks through variance analysis
+- Calculates weighted averages based on project value
+- Requires minimum 5 awarded projects for validation
 
-Key Algorithms:
-- Weighted pipeline value = Σ(Project Value × Stage Weight × Win Probability)
-- Stage Velocity = (Projects Completed / Time Period) × Stage Factor
-- Resource Utilization = (Allocated Hours / Available Hours) × Efficiency Factor
-- Win Rate Trend = (90-day Success Count / Total Bids) + Seasonal Adjustment
+5. Geographic Distribution Analysis (Importance: 80)
+- Processes regional concentration of projects
+- Analyzes set-aside distribution patterns
+- Calculates territorial saturation metrics
+- Maps project density against market opportunities
 
-The system implements construction-specific analytics focused on bid management, resource planning, and pipeline optimization with industry-standard calculations and forecasting models.
+Implementation Details:
+- 90-day rolling windows for trend analysis
+- Monthly pace projections with seasonal adjustments
+- Fiscal year projections incorporating historical patterns
+- Weighted pipeline values based on stage progression
 
 $END$
 

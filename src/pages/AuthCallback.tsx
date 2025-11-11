@@ -1,30 +1,37 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
-import { Loader2 } from 'lucide-react';
+// src/pages/AuthCallback.tsx
 
-export function AuthCallback() {
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+
+const AuthCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Handle the OAuth callback
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        // User is authenticated, redirect to dashboard
-        navigate('/dashboard');
-      } else {
-        // No session, redirect to login
-        navigate('/login');
+    const handleAuthCallback = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Auth callback error:", error.message);
+        return;
       }
-    });
+      if (data?.session) {
+        navigate("/dashboard");
+      } else {
+        navigate("/login");
+      }
+    };
+
+    handleAuthCallback();
   }, [navigate]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-        <p className="text-gray-600">Completing sign in...</p>
+    <div className="flex items-center justify-center h-screen text-gray-600">
+      <div className="text-center space-y-2">
+        <p className="text-lg font-medium">Authenticating...</p>
+        <p className="text-sm text-gray-400">Please wait while we complete your sign-in.</p>
       </div>
     </div>
   );
-}
+};
+
+export default AuthCallback;

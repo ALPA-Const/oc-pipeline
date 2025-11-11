@@ -58,7 +58,7 @@ router.get('/callback', (_req: Request, res: Response) => {
 });
 
 // OAuth code exchange endpoint
-router.post('/api/auth/exchange', async (req: Request, res: Response) => {
+router.post('/api/auth/exchange', async (_req: Request, res: Response) => {
   const { provider, code, redirectUri } = req.body;
 
   if (!code || !provider) {

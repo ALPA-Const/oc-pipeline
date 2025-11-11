@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
 import { AuthRequest } from '../middleware/auth';
 
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (_req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
@@ -31,7 +31,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const signup = async (req: Request, res: Response): Promise<void> => {
+export const signup = async (_req: Request, res: Response): Promise<void> => {
   try {
     const { email, password, fullName } = req.body;
 

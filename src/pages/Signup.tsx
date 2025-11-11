@@ -1,22 +1,26 @@
-import { SignupForm } from '../components/auth/SignupForm';
+// src/pages/Signup.tsx
+import React from "react";
+import { SignupForm } from "@/components/auth/SignupForm"; // ✅ adjust this path if needed
 
-export function Signup() {
+const Signup: React.FC = () => {
   return (
     <div className="flex min-h-screen">
-      {/* Left side - Form */}
+      {/* ✅ Left side — Signup Form */}
       <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-md">
+          <h1 className="text-3xl font-semibold text-center mb-6">Create your account</h1>
           <SignupForm />
         </div>
       </div>
 
-      {/* Right side - Promotional */}
+      {/* ✅ Right side — Promotional panel */}
       <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:justify-center lg:bg-blue-600 lg:px-12">
-        <div className="text-white">
+        <div className="text-white max-w-md mx-auto">
           <h2 className="text-3xl font-bold">Start your free trial</h2>
           <p className="mt-4 text-lg text-blue-100">
             Join 50+ healthcare contractors using OC Pipeline
           </p>
+
           <div className="mt-8 space-y-6">
             <div>
               <h3 className="font-semibold">What's included:</h3>
@@ -28,6 +32,7 @@ export function Signup() {
                 <li>• Email support</li>
               </ul>
             </div>
+
             <div>
               <p className="text-sm text-blue-100">
                 No credit card required. Upgrade anytime.
@@ -38,4 +43,6 @@ export function Signup() {
       </div>
     </div>
   );
-}
+};
+
+export default Signup;

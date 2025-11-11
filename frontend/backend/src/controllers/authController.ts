@@ -26,7 +26,7 @@ const isValidPassword = (password: string): boolean => {
  * @param req - Express request object containing email and password
  * @param res - Express response object
  */
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (_req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
@@ -61,7 +61,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
  * @param req - Express request object containing email, password, and fullName
  * @param res - Express response object
  */
-export const signup = async (req: Request, res: Response): Promise<void> => {
+export const signup = async (_req: Request, res: Response): Promise<void> => {
   try {
     const { email, password, fullName } = req.body;
 
