@@ -4,25 +4,18 @@ import { AuthRequest } from '../middleware/auth';
 
 export const getDashboardData = async (_req: AuthRequest, res: Response): Promise<void> => {
   try {
-    // Fetch all necessary data in parallel
-    const [projectsResult, actionItemsResult, eventsResult] = await Promise.all([
-      supabase.from('projects').select('*'),
-      supabase.from('action_items').select('*'),
-      supabase.from('events').select('*'),
-    ]);
+    // Fetch projects data
+    const projectsResult = await supabase.from('projects').select('*');
 
-    if (projectsResult.error || actionItemsResult.error || eventsResult.error) {
+    if (projectsResult.error) {
       res.status(400).json({ error: 'Failed to fetch dashboard data' });
       return;
     }
 
     const projects = projectsResult.data || [];
-    const _actionItems = actionItemsResult.data || [];
-    const _events = eventsResult.data || [];
 
     // Calculate KPIs in the format frontend expects
     const activeProjects = projects.filter((p: any) => p.status === 'active');
-    const _completedProjects = projects.filter((p: any) => p.status === 'completed');
     const totalValue = projects.reduce((sum: number, p: any) => sum + (p.value || 0), 0);
 
     const kpis = {
