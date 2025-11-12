@@ -126,43 +126,44 @@ class ApiClient {
   // ---------------------------------------------------
 
   async getDashboard(): Promise<DashboardData> {
-    const user = await this.requireAuth();
-
-    const { data: projects, error } = await supabase
-      .from("projects")
-      .select("id, name, status, value, deadline, type")
-      .limit(10);
-
-    if (error) throw error;
-
-    const totalProjects = projects?.length ?? 0;
-    const activeProjects = projects?.filter((p) => p.status === "active").length ?? 0;
-    const completedProjects =
-      projects?.filter((p) => p.status === "completed").length ?? 0;
-
-    // Default KPI placeholders
-    const budget = 0;
-    const schedule = 0;
-    const cost = 0;
-    const quality = 0;
-    const revenue = 0; // ✅ Added missing field
-    const profit = 0;  // ✅ Added missing field
-
+  try {
+    // Call backend API which handles auth and RLS
+    const response = await this.request<any>('/api/dashboard');
+    
+    // Ensure the response has the correct structure
+    return {
+      kpis: response.kpis || {
+        totalProjects: 0,
+        activeProjects: 0,
+        completedProjects: 0,
+        budget: 0,
+        schedule: 0,
+        cost: 0,
+        quality: 0,
+        revenue: 0,
+        profit: 0,
+      },
+      recentProjects: response.recentProjects || [],
+    };
+  } catch (error) {
+    console.error('Dashboard error:', error);
+    // Return empty dashboard instead of throwing
     return {
       kpis: {
-        totalProjects,
-        activeProjects,
-        completedProjects,
-        budget,
-        schedule,
-        cost,
-        quality,
-        revenue,
-        profit,
+        totalProjects: 0,
+        activeProjects: 0,
+        completedProjects: 0,
+        budget: 0,
+        schedule: 0,
+        cost: 0,
+        quality: 0,
+        revenue: 0,
+        profit: 0,
       },
-      recentProjects: (projects as Project[]) || [],
+      recentProjects: [],
     };
   }
+}
 
   // ---------------------------------------------------
   // 📁 PROJECTS
