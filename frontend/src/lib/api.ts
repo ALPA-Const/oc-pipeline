@@ -108,11 +108,45 @@ class ApiClient {
   }
 
   // Dashboard - Fixed to return kpis instead of stats
-  async getDashboard() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+async getDashboard(): Promise<DashboardData> {
+  try {
+    // Call backend API which handles auth and RLS
+    const response = await this.request<any>('/api/dashboard');
+    
+    // Ensure the response has the correct structure
+    return {
+      kpis: response.kpis || {
+        totalProjects: 0,
+        activeProjects: 0,
+        completedProjects: 0,
+        budget: 0,
+        schedule: 0,
+        cost: 0,
+        quality: 0,
+        revenue: 0,
+        profit: 0,
+      },
+      recentProjects: response.recentProjects || [],
+    };
+  } catch (error) {
+    console.error('Dashboard error:', error);
+    // Return empty dashboard instead of throwing
+    return {
+      kpis: {
+        totalProjects: 0,
+        activeProjects: 0,
+        completedProjects: 0,
+        budget: 0,
+        schedule: 0,
+        cost: 0,
+        quality: 0,
+        revenue: 0,
+        profit: 0,
+      },
+      recentProjects: [],
+    };
+  }
+}
 
     // Try to fetch projects, but handle gracefully if table doesn't exist
     let projects: any[] = [];
