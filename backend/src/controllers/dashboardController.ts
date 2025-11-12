@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { supabase } from '../config/supabase';
 import { AuthRequest } from '../middleware/auth';
 
-export const getDashboardData = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getDashboardData = async (_req: AuthRequest, res: Response): Promise<void> => {
   try {
     // Fetch all necessary data in parallel
     const [projectsResult, actionItemsResult, eventsResult] = await Promise.all([
@@ -17,12 +17,12 @@ export const getDashboardData = async (req: AuthRequest, res: Response): Promise
     }
 
     const projects = projectsResult.data || [];
-    const actionItems = actionItemsResult.data || [];
-    const events = eventsResult.data || [];
+    const _actionItems = actionItemsResult.data || [];
+    const _events = eventsResult.data || [];
 
     // Calculate KPIs in the format frontend expects
     const activeProjects = projects.filter((p: any) => p.status === 'active');
-    const completedProjects = projects.filter((p: any) => p.status === 'completed');
+    const _completedProjects = projects.filter((p: any) => p.status === 'completed');
     const totalValue = projects.reduce((sum: number, p: any) => sum + (p.value || 0), 0);
 
     const kpis = {
