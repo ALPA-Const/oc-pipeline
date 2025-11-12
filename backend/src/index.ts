@@ -1,17 +1,19 @@
+// 1) LOAD ENVIRONMENT VARIABLES FIRST - BEFORE ANYTHING ELSE
+import dotenv from 'dotenv';
+dotenv.config();
+
+// 2) Then import everything else
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import compression from 'compression';
-import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import projectsRoutes from './routes/projectsRoutes';
 import actionItemsRoutes from './routes/actionItemsRoutes';
 import eventsRoutes from './routes/eventsRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
-
-dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 4000;
@@ -73,9 +75,10 @@ app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  console.log('Server running on port ' + PORT);
+  console.log('Environment: ' + (process.env.NODE_ENV || 'development'));
+  console.log('Health check: http://localhost:' + PORT + '/health');
 });
 
 export default app;
+

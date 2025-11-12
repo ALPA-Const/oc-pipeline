@@ -4,40 +4,50 @@ import { AuthRequest } from '../middleware/auth';
 
 export const getDashboardData = async (_req: AuthRequest, res: Response): Promise<void> => {
   try {
-    // Fetch all necessary data in parallel
-    const [projectsResult, actionItemsResult, eventsResult] = await Promise.all([
-      supabase.from('projects').select('*'),
-      supabase.from('action_items').select('*'),
-      supabase.from('events').select('*'),
-    ]);
+    // Fetch projects data
+    const projectsResult = await supabase.from('projects').select('*');
 
-    if (projectsResult.error || actionItemsResult.error || eventsResult.error) {
+    if (projectsResult.error) {
       res.status(400).json({ error: 'Failed to fetch dashboard data' });
       return;
     }
 
     const projects = projectsResult.data || [];
-    const actionItems = actionItemsResult.data || [];
-    const events = eventsResult.data || [];
 
-    // Calculate statistics
-    const stats = {
-      totalProjects: projects.length,
-      activeProjects: projects.filter((p: any) => p.status === 'active').length,
-      totalActionItems: actionItems.length,
-      pendingActionItems: actionItems.filter((a: any) => a.status === 'pending').length,
-      completedActionItems: actionItems.filter((a: any) => a.status === 'completed').length,
-      upcomingEvents: events.filter((e: any) => new Date(e.date) > new Date()).length,
+    // Calculate KPIs in the format frontend expects
+    const activeProjects = projects.filter((p: any) => p.status === 'active');
+    const totalValue = projects.reduce((sum: number, p: any) => sum + (p.value || 0), 0);
+
+    const kpis = {
+      budget: {
+        value: totalValue,
+        change: 0,
+        trend: 'neutral'
+      },
+      schedule: {
+        value: activeProjects.length,
+        change: 0,
+        trend: 'neutral'
+      },
+      cost: {
+        value: 0,
+        change: 0,
+        trend: 'neutral'
+      },
+      quality: {
+        value: 0,
+        change: 0,
+        trend: 'neutral'
+      }
     };
 
+    // Return data in the format frontend expects
     res.json({
-      stats,
+      kpis,
+      projects,
       recentProjects: projects.slice(0, 5),
-      recentActionItems: actionItems.slice(0, 10),
-      upcomingEvents: events
-        .filter((e: any) => new Date(e.date) > new Date())
-        .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
-        .slice(0, 5),
+      notifications: [],
+      lastUpdated: new Date().toISOString()
     });
   } catch (error) {
     console.error('Get dashboard data error:', error);
