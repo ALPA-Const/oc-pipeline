@@ -1,5 +1,5 @@
 /**
- * Debug version of Supabase client with console logging
+ * Supabase client with proper error handling and OAuth configuration
  */
 import { createClient } from '@supabase/supabase-js';
 
@@ -11,24 +11,36 @@ console.log('=== SUPABASE DEBUG INFO ===');
 console.log('Environment:', import.meta.env.MODE);
 console.log('Supabase URL:', supabaseUrl);
 console.log('Supabase Key exists:', !!supabaseAnonKey);
-console.log('Supabase Key length:', supabaseAnonKey.length);
-console.log('All env vars:', Object.keys(import.meta.env).filter(k => k.startsWith('VITE_')));
+console.log('Supabase Key length:', supabaseAnonKey?.length || 0);
+console.log('All VITE env vars:', Object.keys(import.meta.env).filter(k => k.startsWith('VITE_')));
 console.log('===========================');
 
+// Validation
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('❌ MISSING SUPABASE CREDENTIALS!');
   console.error('URL:', supabaseUrl || 'MISSING');
   console.error('Key:', supabaseAnonKey ? 'EXISTS' : 'MISSING');
+  throw new Error('Supabase credentials are not configured. Check your .env.local file.');
 }
 
-// Create Supabase client
+// Validate URL format
+if (!supabaseUrl.includes('supabase.co')) {
+  console.error('❌ INVALID SUPABASE URL FORMAT!');
+  console.error('Expected format: https://xxxxx.supabase.co');
+  console.error('Got:', supabaseUrl);
+  throw new Error('Invalid Supabase URL format');
+}
+
+// Create Supabase client with OAuth configuration
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
+    flowType: 'pkce', // Use PKCE flow for better security
+    redirectTo: `${window.location.origin}/auth/callback`, // OAuth redirect URL
   },
- });
+});
 
 // Test connection
 supabase.auth.getSession().then(({ data, error }) => {
@@ -41,10 +53,10 @@ supabase.auth.getSession().then(({ data, error }) => {
 });
 
 export function isSupabaseConfigured(): boolean {
-  return !!(supabaseUrl && supabaseAnonKey);
+  return !!(supabaseUrl && supabaseAnonKey && supabaseUrl.includes('supabase.co'));
 }
 
-// Database types (to be generated from Supabase)
+// Database types
 export interface DatabaseProject {
   id: string;
   job_no?: string;

@@ -1,5 +1,6 @@
 /**
- * Debug version of Supabase client with console logging
+ * Supabase client with OAuth support and debug logging
+ * Handles authentication, database operations, and real-time subscriptions
  */
 import { createClient } from '@supabase/supabase-js';
 
@@ -20,9 +21,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('❌ MISSING SUPABASE CREDENTIALS!');
   console.error('URL:', supabaseUrl || 'MISSING');
   console.error('Key:', supabaseAnonKey ? 'EXISTS' : 'MISSING');
+  throw new Error(
+    'Missing Supabase environment variables. Check your .env.local file.'
+  );
 }
 
-// Create Supabase client
+// Create Supabase client with OAuth support
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
@@ -45,7 +49,10 @@ export function isSupabaseConfigured(): boolean {
   return !!(supabaseUrl && supabaseAnonKey);
 }
 
-// Database types (to be generated from Supabase)
+// ============================================================================
+// DATABASE TYPES
+// ============================================================================
+
 export interface DatabaseProject {
   id: string;
   job_no?: string;
@@ -115,6 +122,13 @@ export interface DatabaseTransition {
   notes?: string;
 }
 
+// ============================================================================
+// AUTHENTICATION FUNCTIONS
+// ============================================================================
+
+/**
+ * Get the current authenticated user
+ */
 export async function getCurrentUser() {
   const {
     data: { user },
@@ -129,10 +143,236 @@ export async function getCurrentUser() {
   return user;
 }
 
+/**
+ * Get the current session
+ */
+export async function getCurrentSession() {
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
+
+  if (error) {
+    console.error('Error getting session:', error);
+    return null;
+  }
+
+  return session;
+}
+
+/**
+ * Sign out the current user
+ */
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) {
     console.error('Error signing out:', error);
     throw error;
   }
+}
+
+/**
+ * Sign up with email and password
+ */
+export async function signUpWithEmail(email: string, password: string) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
+    },
+  });
+
+  if (error) {
+    console.error('Error signing up:', error);
+    throw error;
+  }
+
+  return data;
+}
+
+/**
+ * Sign in with email and password
+ */
+export async function signInWithEmail(email: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    console.error('Error signing in:', error);
+    throw error;
+  }
+
+  return data;
+}
+
+/**
+ * Sign in with Google OAuth
+ */
+export async function signInWithGoogle() {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+    },
+  });
+
+  if (error) {
+    console.error('Error signing in with Google:', error);
+    throw error;
+  }
+}
+
+/**
+ * Sign in with Microsoft/Azure OAuth
+ */
+export async function signInWithMicrosoft() {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'azure',
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+    },
+  });
+
+  if (error) {
+    console.error('Error signing in with Microsoft:', error);
+    throw error;
+  }
+}
+
+/**
+ * Listen for auth state changes
+ */
+export function onAuthStateChange(callback: (event: string, session: any) => void) {
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((event, session) => {
+    callback(event, session);
+  });
+
+  return subscription;
+}
+
+// ============================================================================
+// DATABASE QUERY FUNCTIONS
+// ============================================================================
+
+/**
+ * Fetch all projects for the current user
+ */
+export async function fetchProjects() {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching projects:', error);
+    throw error;
+  }
+
+  return data as DatabaseProject[];
+}
+
+/**
+ * Fetch a single project by ID
+ */
+export async function fetchProjectById(projectId: string) {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('id', projectId)
+    .single();
+
+  if (error) {
+    console.error('Error fetching project:', error);
+    throw error;
+  }
+
+  return data as DatabaseProject;
+}
+
+/**
+ * Create a new project
+ */
+export async function createProject(project: Partial<DatabaseProject>) {
+  const { data, error } = await supabase
+    .from('projects')
+    .insert([project])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating project:', error);
+    throw error;
+  }
+
+  return data as DatabaseProject;
+}
+
+/**
+ * Update a project
+ */
+export async function updateProject(projectId: string, updates: Partial<DatabaseProject>) {
+  const { data, error } = await supabase
+    .from('projects')
+    .update(updates)
+    .eq('id', projectId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating project:', error);
+    throw error;
+  }
+
+  return data as DatabaseProject;
+}
+
+/**
+ * Delete a project
+ */
+export async function deleteProject(projectId: string) {
+  const { error } = await supabase
+    .from('projects')
+    .delete()
+    .eq('id', projectId);
+
+  if (error) {
+    console.error('Error deleting project:', error);
+    throw error;
+  }
+}
+
+/**
+ * Fetch all stages
+ */
+export async function fetchStages() {
+  const { data, error } = await supabase
+    .from('stages')
+    .select('*')
+    .order('order', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching stages:', error);
+    throw error;
+  }
+
+  return data as DatabaseStage[];
+}
+
+/**
+ * Subscribe to real-time project updates
+ */
+export function subscribeToProjects(callback: (payload: any) => void) {
+  const subscription = supabase
+    .from('projects')
+    .on('*', (payload) => {
+      callback(payload);
+    })
+    .subscribe();
+
+  return subscription;
 }
