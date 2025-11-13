@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,7 +23,7 @@ export const LoginForm = () => {
 
     const result = await signIn(email, password);
     if (!result.success) {
-      setLocalError(result.error);
+      setLocalError(result.error || 'Sign in failed');
     }
   };
 
@@ -31,7 +31,7 @@ export const LoginForm = () => {
     setLocalError(null);
     const result = await signInWithGoogle();
     if (result && !result.success) {
-      setLocalError(result.error);
+      setLocalError(result.error || 'Google sign in failed');
     }
   };
 
@@ -39,7 +39,7 @@ export const LoginForm = () => {
     setLocalError(null);
     const result = await signInWithMicrosoft();
     if (result && !result.success) {
-      setLocalError(result.error);
+      setLocalError(result.error || 'Microsoft sign in failed');
     }
   };
 
@@ -217,124 +217,3 @@ export const LoginForm = () => {
     </div>
   );
 };
-________________________________________
-File 2: frontend/src/pages/AuthCallback.tsx
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getCurrentUser } from '@/lib/supabase';
-import { Loader2 } from 'lucide-react';
-
-export const AuthCallback = () => {
-  const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const handleCallback = async () => {
-      try {
-        // Supabase automatically handles the OAuth callback
-        // Check if we have a user
-        const user = await getCurrentUser();
-
-        if (user) {
-          // User authenticated, redirect to dashboard
-          navigate('/dashboard', { replace: true });
-        } else {
-          // No user, redirect to login
-          setError('Authentication failed. Please try again.');
-          setTimeout(() => navigate('/login', { replace: true }), 2000);
-        }
-      } catch (error) {
-        console.error('Callback error:', error);
-        setError(
-          error instanceof Error ? error.message : 'An error occurred during authentication'
-        );
-        setTimeout(() => navigate('/login', { replace: true }), 2000);
-      }
-    };
-
-    handleCallback();
-  }, [navigate]);
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="text-center">
-        {error ? (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
-            <h2 className="text-lg font-semibold text-red-900 mb-2">Authentication Error</h2>
-            <p className="text-red-700 mb-4">{error}</p>
-            <p className="text-sm text-red-600">Redirecting to login...</p>
-          </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-md">
-            <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">Completing sign in...</h2>
-            <p className="text-gray-600">Please wait while we authenticate you.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-________________________________________
-File 3: frontend/src/components/ProtectedRoute.tsx
-import { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { Loader2 } from 'lucide-react';
-
-interface ProtectedRouteProps {
-  children: ReactNode;
-}
-
-export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <>{children}</>;
-};
-________________________________________
-File 4: frontend/src/App.tsx (UPDATED)
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { LoginForm } from '@/components/auth/LoginForm';
-import { AuthCallback } from '@/pages/AuthCallback';
-import { Dashboard } from '@/pages/Dashboard';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/auth/callback" element={<AuthCallback />} />
-
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Default redirect */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-      </Routes>
-    </Router>
-  );
-}
-
-export default App;
