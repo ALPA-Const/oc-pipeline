@@ -7,4 +7,4 @@
 * Change Logs:
 * Date           Author       Notes
 *
-*/ 
+*export default router;
