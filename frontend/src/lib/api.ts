@@ -1,6 +1,21 @@
 // API Client for OC Pipeline
 import { supabase } from './supabase';
 
+interface DashboardData {
+  kpis: {
+    totalProjects: number;
+    activeProjects: number;
+    completedProjects: number;
+    budget: number;
+    schedule: number;
+    cost: number;
+    quality: number;
+    revenue: number;
+    profit: number;
+  };
+  recentProjects: any[];
+}
+
 class ApiClient {
   // Authentication methods using Supabase Auth
   async login(email: string, password: string) {
@@ -81,9 +96,9 @@ class ApiClient {
   ): Promise<T> {
     const token = await this.getSessionToken();
 
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...(options.headers as Record<string, string>),
     };
 
     if (token) {
@@ -107,96 +122,59 @@ class ApiClient {
     return response.json();
   }
 
-  // Dashboard - Fixed to return kpis instead of stats
-async getDashboard(): Promise<DashboardData> {
-  try {
-    // Call backend API which handles auth and RLS
-    const response = await this.request<any>('/api/dashboard');
-    
-    // Ensure the response has the correct structure
-    return {
-      kpis: response.kpis || {
-        totalProjects: 0,
-        activeProjects: 0,
-        completedProjects: 0,
-        budget: 0,
-        schedule: 0,
-        cost: 0,
-        quality: 0,
-        revenue: 0,
-        profit: 0,
-      },
-      recentProjects: response.recentProjects || [],
-    };
-  } catch (error) {
-    console.error('Dashboard error:', error);
-    // Return empty dashboard instead of throwing
-    return {
-      kpis: {
-        totalProjects: 0,
-        activeProjects: 0,
-        completedProjects: 0,
-        budget: 0,
-        schedule: 0,
-        cost: 0,
-        quality: 0,
-        revenue: 0,
-        profit: 0,
-      },
-      recentProjects: [],
-    };
-  }
-}
-
-    // Try to fetch projects, but handle gracefully if table doesn't exist
-    let projects: any[] = [];
+  // Dashboard
+  async getDashboard(): Promise<DashboardData> {
     try {
-      const { data, error } = await supabase
+      // Try to fetch projects from Supabase
+      const { data: projects, error } = await supabase
         .from('projects')
         .select('*')
         .limit(10);
-      
-      if (!error) {
-        projects = data || [];
+
+      if (error) {
+        console.warn('Projects table may not exist yet:', error);
       }
-    } catch (err) {
-      console.warn('Projects table may not exist yet:', err);
+
+      const projectList = projects || [];
+
+      // Calculate KPIs
+      const activeProjects = projectList.filter((p: any) => p.status === 'active');
+      const completedProjects = projectList.filter((p: any) => p.status === 'completed');
+      const totalValue = projectList.reduce((sum: number, p: any) => sum + (p.value || 0), 0);
+
+      // Return data in the exact format Dashboard expects
+      return {
+        kpis: {
+          totalProjects: projectList.length,
+          activeProjects: activeProjects.length,
+          completedProjects: completedProjects.length,
+          budget: totalValue,
+          schedule: activeProjects.length,
+          cost: 0,
+          quality: 0,
+          revenue: 0,
+          profit: 0,
+        },
+        recentProjects: projectList.slice(0, 5),
+      };
+    } catch (error) {
+      console.error('Dashboard error:', error);
+      // Return empty dashboard instead of throwing
+      return {
+        kpis: {
+          totalProjects: 0,
+          activeProjects: 0,
+          completedProjects: 0,
+          budget: 0,
+          schedule: 0,
+          cost: 0,
+          quality: 0,
+          revenue: 0,
+          profit: 0,
+        },
+        recentProjects: [],
+      };
     }
-
-    // Calculate KPIs in the format the frontend expects
-    const activeProjects = projects.filter(p => p.status === 'active');
-    const completedProjects = projects.filter(p => p.status === 'completed');
-    const totalValue = projects.reduce((sum, p) => sum + (p.value || 0), 0);
-
-    // Return data in the exact format Dashboard.tsx expects
-    return {
-      kpis: {
-        budget: {
-          value: totalValue,
-          change: 0,
-          trend: 'neutral' as const
-        },
-        schedule: {
-          value: activeProjects.length,
-          change: 0,
-          trend: 'neutral' as const
-        },
-        cost: {
-          value: 0,
-          change: 0,
-          trend: 'neutral' as const
-        },
-        quality: {
-          value: 0,
-          change: 0,
-          trend: 'neutral' as const
-        }
-      },
-      projects: projects,
-      recentProjects: projects.slice(0, 5),
-      notifications: [],
-      lastUpdated: new Date().toISOString()
-    };
   }
 
   // Projects
@@ -258,7 +236,11 @@ async getDashboard(): Promise<DashboardData> {
 
     const { data, error } = await supabase
       .from('projects')
-      .update({ ...updates, updated_by: user.id, updated_at: new Date().toISOString() })
+      .update({
+        ...updates,
+        updated_by: user.id,
+        updated_at: new Date().toISOString(),
+      })
       .eq('id', id)
       .select()
       .single();
