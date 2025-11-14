@@ -1,109 +1,104 @@
-import express from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import { testConnection } from './config/database';
-import { errorHandler } from './middleware/errorHandler';
-import authRoutes from './routes/auth';
-import projectRoutes from './routes/projects';
-import memberRoutes from './routes/members';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import compression from 'compression';
+import authRoutes from './routes/authRoutes';
+import projectsRoutes from './routes/projectsRoutes';
+import actionItemsRoutes from './routes/actionItemsRoutes';
+import eventsRoutes from './routes/eventsRoutes';
+import dashboardRoutes from './routes/dashboardRoutes';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
-dotenv.config();
+const app: Application = express();
+const PORT = process.env.PORT || 4000;
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+// Security middleware
+app.use(helmet());
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// CORS - Allow multiple origins
+// CORS configuration - Enhanced for Vercel deployments
 const allowedOrigins = [
   'https://ocpipeline.vercel.app',
   'http://localhost:5173',
-  'http://localhost:5175',
   'http://localhost:3000',
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+  'http://localhost:5000',
+];
+
+// Add environment variable origins if provided
+if (process.env.ALLOWED_ORIGINS) {
+  const envOrigins = process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim());
+  allowedOrigins.push(...envOrigins);
+}
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, Postman, etc.)
-      if (!origin) return callback(null, true);
-      
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.warn(`CORS blocked origin: ${origin}`);
-        callback(new Error('Not allowed by CORS'));
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) {
+        return callback(null, true);
       }
+
+      // Check if origin is in allowed list
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Check if origin matches Vercel preview deployments pattern
+      if (origin.includes('.vercel.app')) {
+        return callback(null, true);
+      }
+
+      // Reject other origins
+      console.warn(`CORS rejected origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200,
   })
 );
 
-// Request logging
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} ${req.method} ${req.path}`);
-  next();
-});
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
+// Compression middleware
+app.use(compression());
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/projects', memberRoutes);
+// Logging middleware
+app.use(morgan('combined'));
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    error: {
-      code: 'NOT_FOUND',
-      message: `Route ${req.method} ${req.path} not found`,
-      statusCode: 404,
-    },
+// Health check endpoint
+app.get('/health', (_req: Request, res: Response) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    port: PORT,
   });
 });
 
-// Error handler (must be last)
+// API routes
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectsRoutes);
+app.use('/api/action-items', actionItemsRoutes);
+app.use('/api/events', eventsRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+
+// 404 handler
+app.use(notFoundHandler);
+
+// Error handler
 app.use(errorHandler);
 
 // Start server
-async function start() {
-  try {
-    // Test database connection
-    const connected = await testConnection();
-
-    if (!connected) {
-      console.error('❌ Failed to connect to database');
-      process.exit(1);
-    }
-
-    app.listen(PORT, () => {
-      console.log(`
-╔════════════════════════════════════════════════════╗
-║  🚀 OC Pipeline API Server Started                ║
-╠════════════════════════════════════════════════════╣
-║  Port: ${PORT}                                      ║
-║  Environment: ${process.env.NODE_ENV || 'development'}                    ║
-║  Frontend: ${process.env.FRONTEND_URL || 'http://localhost:5173'}
-║  API: http://localhost:${PORT}                      ║
-║  CORS Origins: ${allowedOrigins.length} allowed                  ║
-╚════════════════════════════════════════════════════╝
-      `);
-    });
-  } catch (error) {
-    console.error('❌ Failed to start server:', error);
-    process.exit(1);
-  }
-}
-
-start();
+app.listen(PORT, () => {
+  console.log('🚀 Server running on port ' + PORT);
+  console.log('📍 Environment: ' + (process.env.NODE_ENV || 'development'));
+  console.log('✅ Health check: http://localhost:' + PORT + '/health');
+  console.log('🔐 CORS enabled for:', allowedOrigins);
+});
 
 export default app;

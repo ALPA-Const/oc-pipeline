@@ -6,6 +6,9 @@ import { logAuditEvent } from '../middleware/auth';
 
 const router = Router();
 
+// JWT secret with fallback
+const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
+
 // ============================================================================
 // STANDARD AUTH ROUTES
 // ============================================================================
@@ -13,8 +16,8 @@ const router = Router();
 // Sign up
 router.post(
   '/signup',
-  asyncHandler(async (req, res) => {
-    const { email, password, name } = req.body;
+  asyncHandler(async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
     if (!email || !password) {
       throw Errors.VALIDATION_ERROR('Email and password required');
@@ -62,7 +65,7 @@ router.post(
 // Login
 router.post(
   '/login',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -80,17 +83,17 @@ router.post(
 
     const user = result.rows[0];
 
-    // Generate JWT token
+    // Generate JWT token - use number for expiresIn (seconds)
     const token = jwt.sign(
       { userId: user.id, email: user.email },
-      process.env.JWT_SECRET || 'secret',
-      { expiresIn: process.env.JWT_EXPIRY || '1h' }
+      JWT_SECRET,
+      { expiresIn: 3600 } // 1 hour in seconds
     );
 
     const refreshToken = jwt.sign(
       { userId: user.id },
-      process.env.JWT_SECRET || 'secret',
-      { expiresIn: process.env.JWT_REFRESH_EXPIRY || '30d' }
+      JWT_SECRET,
+      { expiresIn: 2592000 } // 30 days in seconds
     );
 
     // Log audit event
@@ -108,7 +111,7 @@ router.post(
 // Logout
 router.post(
   '/logout',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const userId = req.headers['x-user-id'] as string;
 
     if (!userId) {
@@ -125,7 +128,7 @@ router.post(
 // Refresh token
 router.post(
   '/refresh',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { refreshToken } = req.body;
 
     if (!refreshToken) {
@@ -133,7 +136,7 @@ router.post(
     }
 
     try {
-      const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET || 'secret');
+      const decoded = jwt.verify(refreshToken, JWT_SECRET);
       const userId = (decoded as any).userId;
 
       const userResult = await query(
@@ -149,8 +152,8 @@ router.post(
 
       const newToken = jwt.sign(
         { userId: user.id, email: user.email },
-        process.env.JWT_SECRET || 'secret',
-        { expiresIn: process.env.JWT_EXPIRY || '1h' }
+        JWT_SECRET,
+        { expiresIn: 3600 } // 1 hour in seconds
       );
 
       res.json({ message: 'Token refreshed', token: newToken });
@@ -166,72 +169,64 @@ router.post(
 
 // Google OAuth
 router.get('/google', (_req: Request, res: Response) => {
-  try {
-    const clientId = process.env.GOOGLE_CLIENT_ID;
-    
-    if (!clientId) {
-      return res.status(500).json({ error: 'Google Client ID not configured' });
-    }
-
-    // Determine redirect URI based on origin
-    const origin = _req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:5173';
-    const redirectUri = `${origin}/auth/callback`;
-    const scope = 'openid profile email';
-
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
-    
-    res.redirect(authUrl);
-  } catch (error) {
-    res.status(500).json({ error: 'OAuth initialization failed' });
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  
+  if (!clientId) {
+    res.status(500).json({ error: 'Google Client ID not configured' });
+    return;
   }
+
+  // Determine redirect URI based on origin
+  const origin = _req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+  const redirectUri = `${origin}/auth/callback`;
+  const scope = 'openid profile email';
+
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
+  
+  res.redirect(authUrl);
 });
 
 // Microsoft OAuth
 router.get('/microsoft', (_req: Request, res: Response) => {
-  try {
-    const clientId = process.env.MICROSOFT_CLIENT_ID;
-    
-    if (!clientId) {
-      return res.status(500).json({ error: 'Microsoft Client ID not configured' });
-    }
-
-    // Determine redirect URI based on origin
-    const origin = _req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:5173';
-    const redirectUri = `${origin}/auth/callback`;
-    const scope = 'openid profile email';
-
-    const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
-    
-    res.redirect(authUrl);
-  } catch (error) {
-    res.status(500).json({ error: 'OAuth initialization failed' });
+  const clientId = process.env.MICROSOFT_CLIENT_ID;
+  
+  if (!clientId) {
+    res.status(500).json({ error: 'Microsoft Client ID not configured' });
+    return;
   }
+
+  // Determine redirect URI based on origin
+  const origin = _req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+  const redirectUri = `${origin}/auth/callback`;
+  const scope = 'openid profile email';
+
+  const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
+  
+  res.redirect(authUrl);
 });
 
 // OAuth Callback Handler
 router.get('/callback', (_req: Request, res: Response) => {
-  try {
-    const { code, error } = _req.query;
+  const { code, error } = _req.query;
 
-    if (error) {
-      return res.status(400).json({ error: 'OAuth error', details: error });
-    }
-
-    if (!code) {
-      return res.status(400).json({ error: 'Missing authorization code' });
-    }
-
-    // TODO: Exchange code for token with OAuth provider
-    // This will be handled by the frontend or a separate service
-    
-    res.json({ 
-      message: 'Authorization code received',
-      code,
-      next: 'Exchange this code for a token'
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Callback processing failed' });
+  if (error) {
+    res.status(400).json({ error: 'OAuth error', details: error });
+    return;
   }
+
+  if (!code) {
+    res.status(400).json({ error: 'Missing authorization code' });
+    return;
+  }
+
+  // TODO: Exchange code for token with OAuth provider
+  // This will be handled by the frontend or a separate service
+  
+  res.json({ 
+    message: 'Authorization code received',
+    code,
+    next: 'Exchange this code for a token'
+  });
 });
 
 export default router;
