@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 4000;
 // Security middleware
 app.use(helmet());
 
-// CORS configuration
+// CORS configuration - Allow all Vercel preview deployments
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
   'https://ocpipeline.vercel.app',
   'http://localhost:5173',
@@ -30,7 +30,14 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (mobile apps, Postman, etc.)
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+      
+      // Allow all Vercel preview deployments (*.vercel.app)
+      if (origin.endsWith('.vercel.app') || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
@@ -81,4 +88,3 @@ app.listen(PORT, () => {
 });
 
 export default app;
-
