@@ -1,7 +1,7 @@
 // API Client for OC Pipeline
 import { supabase } from './supabase';
 
-interface DashboardData {
+export interface DashboardData {
   kpis: {
     totalProjects: number;
     activeProjects: number;
@@ -14,6 +14,51 @@ interface DashboardData {
     profit: number;
   };
   recentProjects: any[];
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  status: string;
+  value: number;
+  client: string;
+  start_date: string;
+  end_date?: string;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+}
+
+export interface ActionItem {
+  id: string;
+  project_id: string;
+  title: string;
+  description?: string;
+  status: string;
+  priority: string;
+  assigned_to?: string;
+  due_date?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Event {
+  id: string;
+  project_id: string;
+  event_type: string;
+  description: string;
+  timestamp: string;
+  user_id: string;
+  metadata?: Record<string, any>;
+}
+
+export interface ProjectFilters {
+  status?: string;
+  client?: string;
+  dateRange?: {
+    start: string;
+    end: string;
+  };
 }
 
 class ApiClient {
@@ -178,7 +223,7 @@ class ApiClient {
   }
 
   // Projects
-  async getProjects(filters?: any) {
+  async getProjects(filters?: ProjectFilters): Promise<Project[]> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -190,13 +235,23 @@ class ApiClient {
       query = query.eq('status', filters.status);
     }
 
-    const { data, error } = await query;
+    if (filters?.client) {
+      query = query.eq('client', filters.client);
+    }
+
+    if (filters?.dateRange) {
+      query = query
+        .gte('created_at', filters.dateRange.start)
+        .lte('created_at', filters.dateRange.end);
+    }
+
+    const { data, error } = await query.order('created_at', { ascending: false });
     if (error) throw error;
 
     return data || [];
   }
 
-  async getProject(id: string) {
+  async getProject(id: string): Promise<Project> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -209,10 +264,12 @@ class ApiClient {
       .single();
 
     if (error) throw error;
+    if (!data) throw new Error('Project not found');
+    
     return data;
   }
 
-  async createProject(project: any) {
+  async createProject(project: Omit<Project, 'id' | 'created_at' | 'updated_at'>): Promise<Project> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -225,10 +282,12 @@ class ApiClient {
       .single();
 
     if (error) throw error;
+    if (!data) throw new Error('Failed to create project');
+    
     return data;
   }
 
-  async updateProject(id: string, updates: any) {
+  async updateProject(id: string, updates: Partial<Project>): Promise<Project> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -246,10 +305,12 @@ class ApiClient {
       .single();
 
     if (error) throw error;
+    if (!data) throw new Error('Failed to update project');
+    
     return data;
   }
 
-  async deleteProject(id: string) {
+  async deleteProject(id: string): Promise<void> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -259,6 +320,115 @@ class ApiClient {
 
     if (error) throw error;
   }
+
+  // Action Items
+  async getActionItems(projectId?: string): Promise<ActionItem[]> {
+    try {
+      let query = supabase.from('action_items').select('*');
+
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Action items fetch error:', error);
+      throw error;
+    }
+  }
+
+  async createActionItem(actionItem: Omit<ActionItem, 'id' | 'created_at' | 'updated_at'>): Promise<ActionItem> {
+    try {
+      const { data, error } = await supabase
+        .from('action_items')
+        .insert([actionItem])
+        .select()
+        .single();
+
+      if (error) throw error;
+      if (!data) throw new Error('Failed to create action item');
+      
+      return data;
+    } catch (error) {
+      console.error('Action item creation error:', error);
+      throw error;
+    }
+  }
+
+  async updateActionItem(id: string, updates: Partial<ActionItem>): Promise<ActionItem> {
+    try {
+      const { data, error } = await supabase
+        .from('action_items')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      if (!data) throw new Error('Failed to update action item');
+      
+      return data;
+    } catch (error) {
+      console.error('Action item update error:', error);
+      throw error;
+    }
+  }
+
+  async deleteActionItem(id: string): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('action_items')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Action item deletion error:', error);
+      throw error;
+    }
+  }
+
+  // Events
+  async getEvents(projectId?: string): Promise<Event[]> {
+    try {
+      let query = supabase.from('events').select('*');
+
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
+
+      const { data, error } = await query.order('timestamp', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Events fetch error:', error);
+      throw error;
+    }
+  }
+
+  async createEvent(event: Omit<Event, 'id'>): Promise<Event> {
+    try {
+      const { data, error } = await supabase
+        .from('events')
+        .insert([event])
+        .select()
+        .single();
+
+      if (error) throw error;
+      if (!data) throw new Error('Failed to create event');
+      
+      return data;
+    } catch (error) {
+      console.error('Event creation error:', error);
+      throw error;
+    }
+  }
 }
 
+// Export singleton instance with both names for backward compatibility
 export const apiClient = new ApiClient();
+export const api = apiClient;
