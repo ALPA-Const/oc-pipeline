@@ -1,6 +1,10 @@
 // API Client for OC Pipeline
 import { supabase } from './supabase';
 
+/* ---------------------------------------------------
+   TYPES
+---------------------------------------------------- */
+
 export interface DashboardData {
   kpis: {
     totalProjects: number;
@@ -55,26 +59,55 @@ export interface Event {
 export interface ProjectFilters {
   status?: string;
   client?: string;
-  dateRange?: {
-    start: string;
-    end: string;
+  dateRange?: { start: string; end: string };
+}
+
+/* ---------------------------------------------------
+   UTILITIES
+---------------------------------------------------- */
+
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+if (!API_BASE_URL) {
+  console.warn(
+    '⚠ Warning: VITE_API_URL is not set. Backend API requests may fail.'
+  );
+}
+
+function emptyDashboard(): DashboardData {
+  return {
+    kpis: {
+      totalProjects: 0,
+      activeProjects: 0,
+      completedProjects: 0,
+      budget: 0,
+      schedule: 0,
+      cost: 0,
+      quality: 0,
+      revenue: 0,
+      profit: 0,
+    },
+    recentProjects: [],
   };
 }
 
+/* ---------------------------------------------------
+   CLASS: API CLIENT
+---------------------------------------------------- */
+
 class ApiClient {
-  // Authentication methods using Supabase Auth
+  /* -----------------------------
+     AUTHENTICATION (Supabase Auth)
+  ------------------------------ */
+
   async login(email: string, password: string) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-
-    if (error) {
-      throw new Error(error.message);
-    }
+    if (error) throw new Error(error.message);
 
     return {
-      token: data.session?.access_token || '',
+      token: data.session?.access_token ?? '',
       user: data.user,
     };
   }
@@ -83,28 +116,24 @@ class ApiClient {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          name,
-        },
-      },
+      options: { data: { name } },
     });
 
-    if (error) {
-      throw new Error(error.message);
-    }
+    if (error) throw new Error(error.message);
 
     return {
-      token: data.session?.access_token || '',
+      token: data.session?.access_token ?? '',
       user: data.user,
     };
   }
 
   async loginWithGoogle() {
+    const redirectUrl = `${window.location.origin}/auth/callback`;
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: redirectUrl,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
@@ -112,33 +141,29 @@ class ApiClient {
       },
     });
 
-    if (error) {
-      throw new Error(error.message);
-    }
-
+    if (error) throw new Error(error.message);
     return data;
   }
 
   async logout() {
     const { error } = await supabase.auth.signOut();
-    if (error) {
-      throw new Error(error.message);
-    }
+    if (error) throw new Error(error.message);
   }
 
-  // Helper method to get current session token
+  /* -----------------------------
+     SESSION TOKEN
+  ------------------------------ */
+
   private async getSessionToken(): Promise<string | null> {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    return session?.access_token || null;
+    const { data } = await supabase.auth.getSession();
+    return data.session?.access_token || null;
   }
 
-  // Generic request method for API calls (uses Supabase session token)
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  /* -----------------------------
+     GENERIC API REQUEST WRAPPER
+  ------------------------------ */
+
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const token = await this.getSessionToken();
 
     const headers: Record<string, string> = {
@@ -146,11 +171,7 @@ class ApiClient {
       ...(options.headers as Record<string, string>),
     };
 
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+    if (token) headers['Authorization'] = `Bearer ${token}`;
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
@@ -167,77 +188,36 @@ class ApiClient {
     return response.json();
   }
 
-  // Dashboard
+  /* -----------------------------
+     DASHBOARD (Backend API)
+  ------------------------------ */
+
   async getDashboard(): Promise<DashboardData> {
     try {
-      // Try to fetch projects from Supabase
-      const { data: projects, error } = await supabase
-        .from('projects')
-        .select('*')
-        .limit(10);
+      const response = await this.request<any>('/api/dashboard');
 
-      if (error) {
-        console.warn('Projects table may not exist yet:', error);
-      }
-
-      const projectList = projects || [];
-
-      // Calculate KPIs
-      const activeProjects = projectList.filter((p: any) => p.status === 'active');
-      const completedProjects = projectList.filter((p: any) => p.status === 'completed');
-      const totalValue = projectList.reduce((sum: number, p: any) => sum + (p.value || 0), 0);
-
-      // Return data in the exact format Dashboard expects
       return {
-        kpis: {
-          totalProjects: projectList.length,
-          activeProjects: activeProjects.length,
-          completedProjects: completedProjects.length,
-          budget: totalValue,
-          schedule: activeProjects.length,
-          cost: 0,
-          quality: 0,
-          revenue: 0,
-          profit: 0,
-        },
-        recentProjects: projectList.slice(0, 5),
+        kpis: response.kpis ?? emptyDashboard().kpis,
+        recentProjects: response.recentProjects ?? [],
       };
     } catch (error) {
       console.error('Dashboard error:', error);
-      // Return empty dashboard instead of throwing
-      return {
-        kpis: {
-          totalProjects: 0,
-          activeProjects: 0,
-          completedProjects: 0,
-          budget: 0,
-          schedule: 0,
-          cost: 0,
-          quality: 0,
-          revenue: 0,
-          profit: 0,
-        },
-        recentProjects: [],
-      };
+      return emptyDashboard();
     }
   }
 
-  // Projects
+  /* -----------------------------
+     PROJECTS
+  ------------------------------ */
+
   async getProjects(filters?: ProjectFilters): Promise<Project[]> {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) throw new Error('Not authenticated');
 
     let query = supabase.from('projects').select('*');
 
-    if (filters?.status) {
-      query = query.eq('status', filters.status);
-    }
-
-    if (filters?.client) {
-      query = query.eq('client', filters.client);
-    }
+    if (filters?.status) query = query.eq('status', filters.status);
+    if (filters?.client) query = query.eq('client', filters.client);
 
     if (filters?.dateRange) {
       query = query
@@ -245,59 +225,50 @@ class ApiClient {
         .lte('created_at', filters.dateRange.end);
     }
 
-    const { data, error } = await query.order('created_at', { ascending: false });
+    const { data: projects, error } = await query.order('created_at', { ascending: false });
     if (error) throw error;
 
-    return data || [];
+    return projects ?? [];
   }
 
   async getProject(id: string): Promise<Project> {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) throw new Error('Not authenticated');
 
-    const { data, error } = await supabase
-      .from('projects')
+    const { data, error } = await supabase.from('projects')
       .select('*')
       .eq('id', id)
       .single();
 
     if (error) throw error;
     if (!data) throw new Error('Project not found');
-    
+
     return data;
   }
 
   async createProject(project: Omit<Project, 'id' | 'created_at' | 'updated_at'>): Promise<Project> {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) throw new Error('Not authenticated');
 
     const { data, error } = await supabase
       .from('projects')
-      .insert([{ ...project, created_by: user.id }])
+      .insert([{ ...project, created_by: auth.user.id }])
       .select()
       .single();
 
     if (error) throw error;
-    if (!data) throw new Error('Failed to create project');
-    
     return data;
   }
 
   async updateProject(id: string, updates: Partial<Project>): Promise<Project> {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) throw new Error('Not authenticated');
 
     const { data, error } = await supabase
       .from('projects')
       .update({
         ...updates,
-        updated_by: user.id,
+        updated_by: auth.user.id,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
@@ -305,130 +276,88 @@ class ApiClient {
       .single();
 
     if (error) throw error;
-    if (!data) throw new Error('Failed to update project');
-    
     return data;
   }
 
   async deleteProject(id: string): Promise<void> {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) throw new Error('Not authenticated');
 
     const { error } = await supabase.from('projects').delete().eq('id', id);
-
     if (error) throw error;
   }
 
-  // Action Items
+  /* -----------------------------
+     ACTION ITEMS
+  ------------------------------ */
+
   async getActionItems(projectId?: string): Promise<ActionItem[]> {
-    try {
-      let query = supabase.from('action_items').select('*');
+    let query = supabase.from('action_items').select('*');
+    if (projectId) query = query.eq('project_id', projectId);
 
-      if (projectId) {
-        query = query.eq('project_id', projectId);
-      }
+    const { data, error } = await query.order('created_at', { ascending: false });
+    if (error) throw error;
 
-      const { data, error } = await query.order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Action items fetch error:', error);
-      throw error;
-    }
+    return data ?? [];
   }
 
   async createActionItem(actionItem: Omit<ActionItem, 'id' | 'created_at' | 'updated_at'>): Promise<ActionItem> {
-    try {
-      const { data, error } = await supabase
-        .from('action_items')
-        .insert([actionItem])
-        .select()
-        .single();
+    const { data, error } = await supabase
+      .from('action_items')
+      .insert([actionItem])
+      .select()
+      .single();
 
-      if (error) throw error;
-      if (!data) throw new Error('Failed to create action item');
-      
-      return data;
-    } catch (error) {
-      console.error('Action item creation error:', error);
-      throw error;
-    }
+    if (error) throw error;
+    return data;
   }
 
   async updateActionItem(id: string, updates: Partial<ActionItem>): Promise<ActionItem> {
-    try {
-      const { data, error } = await supabase
-        .from('action_items')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
+    const { data, error } = await supabase
+      .from('action_items')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
 
-      if (error) throw error;
-      if (!data) throw new Error('Failed to update action item');
-      
-      return data;
-    } catch (error) {
-      console.error('Action item update error:', error);
-      throw error;
-    }
+    if (error) throw error;
+    return data;
   }
 
   async deleteActionItem(id: string): Promise<void> {
-    try {
-      const { error } = await supabase
-        .from('action_items')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Action item deletion error:', error);
-      throw error;
-    }
+    const { error } = await supabase.from('action_items').delete().eq('id', id);
+    if (error) throw error;
   }
 
-  // Events
+  /* -----------------------------
+     EVENTS
+  ------------------------------ */
+
   async getEvents(projectId?: string): Promise<Event[]> {
-    try {
-      let query = supabase.from('events').select('*');
+    let query = supabase.from('events').select('*');
+    if (projectId) query = query.eq('project_id', projectId);
 
-      if (projectId) {
-        query = query.eq('project_id', projectId);
-      }
+    const { data, error } = await query.order('timestamp', { ascending: false });
+    if (error) throw error;
 
-      const { data, error } = await query.order('timestamp', { ascending: false });
-
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Events fetch error:', error);
-      throw error;
-    }
+    return data ?? [];
   }
 
   async createEvent(event: Omit<Event, 'id'>): Promise<Event> {
-    try {
-      const { data, error } = await supabase
-        .from('events')
-        .insert([event])
-        .select()
-        .single();
+    const { data, error } = await supabase
+      .from('events')
+      .insert([event])
+      .select()
+      .single();
 
-      if (error) throw error;
-      if (!data) throw new Error('Failed to create event');
-      
-      return data;
-    } catch (error) {
-      console.error('Event creation error:', error);
-      throw error;
-    }
+    if (error) throw error;
+    return data;
   }
 }
 
-// Export singleton instance with both names for backward compatibility
+/* ---------------------------------------------------
+   EXPORTS
+---------------------------------------------------- */
+
 export const apiClient = new ApiClient();
 export const api = apiClient;
