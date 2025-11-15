@@ -228,5 +228,43 @@ router.get('/callback', (_req: Request, res: Response) => {
     next: 'Exchange this code for a token'
   });
 });
+// ============================================================================
+// OAUTH INITIATION ROUTES
+// ============================================================================
 
+// Google OAuth - Initiate login
+router.get('/oauth/google', (_req: Request, res: Response) => {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  
+  if (!clientId) {
+    res.status(500).json({ error: 'Google Client ID not configured' });
+    return;
+  }
+
+  const origin = _req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+  const redirectUri = `${origin}/auth/callback`;
+  const scope = 'openid profile email';
+
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
+  
+  res.redirect(authUrl);
+});
+
+// Microsoft OAuth - Initiate login
+router.get('/oauth/microsoft', (_req: Request, res: Response) => {
+  const clientId = process.env.MICROSOFT_CLIENT_ID;
+  
+  if (!clientId) {
+    res.status(500).json({ error: 'Microsoft Client ID not configured' });
+    return;
+  }
+
+  const origin = _req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:5173';
+  const redirectUri = `${origin}/auth/callback`;
+  const scope = 'openid profile email';
+
+  const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
+  
+  res.redirect(authUrl);
+});
 export default router;
