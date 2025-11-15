@@ -192,6 +192,7 @@ class ApiClient {
      DASHBOARD (Backend API)
   ------------------------------ */
 
+<<<<<<< HEAD
   async getDashboard(): Promise<DashboardData> {
     try {
       const response = await this.request<any>('/api/dashboard');
@@ -204,6 +205,81 @@ class ApiClient {
       console.error('Dashboard error:', error);
       return emptyDashboard();
     }
+=======
+// ---------------------------------------------------------
+// Fetch projects safely from Supabase
+// Handles the case where the 'projects' table may not exist yet
+// ---------------------------------------------------------
+
+// Define a type for project if you know the fields, otherwise 'any'
+type Project = {
+  id?: string;
+  name?: string;
+  job_no?: string;
+  // Add other fields as needed
+};
+
+// Initialize projects array
+let projects: Project[] = [];
+
+try {
+  // Attempt to fetch projects
+  const { data, error } = await supabase
+    .from<Project>('projects') // explicitly set generic type
+    .select('*')
+    .limit(10);
+
+  if (error) {
+    // Supabase returned an error (e.g., table doesn't exist)
+    console.warn('Supabase returned an error fetching projects:', error.message);
+  } else {
+    // Assign fetched data or empty array if null
+    projects = data ?? [];
+  }
+} catch (err) {
+  // Catch unexpected runtime errors
+  console.warn('Projects table may not exist yet or another error occurred:', err);
+}
+
+// Optional: log the results for debugging
+console.log('Fetched projects:', projects);
+
+
+    // Calculate KPIs in the format the frontend expects
+    const activeProjects = projects.filter(p => p.status === 'active');
+    const completedProjects = projects.filter(p => p.status === 'completed');
+    const totalValue = projects.reduce((sum, p) => sum + (p.value || 0), 0);
+
+    // Return data in the exact format Dashboard.tsx expects
+    return {
+      kpis: {
+        budget: {
+          value: totalValue,
+          change: 0,
+          trend: 'neutral' as const
+        },
+        schedule: {
+          value: activeProjects.length,
+          change: 0,
+          trend: 'neutral' as const
+        },
+        cost: {
+          value: 0,
+          change: 0,
+          trend: 'neutral' as const
+        },
+        quality: {
+          value: 0,
+          change: 0,
+          trend: 'neutral' as const
+        }
+      },
+      projects: projects,
+      recentProjects: projects.slice(0, 5),
+      notifications: [],
+      lastUpdated: new Date().toISOString()
+    };
+>>>>>>> a104ec1 (Update auth routes, add dashboard migration, and documentation)
   }
 
   /* -----------------------------

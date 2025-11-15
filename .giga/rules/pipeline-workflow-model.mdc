@@ -5,89 +5,75 @@ description: Documents construction project pipeline workflow stages, transition
 # === USER INSTRUCTIONS ===
 ---
 description: Documents pipeline stage progression and validation rules for construction projects through opportunity, preconstruction, execution and closeout phases
+description: Defines the workflow stages, transitions and validation rules for construction project pipeline management
 ---
 
 
 # pipeline-workflow-model
 
-## Pipeline Stage Architecture
+Pipeline Stage Model:
 
-Four primary pipeline stages with defined transitions and validations:
+1. Primary Pipeline Stages
+Importance Score: 90
+- Opportunity Phase
+  - Lead Generation
+  - Proposal Development 
+  - Negotiation
+  - Award/Lost Decision
+- Preconstruction Phase
+  - Project Planning
+  - Design Review
+  - Permitting
+  - Resource Ready
+- Execution Phase
+  - Site Mobilization
+  - Active Construction
+  - Punch List Review
+  - Substantial Completion
+- Closeout Phase
+  - Final Inspection
+  - Documentation
+  - Warranty Period
+  - Project Complete
 
-1. Opportunity Pipeline
-- Lead Generation → Proposal → Negotiation → Award/Lost
-- Win probability calculations at each substage
-- Required fields: bid amount, due date, competition analysis
-- Automatic stalling detection after 30 days without progress
+2. Stage Transition Rules
+Importance Score: 85
+- Forward-only progression between major phases
+- Bi-directional movement allowed within phase stages
+- Required approvals per transition:
+  - Financial threshold reviews
+  - Documentation completeness
+  - Stakeholder sign-offs
+  - Resource availability verification
 
-2. Preconstruction Pipeline  
-- Planning → Design → Permitting → Ready
-- Design document tracking
-- Permit status validation
-- Resource allocation requirements
-- Stage-specific approvals needed for progression
+3. Stage Validation Requirements
+Importance Score: 80
+- Opportunity Phase
+  - Win probability calculation
+  - Resource capacity check
+  - Budget authorization
+- Preconstruction Phase
+  - Permit verification
+  - Design approval status
+  - Resource commitment
+- Execution Phase
+  - Schedule baseline
+  - Budget controls
+  - Quality metrics
+- Closeout Phase
+  - Inspection results
+  - Warranty documentation
+  - Final payment status
 
-3. Execution Pipeline
-- Mobilization → Construction → Punch List → Substantial 
-- Progress tracking against milestones
-- Change order workflow integration
-- Schedule variance monitoring
-- Resource utilization tracking
+4. Pipeline Health Indicators
+Importance Score: 75
+- Stage duration thresholds
+- Value concentration limits
+- Stalled project detection
+- Resource utilization targets
+- Conversion rate monitoring
 
-4. Closeout Pipeline
-- Final Inspection → Documentation → Warranty → Complete
-- Inspection checklist validation
-- Required documentation verification
-- Warranty period tracking
-- Final payment milestone tracking
-
-## Stage Transition Rules
-
-Stage Progression Requirements:
-- Financial approval thresholds by stage
-- Mandatory document attachments
-- Role-based transition authorization
-- Audit logging of all stage changes
-
-## Key Validation Points
-
-1. Opportunity Stage
-- Bid package completeness check
-- Competition analysis requirements
-- Win probability calculation
-- Resource availability verification
-
-2. Preconstruction Stage  
-- Design document version control
-- Permit status verification
-- Budget approval requirements
-- Schedule baseline validation
-
-3. Execution Stage
-- Progress payment validation
-- Change order approval workflow
-- Schedule update requirements
-- Resource allocation checks
-
-4. Closeout Stage
-- Punch list completion verification
-- Warranty documentation requirements
-- Final payment conditions
-- Project archive requirements
-
-## Pipeline Health Monitoring
-
-Stalled Project Detection:
-- Stage-specific duration thresholds
-- Automated notifications for stalled projects
-- Escalation workflows for overdue stages
-- Historical duration analysis
-
-Stage Health Indicators:
-- Value-weighted stage metrics
-- Conversion rate tracking
-- Cycle time monitoring
-- Bottleneck identification
+The model enforces strict construction industry workflows while maintaining flexibility for project-specific requirements. Stage progression is controlled through validation gates ensuring all business requirements are met before advancement.
 
 $END$
 

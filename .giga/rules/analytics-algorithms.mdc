@@ -1,10 +1,5 @@
 ---
-description: Analytics-focused specification for construction project pipeline, win rate calculations, and capacity modeling algorithms
----
-
-# === USER INSTRUCTIONS ===
----
-description: Specification for analyzing analytics and algorithmic components of construction pipeline management system
+description: Defines analytics algorithms and calculations for construction project pipeline analysis
 ---
 
 
@@ -12,43 +7,44 @@ description: Specification for analyzing analytics and algorithmic components of
 
 Core Analytics Components:
 
-1. Win Rate Calculator (Importance: 90)
-- Implements 90-day rolling window calculations for bid success rates
-- Adjusts win probabilities based on historical performance by project type
-- Computes confidence intervals for projected win rates
-- Factors in project size and geographic distribution
+1. Win Rate Analysis Engine (Importance: 95)
+- Rolling 90-day win rate calculation with minimum sample requirements
+- Segment-based success rate tracking by project type and value range
+- Weighted probability adjustments based on historical performance
+- Set-aside category success rate differentiation
 
-2. Capacity Utilization Engine (Importance: 85) 
-- Models resource allocation across concurrent projects
-- Projects capacity limits based on active and pending bids
-- Triggers warnings at 80% and 100% thresholds
-- Accounts for project type-specific resource requirements
+2. Pipeline Velocity Calculator (Importance: 90)
+- Stage transition speed measurements with business-defined thresholds
+- Bottleneck detection using stage duration variance analysis
+- Project stalling identification with configurable time gates
+- Value-weighted velocity metrics for high-priority projects
 
-3. What-If Analysis System (Importance: 90)
-- Simulates fiscal year-end scenarios with adjustable parameters:
-  - Win rate variations
-  - Award size modifications
-  - Timeline shifts
-  - Resource allocation changes
-- Recalculates all dependent KPIs in real-time
+3. Capacity Utilization Modeling (Importance: 85)
+- Resource allocation projections against $30M baseline
+- Department-specific capacity thresholds and warnings
+- Multi-project resource conflict detection
+- Geographic capacity distribution analysis
 
-4. Pipeline Velocity Calculator (Importance: 85)
-- Measures stage-to-stage transition speeds
-- Identifies bottlenecks through variance analysis
-- Calculates weighted averages based on project value
-- Requires minimum 5 awarded projects for validation
+4. What-If Analysis Engine (Importance: 90)
+- Dynamic win rate simulation with adjustable parameters
+- Award size modeling based on historical patterns
+- Fiscal year-end projections with confidence intervals
+- Resource requirement forecasting
 
-5. Geographic Distribution Analysis (Importance: 80)
-- Processes regional concentration of projects
-- Analyzes set-aside distribution patterns
-- Calculates territorial saturation metrics
-- Maps project density against market opportunities
+5. Pipeline Distribution Analytics (Importance: 85)
+- Geographic concentration metrics by state/region
+- Set-aside category distribution analysis
+- Value-based regional performance tracking
+- Territory-based opportunity density calculations
 
-Implementation Details:
-- 90-day rolling windows for trend analysis
-- Monthly pace projections with seasonal adjustments
-- Fiscal year projections incorporating historical patterns
-- Weighted pipeline values based on stage progression
+Key Business Rules:
+- Minimum 5 samples required for valid win rate calculations
+- 80% capacity utilization triggers warning notifications
+- 90-day rolling window for trend analysis
+- Stage duration thresholds:
+  * Proposal: 45 days
+  * Negotiation: 30 days
+  * Award Decision: 15 days
 
 $END$
 

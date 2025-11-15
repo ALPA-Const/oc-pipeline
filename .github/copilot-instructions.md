@@ -15,44 +15,51 @@
 
 Construction Project Pipeline Management System
 
+Importance Score: 85/100
+
 Core Business Components:
 
-1. Project Pipeline Analytics Engine (85/100)
-- Stage-based construction project lifecycle tracking
-- Win rate calculations with 90-day rolling windows
-- Construction capacity planning with resource allocation
-- Bottleneck detection and stage transition analysis
-- Multi-dimensional KPI tracking specific to construction
+1. Pipeline Stage Management
+- Four specialized construction phases: Opportunity, Preconstruction, Execution, Closeout 
+- Stage-specific validation rules and transition controls
+- Project stalling detection with industry thresholds
+- Win probability calculations per stage
 
-2. Geographic Distribution System (80/100)
-/templates/maps/GeoMapTemplate_KPI_Synced.tsx
-- Dual-mode visualization for construction sites
-- Region-based project density calculations
-- State-level aggregation of construction metrics
-- KPI-synchronized geographic filtering
+2. Executive Analytics Engine
+- Fiscal year-based award projections
+- 90-day rolling win rate analysis
+- Capacity modeling against $30M baseline
+- Geographic distribution metrics
+- What-if scenario modeling for bid outcomes
 
-3. Construction Bid Management (75/100)
-/components/dashboard/BiddingAnalyticsPanel.tsx
-- Bid capacity threshold monitoring (80%, 100%)
-- Project value weighted pipeline calculations
-- Set-aside classification for government projects
-- Construction-specific milestone tracking
+3. Project Classification System
+- Healthcare and public sector specialization
+- Value range categorization ($8M-$120M)
+- Set-aside classification for government contracts
+- Risk scoring based on project attributes
 
-4. What-If Analysis Engine (85/100)
-/components/dashboard/WhatIfDrawer.tsx
-- Interactive simulation for construction win rates
-- Award size scenario modeling
-- Fiscal year-end projections based on bid parameters
-- Capacity impact analysis for concurrent projects
+4. Bidding Analytics
+- Pipeline velocity metrics
+- Capacity utilization tracking
+- Win rate probability modeling
+- Annual target progression
+- Bottleneck identification
 
-Integration Architecture:
-- Four primary pipeline types (Opportunity, Preconstruction, Execution, Closeout)
-- Stage-specific validation rules and transitions
-- Project health monitoring with stall detection
-- Industry-specific data quality enforcement
-- Multi-tenant security model for construction firms
+Key Domain Features:
+- Construction bid workflow automation
+- Federal contract compliance rules
+- Project stalling detection
+- Geographic resource allocation
+- Construction-specific KPIs
 
-The system implements specialized workflows for government construction contracting, with emphasis on bid management, capacity planning, and geographic distribution analysis.
+Domain-Specific Rules:
+1. Stage progression requires documentation milestones
+2. Financial approval thresholds by project type
+3. Resource capacity limits per territory
+4. Bid urgency calculations with deadline tracking
+5. Geographic concentration limits for risk management
+
+The system implements comprehensive construction bid management with emphasis on government contracting requirements, capacity planning, and portfolio analysis across multiple territories.
 
 $END$
 
