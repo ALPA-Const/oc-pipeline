@@ -9,12 +9,15 @@ export const dbConfig = {
   connectionTimeout: 30000,
 };
 
-// Create a connection pool
+// Create a connection pool with SSL configuration
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 30000,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Export query function for database operations
