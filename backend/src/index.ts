@@ -43,24 +43,25 @@ app.use(
         return callback(null, true);
       }
 
-      // Check if origin is in allowed list
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+  // Check if origin is in allowed list
+  if (allowedOrigins.includes(origin)) {
+    return callback(null, true);
+  }
 
-      // Check if origin matches Vercel preview deployments pattern
-      if (origin.includes('.vercel.app')) {
-        return callback(null, true);
-      }
+  // Check if origin matches Vercel preview deployments pattern
+  if (origin.includes('.vercel.app')) {
+    return callback(null, true);
+  }
 
-      // Reject other origins
-      console.warn(`CORS rejected origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    optionsSuccessStatus: 200,
+  // Reject other origins
+  console.warn(`CORS rejected origin: ${origin}`);
+  callback(new Error('Not allowed by CORS'));
+},
+credentials: true,
+methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+allowedHeaders: ['Content-Type', 'Authorization'],
+optionsSuccessStatus: 200,
+
   })
 );
 

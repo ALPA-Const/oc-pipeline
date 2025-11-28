@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { supabase } from '../config/supabase';
-import { query } from '../config/database';
 
 export interface AuthRequest extends Request {
   user?: {
@@ -72,24 +71,3 @@ export const optionalAuth = async (
     next();
   }
 };
-
-// Audit logging function
-export async function logAuditEvent(
-  userId: string,
-  entityType: string,
-  entityId: string,
-  action: string,
-  oldValue?: any,
-  newValue?: any
-): Promise<void> {
-  try {
-    await query(
-      `INSERT INTO public.audit_logs (user_id, entity_type, entity_id, action, old_value, new_value, created_at)
-       VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
-      [userId, entityType, entityId, action, oldValue ? JSON.stringify(oldValue) : null, newValue ? JSON.stringify(newValue) : null]
-    );
-  } catch (error) {
-    console.error('Failed to log audit event:', error);
-    // Don't throw - audit logging failure shouldn't break the main operation
-  }
-}
