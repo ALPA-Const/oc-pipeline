@@ -14,7 +14,7 @@ const router = Router();
 router.post(
   '/signup',
   asyncHandler(async (req, res) => {
-    const { email, password, name } = req.body;
+    const { email, password, name: _name } = req.body;
 
     if (!email || !password) {
       throw Errors.VALIDATION_ERROR('Email and password required');
@@ -84,13 +84,13 @@ router.post(
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       process.env.JWT_SECRET || 'secret',
-      { expiresIn: process.env.JWT_EXPIRY || '1h' }
+      { expiresIn: (process.env.JWT_EXPIRY || '1h') as jwt.SignOptions['expiresIn'] }
     );
 
     const refreshToken = jwt.sign(
       { userId: user.id },
       process.env.JWT_SECRET || 'secret',
-      { expiresIn: process.env.JWT_REFRESH_EXPIRY || '30d' }
+      { expiresIn: (process.env.JWT_REFRESH_EXPIRY || '30d') as jwt.SignOptions['expiresIn'] }
     );
 
     // Log audit event
@@ -150,7 +150,7 @@ router.post(
       const newToken = jwt.sign(
         { userId: user.id, email: user.email },
         process.env.JWT_SECRET || 'secret',
-        { expiresIn: process.env.JWT_EXPIRY || '1h' }
+        { expiresIn: (process.env.JWT_EXPIRY || '1h') as jwt.SignOptions['expiresIn'] }
       );
 
       res.json({ message: 'Token refreshed', token: newToken });
@@ -165,12 +165,13 @@ router.post(
 // ============================================================================
 
 // Google OAuth
-router.get('/google', (_req: Request, res: Response) => {
+router.get('/google', (_req: Request, res: Response): void => {
   try {
     const clientId = process.env.GOOGLE_CLIENT_ID;
-    
+
     if (!clientId) {
-      return res.status(500).json({ error: 'Google Client ID not configured' });
+      res.status(500).json({ error: 'Google Client ID not configured' });
+      return;
     }
 
     // Determine redirect URI based on origin
@@ -179,7 +180,7 @@ router.get('/google', (_req: Request, res: Response) => {
     const scope = 'openid profile email';
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
-    
+
     res.redirect(authUrl);
   } catch (error) {
     res.status(500).json({ error: 'OAuth initialization failed' });
@@ -187,12 +188,13 @@ router.get('/google', (_req: Request, res: Response) => {
 });
 
 // Microsoft OAuth
-router.get('/microsoft', (_req: Request, res: Response) => {
+router.get('/microsoft', (_req: Request, res: Response): void => {
   try {
     const clientId = process.env.MICROSOFT_CLIENT_ID;
-    
+
     if (!clientId) {
-      return res.status(500).json({ error: 'Microsoft Client ID not configured' });
+      res.status(500).json({ error: 'Microsoft Client ID not configured' });
+      return;
     }
 
     // Determine redirect URI based on origin
@@ -201,7 +203,7 @@ router.get('/microsoft', (_req: Request, res: Response) => {
     const scope = 'openid profile email';
 
     const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
-    
+
     res.redirect(authUrl);
   } catch (error) {
     res.status(500).json({ error: 'OAuth initialization failed' });
@@ -209,22 +211,24 @@ router.get('/microsoft', (_req: Request, res: Response) => {
 });
 
 // OAuth Callback Handler
-router.get('/callback', (_req: Request, res: Response) => {
+router.get('/callback', (_req: Request, res: Response): void => {
   try {
     const { code, error } = _req.query;
 
     if (error) {
-      return res.status(400).json({ error: 'OAuth error', details: error });
+      res.status(400).json({ error: 'OAuth error', details: error });
+      return;
     }
 
     if (!code) {
-      return res.status(400).json({ error: 'Missing authorization code' });
+      res.status(400).json({ error: 'Missing authorization code' });
+      return;
     }
 
     // TODO: Exchange code for token with OAuth provider
     // This will be handled by the frontend or a separate service
-    
-    res.json({ 
+
+    res.json({
       message: 'Authorization code received',
       code,
       next: 'Exchange this code for a token'

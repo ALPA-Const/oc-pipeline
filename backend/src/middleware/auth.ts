@@ -71,3 +71,32 @@ export const optionalAuth = async (
     next();
   }
 };
+
+/**
+ * Log an audit event to the database
+ */
+export async function logAuditEvent(
+  userId: string,
+  entityType: string,
+  entityId: string,
+  action: string,
+  _oldValue?: Record<string, unknown> | null,
+  _newValue?: Record<string, unknown> | null
+): Promise<void> {
+  try {
+    // Log to console in development
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Audit event:', { userId, entityType, entityId, action });
+    }
+
+    // TODO: Implement database logging when audit_logs table is available
+    // const { query } = await import('../config/database');
+    // await query(
+    //   'INSERT INTO audit_logs (user_id, entity_type, entity_id, action, old_value, new_value) VALUES ($1, $2, $3, $4, $5, $6)',
+    //   [userId, entityType, entityId, action, oldValue ? JSON.stringify(oldValue) : null, newValue ? JSON.stringify(newValue) : null]
+    // );
+  } catch (error) {
+    console.error('Failed to log audit event:', error);
+    // Don't throw - audit logging should not break the main flow
+  }
+}
