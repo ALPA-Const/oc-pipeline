@@ -75,8 +75,8 @@ app.use(compression());
 // Logging middleware
 app.use(morgan('combined'));
 
-// Health check endpoint
-app.get('/health', (_req: Request, res: Response) => {
+// Health check endpoints (both /health and /api/health for compatibility)
+const healthHandler = (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -84,7 +84,10 @@ app.get('/health', (_req: Request, res: Response) => {
     environment: process.env.NODE_ENV || 'development',
     port: PORT,
   });
-});
+};
+
+app.get('/health', healthHandler);
+app.get('/api/health', healthHandler);
 
 // API routes
 app.use('/api/auth', authRoutes);
