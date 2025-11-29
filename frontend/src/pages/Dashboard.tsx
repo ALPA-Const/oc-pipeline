@@ -3,17 +3,22 @@ import { AppLayout } from '../components/layout/AppLayout';
 import { ProjectSelector } from '../components/dashboard/ProjectSelector';
 import { KPICards } from '../components/dashboard/KPICards';
 import { apiClient } from '../lib/api';
+import { useAuth } from '../hooks/AuthContext';
 import type { DashboardData, Project } from '../types';
 
 export function Dashboard() {
+  const { user, loading: authLoading } = useAuth();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
+  // Only fetch dashboard data when auth is ready and user is confirmed
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    if (!authLoading && user) {
+      fetchDashboardData();
+    }
+  }, [authLoading, user]);
 
   const fetchDashboardData = async () => {
     try {
@@ -27,13 +32,15 @@ export function Dashboard() {
     }
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center">
           <div className="text-center">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent mx-auto" />
-            <p className="mt-4 text-sm text-gray-600">Loading dashboard...</p>
+            <p className="mt-4 text-sm text-gray-600">
+              {authLoading ? 'Verifying authentication...' : 'Loading dashboard...'}
+            </p>
           </div>
         </div>
       </AppLayout>

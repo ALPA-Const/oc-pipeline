@@ -155,8 +155,31 @@ class ApiClient {
   ------------------------------ */
 
   private async getSessionToken(): Promise<string | null> {
-    const { data } = await supabase.auth.getSession();
-    return data.session?.access_token || null;
+    // Retry logic to handle race condition after login where session
+    // may not be fully persisted to storage yet
+    const maxAttempts = 3;
+    const baseDelay = 100; // ms
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const { data, error } = await supabase.auth.getSession();
+
+      if (data.session?.access_token) {
+        return data.session.access_token;
+      }
+
+      // If this is the last attempt, return null
+      if (attempt === maxAttempts - 1) {
+        if (error) {
+          console.warn('Session retrieval error:', error.message);
+        }
+        return null;
+      }
+
+      // Wait before retrying with increasing delay
+      await new Promise(resolve => setTimeout(resolve, baseDelay * (attempt + 1)));
+    }
+
+    return null;
   }
 
   /* -----------------------------
@@ -194,6 +217,12 @@ class ApiClient {
 
 async getDashboard(): Promise<DashboardData> {
   try {
+    // Check for valid session before making request
+    const token = await this.getSessionToken();
+    if (!token) {
+      throw new Error('Please sign in again to access the dashboard');
+    }
+
     const response = await this.request<any>('/api/dashboard');
 
     return {
@@ -202,7 +231,7 @@ async getDashboard(): Promise<DashboardData> {
     };
   } catch (error) {
     console.error('Dashboard error:', error);
-    return emptyDashboard();
+    throw error; // Re-throw so the component can handle it
   }
 }
 
