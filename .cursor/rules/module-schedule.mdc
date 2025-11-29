@@ -1,0 +1,64 @@
+---
+description: Schedule module - Gantt, milestones, dependencies, and baselines
+alwaysApply: false
+---
+
+# MODULE: SCHEDULE
+
+## 📋 OVERVIEW
+
+The Schedule module manages project timelines, critical path analysis, and progress tracking.
+
+**Key Entities:** Activities, Dependencies, Milestones, Baselines
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `schedules` | Schedule versions |
+| `schedule_activities` | Tasks |
+| `activity_dependencies` | Links |
+| `milestones` | Key dates |
+| `schedule_baselines` | Snapshots |
+| `schedule_updates` | Progress |
+| `critical_path` | CP activities |
+| `schedule_impacts` | Delays |
+
+---
+
+## 📊 KEY METRICS
+
+```
+SPI = EV / PV (Schedule Performance Index)
+Float = Late Start - Early Start
+Critical Path = Activities with 0 float
+```
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /schedule/:projectId
+POST   /schedule/:projectId/activities
+PATCH  /schedule/activities/:id/progress
+GET    /schedule/:projectId/critical-path
+POST   /schedule/:projectId/baseline
+GET    /schedule/:projectId/lookahead
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `schedule-001`
+
+**Capabilities:**
+- Critical path analysis
+- Delay prediction
+- Resource leveling
+- Schedule optimization
+
+$END$

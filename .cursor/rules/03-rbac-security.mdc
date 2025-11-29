@@ -1,0 +1,373 @@
+---
+description: RBAC matrix, security policies, and compliance requirements for OC Pipeline
+alwaysApply: false
+---
+
+# OC PIPELINE - RBAC & SECURITY
+
+## 🔐 OVERVIEW
+
+OC Pipeline implements enterprise-grade security with:
+- 8 roles × 23 permissions RBAC matrix
+- Row-Level Security (RLS) on all 126 tables
+- 7-year immutable audit trail
+- Federal compliance (NIST 800-171, SOC 2, FISMA)
+
+---
+
+## 👥 ROLE DEFINITIONS
+
+### **8 Core Roles**
+
+| Role | Code | Authority | Description |
+|------|------|-----------|-------------|
+| **Administrator** | `admin` | 100 | Full system access, user management |
+| **Executive** | `exec` | 90 | Read-all, approve high-value items |
+| **Project Manager** | `pm` | 80 | Full project control |
+| **Project Engineer** | `pe` | 70 | Technical management, limited approval |
+| **Superintendent** | `super` | 60 | Field operations, safety, quality |
+| **Preconstruction** | `precon` | 50 | Bidding, estimating, pursuits |
+| **Subcontractor** | `sub` | 30 | Limited to assigned scope |
+| **Client/Owner** | `client` | 20 | Read-only with comments |
+
+---
+
+## 🔑 PERMISSION MATRIX
+
+### **23 Permissions**
+
+| Permission | Admin | Exec | PM | PE | Super | Precon | Sub | Client |
+|------------|:-----:|:----:|:--:|:--:|:-----:|:------:|:---:|:------:|
+| `view` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `create` | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ❌ |
+| `edit` | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ❌ |
+| `delete` | ✅ | ❌ | ✅ | ⚠️ | ❌ | ⚠️ | ❌ | ❌ |
+| `approve` | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | ❌ | ❌ | ⚠️ |
+| `export` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ⚠️ |
+| `comment` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `assign` | ✅ | ❌ | ✅ | ✅ | ✅ | ⚠️ | ❌ | ❌ |
+| `close` | ✅ | ❌ | ✅ | ⚠️ | ⚠️ | ⚠️ | ❌ | ❌ |
+| `reopen` | ✅ | ❌ | ✅ | ⚠️ | ❌ | ⚠️ | ❌ | ❌ |
+| `archive` | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| `unarchive` | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| `change_status` | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ❌ |
+| `change_budget` | ✅ | ✅ | ✅ | ⚠️ | ❌ | ❌ | ❌ | ❌ |
+| `change_schedule` | ✅ | ❌ | ✅ | ✅ | ⚠️ | ❌ | ❌ | ❌ |
+| `view_budget` | ✅ | ✅ | ✅ | ✅ | ⚠️ | ✅ | ❌ | ⚠️ |
+| `view_schedule` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ✅ |
+| `view_safety` | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| `view_quality` | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ | ⚠️ | ✅ |
+| `manage_users` | ✅ | ❌ | ⚠️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| `manage_roles` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| `manage_org` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| `view_audit` | ✅ | ✅ | ⚠️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+**Legend:** ✅ = Full | ⚠️ = Limited/Conditional | ❌ = None
+
+---
+
+## 🏢 MULTI-TENANCY
+
+### **Organization Isolation**
+
+```sql
+-- Every table has org_id
+CREATE TABLE example (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  org_id UUID NOT NULL REFERENCES organizations(id),
+  -- ... other fields
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RLS policy for org isolation
+CREATE POLICY "org_isolation" ON example
+  FOR ALL
+  USING (org_id = (auth.jwt() ->> 'org_id')::UUID);
+```
+
+### **Project-Level Access**
+
+```sql
+-- Project member check
+CREATE POLICY "project_member_access" ON project_data
+  FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM project_members pm
+      WHERE pm.project_id = project_data.project_id
+      AND pm.user_id = auth.uid()
+    )
+  );
+```
+
+---
+
+## 📝 AUDIT LOGGING
+
+### **Audit Trail Structure**
+
+```sql
+CREATE TABLE audit_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- What happened
+  action VARCHAR(50) NOT NULL,  -- CREATE, UPDATE, DELETE, VIEW, EXPORT
+  entity_type VARCHAR(100) NOT NULL,
+  entity_id UUID NOT NULL,
+
+  -- Who did it
+  user_id UUID REFERENCES users(id),
+  org_id UUID REFERENCES organizations(id),
+
+  -- Context
+  ip_address INET,
+  user_agent TEXT,
+  request_id UUID,
+
+  -- Changes
+  old_values JSONB,
+  new_values JSONB,
+
+  -- Timestamp (immutable)
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- Prevent updates/deletes (immutable)
+CREATE POLICY "audit_immutable" ON audit_logs
+  FOR UPDATE USING (false);
+
+CREATE POLICY "audit_no_delete" ON audit_logs
+  FOR DELETE USING (false);
+```
+
+### **Audit Trigger Template**
+
+```sql
+CREATE OR REPLACE FUNCTION audit_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO audit_logs (
+    action,
+    entity_type,
+    entity_id,
+    user_id,
+    org_id,
+    old_values,
+    new_values
+  ) VALUES (
+    TG_OP,
+    TG_TABLE_NAME,
+    COALESCE(NEW.id, OLD.id),
+    auth.uid(),
+    COALESCE(NEW.org_id, OLD.org_id),
+    CASE WHEN TG_OP = 'DELETE' THEN to_jsonb(OLD) ELSE NULL END,
+    CASE WHEN TG_OP != 'DELETE' THEN to_jsonb(NEW) ELSE NULL END
+  );
+  RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+```
+
+---
+
+## 🔒 AUTHENTICATION
+
+### **JWT Token Structure**
+
+```typescript
+interface JWTPayload {
+  // Standard claims
+  sub: string;        // User ID
+  iat: number;        // Issued at
+  exp: number;        // Expiration (1 hour)
+
+  // Custom claims
+  org_id: string;     // Organization ID
+  role: string;       // Primary role code
+  roles: string[];    // All assigned roles
+  permissions: string[]; // Flattened permissions
+
+  // Session info
+  session_id: string;
+  device_id: string;
+}
+```
+
+### **Token Refresh Flow**
+
+```
+Access Token (1 hour)
+    │
+    ├── Valid → Process request
+    │
+    └── Expired → Check refresh token
+                      │
+                      ├── Valid (30 days) → Issue new access token
+                      │
+                      └── Expired → Redirect to login
+```
+
+### **Session Management**
+
+```sql
+CREATE TABLE sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id),
+
+  -- Token info
+  refresh_token_hash VARCHAR(64) NOT NULL,
+
+  -- Device info
+  device_id VARCHAR(100),
+  device_name VARCHAR(200),
+  user_agent TEXT,
+  ip_address INET,
+
+  -- Timestamps
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  last_active_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ NOT NULL,
+  revoked_at TIMESTAMPTZ,
+
+  -- Constraints
+  CONSTRAINT sessions_not_revoked CHECK (revoked_at IS NULL OR revoked_at > created_at)
+);
+```
+
+---
+
+## 🛡️ COMPLIANCE REQUIREMENTS
+
+### **NIST 800-171 Controls**
+
+| Control | Requirement | Implementation |
+|---------|-------------|----------------|
+| 3.1.1 | Limit access to authorized users | RBAC + RLS |
+| 3.1.2 | Limit access to authorized transactions | Permission matrix |
+| 3.3.1 | Create audit records | Immutable audit_logs |
+| 3.3.2 | Ensure audit actions traceable | user_id + request_id |
+| 3.5.1 | Identify users | Supabase Auth |
+| 3.5.2 | Authenticate users | JWT + MFA |
+| 3.13.1 | Monitor communications | Request logging |
+| 3.14.1 | Identify unauthorized access | Session monitoring |
+
+### **SOC 2 Type II**
+
+| Criteria | Requirement | Implementation |
+|----------|-------------|----------------|
+| CC6.1 | Logical access security | RBAC + RLS |
+| CC6.2 | Access provisioning | User management |
+| CC6.3 | Access removal | Session revocation |
+| CC7.1 | System monitoring | Audit logs |
+| CC7.2 | Anomaly detection | Agent monitoring |
+
+### **Data Retention**
+
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| Audit logs | 7 years | Federal requirement |
+| Project data | 10 years | Construction records |
+| Financial data | 7 years | Tax/legal |
+| User sessions | 90 days | Security |
+| Agent logs | 1 year | Debugging |
+
+---
+
+## 🔐 SECURITY BEST PRACTICES
+
+### **API Security**
+
+```typescript
+// Always validate permissions
+async function checkPermission(
+  userId: string,
+  permission: string,
+  resourceId?: string
+): Promise<boolean> {
+  const userPermissions = await getUserPermissions(userId);
+
+  if (!userPermissions.includes(permission)) {
+    return false;
+  }
+
+  // Check resource-level access if applicable
+  if (resourceId) {
+    return await checkResourceAccess(userId, resourceId);
+  }
+
+  return true;
+}
+
+// Use in routes
+router.delete('/projects/:id', async (req, res) => {
+  if (!await checkPermission(req.user.id, 'delete', req.params.id)) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  // ... proceed with deletion
+});
+```
+
+### **SQL Injection Prevention**
+
+```typescript
+// ❌ NEVER do this
+const query = `SELECT * FROM users WHERE id = '${userId}'`;
+
+// ✅ ALWAYS use parameterized queries
+const { data } = await supabase
+  .from('users')
+  .select('*')
+  .eq('id', userId);
+
+// Or with raw SQL
+const result = await pool.query(
+  'SELECT * FROM users WHERE id = $1',
+  [userId]
+);
+```
+
+### **Sensitive Data Handling**
+
+```typescript
+// Never log sensitive data
+logger.info('User login', {
+  userId: user.id,
+  email: user.email,
+  // ❌ password: user.password,
+  // ❌ token: jwt,
+});
+
+// Mask PII in responses
+function maskEmail(email: string): string {
+  const [local, domain] = email.split('@');
+  return `${local.slice(0, 2)}***@${domain}`;
+}
+```
+
+---
+
+## 🚨 SECURITY INCIDENT RESPONSE
+
+### **Severity Levels**
+
+| Level | Description | Response Time |
+|-------|-------------|---------------|
+| P1 - Critical | Data breach, system compromise | 15 minutes |
+| P2 - High | Unauthorized access attempt | 1 hour |
+| P3 - Medium | Policy violation | 4 hours |
+| P4 - Low | Suspicious activity | 24 hours |
+
+### **Response Procedures**
+
+1. **Detect** - Automated monitoring + alerts
+2. **Contain** - Revoke sessions, disable accounts
+3. **Investigate** - Review audit logs
+4. **Remediate** - Fix vulnerability
+5. **Report** - Document incident
+6. **Review** - Update policies
+
+---
+
+$END$
+
+*Context added by RBAC security - 8×23 permission matrix, RLS policies, audit logging, and compliance requirements.*

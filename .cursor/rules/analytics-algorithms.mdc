@@ -1,0 +1,95 @@
+---
+description: Analytics algorithms specification for pipeline management including win rates, projections, and utilization modeling
+alwaysApply: false
+---
+
+# Analytics Algorithms
+
+## Core Analytics Components
+
+### 1. Win Rate Analysis Engine (Importance: 95)
+
+Calculates weighted win probabilities based on:
+
+- Historical performance by agency
+- Project magnitude range ($0-10M, $10-25M, $25-75M, $75M+)
+- Set-aside category matching
+- Geographic region success rates
+
+**Implementation**: Rolling 90-day window with 5-sample minimum threshold
+
+```typescript
+// Key calculation
+winRate = successfulBids / totalBids (last 90 days)
+weightedWinRate = winRate * magnitudeWeight * regionWeight
+```
+
+### 2. What-If Analysis System (Importance: 90)
+
+Simulates pipeline outcomes with adjustable parameters:
+
+- Win rate modifications (±20% range)
+- Award timing shifts
+- Value distribution changes
+- Geographic focus adjustments
+
+**Key Files**:
+
+- `frontend/src/components/dashboard/WhatIfDrawer.tsx`
+- `frontend/src/utils/calculations/pipeline-metrics.ts`
+
+### 3. Capacity Utilization Modeling (Importance: 85)
+
+Tracks resource allocation across pipeline stages:
+
+```typescript
+// Capacity calculation
+capacityUtilization = (activeProjectValue / baseCapacity) * 100
+// baseCapacity = $30M default
+
+// Warning thresholds
+WARNING_THRESHOLD = 80%  // Yellow alert
+CRITICAL_THRESHOLD = 100% // Red alert
+```
+
+### 4. Pipeline Velocity Calculator (Importance: 85)
+
+Measures progression speed through stages:
+
+- Stage transition durations
+- Bottleneck identification
+- Stalled project detection (>1.5x average duration)
+- Completion rate trending
+
+### 5. Annual Target Metrics (Importance: 80)
+
+```typescript
+// Run rate calculation
+runRate = ytdAwards / monthsElapsed;
+projectedAnnual = runRate * 12;
+
+// Required volume
+requiredVolume = (annualTarget - ytdAwards) / avgProjectValue;
+```
+
+## Key Business Rules
+
+| Rule                     | Threshold         | Action                          |
+| ------------------------ | ----------------- | ------------------------------- |
+| Minimum win rate samples | 5 bids            | Use default 25% if insufficient |
+| Capacity warning         | 80%               | Yellow indicator                |
+| Capacity critical        | 100%              | Red indicator, block new bids   |
+| Stalled detection        | 1.5x avg duration | Flag for review                 |
+| Rolling window           | 90 days           | Win rate calculation period     |
+
+## Stage Duration Thresholds
+
+| Stage          | Expected Duration | Stall Threshold |
+| -------------- | ----------------- | --------------- |
+| Proposal       | 45 days           | 68 days         |
+| Negotiation    | 30 days           | 45 days         |
+| Award Decision | 15 days           | 23 days         |
+
+$END$
+
+_Context added by Giga analytics-algorithms - Win rate calculations, capacity modeling, and pipeline velocity tracking._

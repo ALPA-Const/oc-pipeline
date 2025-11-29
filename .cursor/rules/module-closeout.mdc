@@ -1,0 +1,52 @@
+---
+description: Closeout module - Warranties, as-builts, and handover
+alwaysApply: false
+---
+
+# MODULE: CLOSEOUT
+
+## 📋 OVERVIEW
+
+The Closeout module manages project completion activities including warranties, documentation, and owner handover.
+
+**Key Entities:** Warranties, As-Builts, O&M Manuals, Training Records
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `warranties` | Warranty tracking |
+| `warranty_claims` | Claims |
+| `as_builts` | As-built docs |
+| `om_manuals` | O&M manuals |
+| `training_records` | Owner training |
+| `spare_parts` | Attic stock |
+| `closeout_checklists` | Closeout items |
+| `final_inspections` | Final walkthrough |
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /closeout/warranties
+POST   /closeout/warranties
+GET    /closeout/checklists
+GET    /closeout/as-builts
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `close-001`
+
+**Capabilities:**
+- Warranty tracking
+- Documentation completeness
+- Handover preparation
+- Lessons learned capture
+
+$END$

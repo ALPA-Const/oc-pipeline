@@ -1,23 +1,26 @@
 ---
-description: Documents construction project pipeline workflow stages, transitions, and validation rules
+alwaysApply: false
 ---
 
 # === USER INSTRUCTIONS ===
----
-description: Documents pipeline stage progression and validation rules for construction projects through opportunity, preconstruction, execution and closeout phases
-description: Defines the workflow stages, transitions and validation rules for construction project pipeline management
+
 ---
 
+description: Documents pipeline stage progression and validation rules for construction projects through opportunity, preconstruction, execution and closeout phases
+description: Defines the workflow stages, transitions and validation rules for construction project pipeline management
+
+---
 
 # pipeline-workflow-model
 
 Pipeline Stage Model:
 
 1. Primary Pipeline Stages
-Importance Score: 90
+   Importance Score: 90
+
 - Opportunity Phase
   - Lead Generation
-  - Proposal Development 
+  - Proposal Development
   - Negotiation
   - Award/Lost Decision
 - Preconstruction Phase
@@ -37,7 +40,8 @@ Importance Score: 90
   - Project Complete
 
 2. Stage Transition Rules
-Importance Score: 85
+   Importance Score: 85
+
 - Forward-only progression between major phases
 - Bi-directional movement allowed within phase stages
 - Required approvals per transition:
@@ -47,7 +51,8 @@ Importance Score: 85
   - Resource availability verification
 
 3. Stage Validation Requirements
-Importance Score: 80
+   Importance Score: 80
+
 - Opportunity Phase
   - Win probability calculation
   - Resource capacity check
@@ -66,7 +71,8 @@ Importance Score: 80
   - Final payment status
 
 4. Pipeline Health Indicators
-Importance Score: 75
+   Importance Score: 75
+
 - Stage duration thresholds
 - Value concentration limits
 - Stalled project detection
@@ -77,8 +83,11 @@ The model enforces strict construction industry workflows while maintaining flex
 
 $END$
 
- If you're using this file in context, clearly say in italics in one small line that "Context added by Giga pipeline-workflow-model" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.
-# === END USER INSTRUCTIONS ===
+If you're using this file in context, clearly say in italics in one small line that "Context added by Giga pipeline-workflow-model" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.
+
+---
+
+## description: Documents construction project pipeline workflow stages, transitions, and validation rules
 
 # pipeline-workflow-model
 
@@ -88,43 +97,50 @@ Importance Score: 90
 Four distinct pipeline domains with controlled stage transitions:
 
 1. Opportunity Pipeline
-- Lead Generation → Project Identified → Initial Review
-- Proposal Development → Client Submission → Negotiation 
-- Award Decision (Won/Lost)
-Validation: Win probability calculations, stalled detection at 1.5x avg duration
 
-2. Preconstruction Pipeline  
+- Lead Generation → Project Identified → Initial Review
+- Proposal Development → Client Submission → Negotiation
+- Award Decision (Won/Lost)
+  Validation: Win probability calculations, stalled detection at 1.5x avg duration
+
+2. Preconstruction Pipeline
+
 - Planning & Scope → Design Development → Value Engineering
 - Permit Applications → Trade Bidding → GMP Development
 - Ready for Execution
-Validation: Document completeness, agency approvals, trade coverage
+  Validation: Document completeness, agency approvals, trade coverage
 
 3. Execution Pipeline
+
 - Mobilization → Site Prep → Foundation
 - Structure → MEP Rough-in → Interior/Exterior
 - Systems Testing → Punch List → Substantial Completion
-Validation: Schedule compliance, quality metrics, safety requirements
+  Validation: Schedule compliance, quality metrics, safety requirements
 
 4. Closeout Pipeline
+
 - Final Inspections → Agency Sign-offs
 - Documentation Package → Warranties/Guarantees
 - Financial Reconciliation → Project Archive
-Validation: Documentation completeness, warranty coverage, financial closure
+  Validation: Documentation completeness, warranty coverage, financial closure
 
 Stage Transition Rules:
+
 - Forward-only progression between domains
 - Stage skipping prohibited except for expedited projects
 - Required approvals based on project value tiers:
-  * <$25M: Project Manager approval
-  * $25M-$75M: Operations Director approval
-  * >$75M: Executive approval
+  - <$25M: Project Manager approval
+  - $25M-$75M: Operations Director approval
+  - > $75M: Executive approval
 
 Health Status Calculations:
+
 - Green: Within 80% of stage duration baseline
 - Yellow: 81-120% of baseline duration
 - Red: >120% of baseline or missing critical documents
 
 Value Calculations:
+
 - Opportunity: Contract value × win probability
 - Preconstruction: GMP value × 0.95
 - Execution: Earned value metrics
@@ -132,4 +148,78 @@ Value Calculations:
 
 $END$
 
- If you're using this file in context, clearly say in italics in one small line that "Context added by Giga pipeline-workflow-model" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.
+If you're using this file in context, clearly say in italics in one small line that "Context added by Giga pipeline-workflow-model" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.
+
+# === END USER INSTRUCTIONS ===
+
+# pipeline-workflow-model
+
+Pipeline Stage Model:
+
+1. Opportunity Phase
+
+- Initial project capture and qualification
+- Win probability assessment
+- Capacity validation before bid/no-bid
+- Set-aside classification and compliance checks
+- Geographic eligibility verification
+
+2. Preconstruction Phase
+
+- Document validation requirements
+- Bid package milestone tracking
+- Estimating workflows with stage gates
+- Technical proposal requirements
+- Submission deadline management
+
+3. Execution Phase
+
+- Award confirmation process
+- Resource allocation validation
+- Subcontractor qualification checks
+- Project mobilization requirements
+- Critical path documentation
+
+4. Closeout Phase
+
+- Final documentation checklists
+- Warranty activation workflows
+- As-built documentation requirements
+- Project archival rules
+- Lesson learned categorization
+
+Stage Transition Rules:
+
+- Required field validation per stage
+- Approval workflow requirements
+- Stage duration monitoring
+- Stall detection thresholds
+- Automated status updates
+
+Stage-Specific KPIs:
+
+- Win rate by stage
+- Average duration metrics
+- Value-weighted conversion rates
+- Bottleneck identification
+- Capacity utilization tracking
+
+Pipeline Health Indicators:
+
+- Project aging thresholds
+- Stage capacity limits
+- Risk level classifications
+- Geographic distribution targets
+- Set-aside category balancing
+
+Custom Validation Rules:
+
+- Construction-specific data requirements
+- Industry compliance checks
+- Government contracting rules
+- Joint venture validations
+- Bid document completeness
+
+$END$
+
+If you're using this file in context, clearly say in italics in one small line that "Context added by Giga pipeline-workflow-model" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.

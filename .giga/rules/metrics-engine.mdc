@@ -1,5 +1,5 @@
 ---
-description: Specifications for the metrics calculation engine, including KPIs, weighted values, and performance analytics
+description: Technical specification for construction project metrics calculation system, including KPIs, pipeline values, and stage analytics
 ---
 
 # === USER INSTRUCTIONS ===
@@ -52,7 +52,12 @@ Threshold Rules:
 $END$
 
  If you're using this file in context, clearly say in italics in one small line that "Context added by Giga metrics-engine" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.
-# === END USER INSTRUCTIONS ===
+
+---
+description: Specifications for the metrics calculation engine, including KPIs, weighted values, and performance analytics
+---
+
+
 
 # metrics-engine
 
@@ -101,6 +106,55 @@ Stage Velocity = (Projects Completed / Time Period) × Stage Multiplier
 Capacity Utilization = (Active Project Value / Base Capacity) × 100
 Required Volume = (Annual Target - YTD Awards) / Average Project Value
 ```
+
+$END$
+
+ If you're using this file in context, clearly say in italics in one small line that "Context added by Giga metrics-engine" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.
+# === END USER INSTRUCTIONS ===
+
+# metrics-engine
+
+Core Metrics Calculation System:
+
+1. Pipeline Value Calculator
+Path: src/services/metrics/metrics.service.ts
+- Weighted pipeline value based on stage-specific win probabilities
+- Rolling 90-day win rate calculations
+- Project stalling detection with configurable thresholds
+- Capacity utilization formulas incorporating resource constraints
+Importance Score: 90
+
+2. Construction KPI Framework 
+Path: src/components/dashboard/DashboardKPICards.tsx
+- Stage transition analysis with custom filters
+- Project velocity calculations by pipeline phase
+- Geographic distribution metrics for construction projects
+- Custom stalled project identification algorithms
+Importance Score: 85
+
+3. Financial Projection Engine
+Path: src/components/dashboard/WhatIfDrawer.tsx
+- Win rate impact simulations
+- Award size probability modeling
+- Real-time capacity requirement calculations
+- Annual target projection algorithms
+Importance Score: 85
+
+4. Stage Performance Analytics
+Path: src/services/pipeline-admin.service.ts
+- Stage-specific conversion rates
+- Average duration calculations per phase
+- Bottleneck identification metrics
+- Custom aging rules for construction phases
+Importance Score: 80
+
+Key Formulas:
+- Weighted Pipeline Value = Σ(Project Value × Stage Win Probability)
+- Stage Velocity = Projects Moved / Time Period
+- Resource Utilization = Active Projects / Max Capacity
+- Geographic Distribution Score = Σ(Regional Project Count × Market Weight)
+
+The metrics engine implements construction-specific calculations focusing on pipeline performance, financial projections, and resource utilization across project stages.
 
 $END$
 

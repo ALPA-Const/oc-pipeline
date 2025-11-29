@@ -1,0 +1,68 @@
+---
+description: Cost module - Budgets, change orders, forecasts, and commitments
+alwaysApply: false
+---
+
+# MODULE: COST MANAGEMENT
+
+## 📋 OVERVIEW
+
+The Cost module tracks all financial aspects of construction projects including budgets, change orders, commitments, and forecasting.
+
+**Key Entities:** Budgets, Change Orders, Commitments, Invoices, Forecasts
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `budgets` | Project budgets |
+| `budget_items` | Line items |
+| `cost_codes` | Standard codes |
+| `change_orders` | Contract changes |
+| `change_order_items` | CO details |
+| `commitments` | Contracts/POs |
+| `invoices` | Vendor invoices |
+| `cost_forecasts` | EAC projections |
+| `actual_costs` | Recorded costs |
+| `earned_value` | EV metrics |
+
+---
+
+## 📊 KEY FORMULAS
+
+```
+EAC = AC + ETC (Estimate at Completion)
+VAC = BAC - EAC (Variance at Completion)
+CPI = EV / AC (Cost Performance Index)
+TCPI = (BAC - EV) / (BAC - AC)
+```
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /cost/budgets
+POST   /cost/budgets
+GET    /cost/change-orders
+POST   /cost/change-orders
+PATCH  /cost/change-orders/:id/approve
+GET    /cost/forecasts
+GET    /cost/earned-value
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `cost-001`
+
+**Capabilities:**
+- Budget variance monitoring
+- Forecast generation
+- Cost overrun alerts
+- Change order impact analysis
+
+$END$
