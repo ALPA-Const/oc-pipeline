@@ -1,15 +1,21 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from '@/hooks/AuthContext';
-import { LoginForm } from '@/components/auth/LoginForm';
-import { AuthCallback } from '@/pages/AuthCallback';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider } from "@/hooks/AuthContext";
+import { LoginForm } from "@/components/auth/LoginForm";
+import { AuthCallback } from "@/pages/AuthCallback";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // Layout
-import { AppLayout } from '@/components/layout/AppLayout';
+import { AppLayout } from "@/components/layout/AppLayout";
 
 // Pages
-import { Dashboard } from '@/pages/Dashboard';
-import { ModulePlaceholder } from '@/pages/ModulePlaceholder';
+import { Dashboard } from "@/pages/Dashboard";
+import DashboardElite from "@/pages/DashboardElite";
+import { ModulePlaceholder } from "@/pages/ModulePlaceholder";
 
 function App() {
   return (
@@ -25,6 +31,16 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
+                <DashboardElite />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Legacy Dashboard (fallback) */}
+          <Route
+            path="/dashboard-legacy"
+            element={
+              <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
             }
@@ -35,10 +51,15 @@ function App() {
             path="/preconstruction/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Preconstruction" 
+                <ModulePlaceholder
+                  moduleName="Preconstruction"
                   description="Estimating, bid management, and pipeline tracking"
-                  features={['Pipeline Management', 'Cost Estimating', 'Bid Packages', 'Vendor Management']}
+                  features={[
+                    "Pipeline Management",
+                    "Cost Estimating",
+                    "Bid Packages",
+                    "Vendor Management",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -49,10 +70,15 @@ function App() {
             path="/cost/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Cost Management" 
+                <ModulePlaceholder
+                  moduleName="Cost Management"
                   description="Budget tracking, change orders, and financial forecasting"
-                  features={['Budget Tracking', 'Change Orders', 'Invoicing', 'Cost Forecasting']}
+                  features={[
+                    "Budget Tracking",
+                    "Change Orders",
+                    "Invoicing",
+                    "Cost Forecasting",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -63,10 +89,15 @@ function App() {
             path="/schedule/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Schedule" 
+                <ModulePlaceholder
+                  moduleName="Schedule"
                   description="Timeline management, milestones, and look-ahead planning"
-                  features={['Gantt Charts', 'Milestones', 'Look-Ahead', 'Critical Path']}
+                  features={[
+                    "Gantt Charts",
+                    "Milestones",
+                    "Look-Ahead",
+                    "Critical Path",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -77,10 +108,15 @@ function App() {
             path="/risk/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Risk Management" 
+                <ModulePlaceholder
+                  moduleName="Risk Management"
                   description="Risk register, heat mapping, and mitigation tracking"
-                  features={['Risk Register', 'Heat Map', 'Mitigation Plans', 'Risk Scoring']}
+                  features={[
+                    "Risk Register",
+                    "Heat Map",
+                    "Mitigation Plans",
+                    "Risk Scoring",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -91,10 +127,15 @@ function App() {
             path="/quality/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Quality Control" 
+                <ModulePlaceholder
+                  moduleName="Quality Control"
                   description="Inspections, punch lists, and deficiency tracking"
-                  features={['Inspections', 'Punch Lists', 'Deficiencies', 'QC Reports']}
+                  features={[
+                    "Inspections",
+                    "Punch Lists",
+                    "Deficiencies",
+                    "QC Reports",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -105,10 +146,15 @@ function App() {
             path="/safety/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Safety" 
+                <ModulePlaceholder
+                  moduleName="Safety"
                   description="Safety metrics, incident tracking, and compliance"
-                  features={['Incident Reports', 'TRIR/DART/EMR', 'Safety Training', 'OSHA Compliance']}
+                  features={[
+                    "Incident Reports",
+                    "TRIR/DART/EMR",
+                    "Safety Training",
+                    "OSHA Compliance",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -119,10 +165,15 @@ function App() {
             path="/procurement/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Procurement" 
+                <ModulePlaceholder
+                  moduleName="Procurement"
                   description="Vendor management, contracts, and purchase orders"
-                  features={['Vendor Database', 'Contracts', 'Purchase Orders', 'Spend Analytics']}
+                  features={[
+                    "Vendor Database",
+                    "Contracts",
+                    "Purchase Orders",
+                    "Spend Analytics",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -133,10 +184,15 @@ function App() {
             path="/communications/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Communications" 
+                <ModulePlaceholder
+                  moduleName="Communications"
                   description="RFIs, submittals, meetings, and correspondence"
-                  features={['RFI Management', 'Submittals', 'Meeting Minutes', 'Correspondence Log']}
+                  features={[
+                    "RFI Management",
+                    "Submittals",
+                    "Meeting Minutes",
+                    "Correspondence Log",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -147,10 +203,15 @@ function App() {
             path="/staffing/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Staffing & Resources" 
+                <ModulePlaceholder
+                  moduleName="Staffing & Resources"
                   description="Team management, certifications, and utilization"
-                  features={['Team Directory', 'Certifications', 'Utilization Tracking', 'Resource Planning']}
+                  features={[
+                    "Team Directory",
+                    "Certifications",
+                    "Utilization Tracking",
+                    "Resource Planning",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -161,10 +222,15 @@ function App() {
             path="/closeout/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Closeout" 
+                <ModulePlaceholder
+                  moduleName="Closeout"
                   description="Project completion, handover, and lessons learned"
-                  features={['Closeout Checklist', 'As-Builts', 'Warranties', 'Lessons Learned']}
+                  features={[
+                    "Closeout Checklist",
+                    "As-Builts",
+                    "Warranties",
+                    "Lessons Learned",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -175,10 +241,15 @@ function App() {
             path="/documents/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Document Control" 
+                <ModulePlaceholder
+                  moduleName="Document Control"
                   description="Document management, drawings, and specifications"
-                  features={['File Management', 'Drawings', 'Specifications', 'Version Control']}
+                  features={[
+                    "File Management",
+                    "Drawings",
+                    "Specifications",
+                    "Version Control",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -189,10 +260,15 @@ function App() {
             path="/analytics/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Analytics & Reporting" 
+                <ModulePlaceholder
+                  moduleName="Analytics & Reporting"
                   description="Dashboards, reports, and business intelligence"
-                  features={['Portfolio Analytics', 'Custom Reports', 'KPI Tracking', 'Data Export']}
+                  features={[
+                    "Portfolio Analytics",
+                    "Custom Reports",
+                    "KPI Tracking",
+                    "Data Export",
+                  ]}
                 />
               </ProtectedRoute>
             }
@@ -203,10 +279,72 @@ function App() {
             path="/admin/*"
             element={
               <ProtectedRoute>
-                <ModulePlaceholder 
-                  moduleName="Administration" 
+                <ModulePlaceholder
+                  moduleName="Administration"
                   description="User management, roles, and system settings"
-                  features={['User Management', 'Role & Permissions', 'Company Settings', 'Audit Log']}
+                  features={[
+                    "User Management",
+                    "Role & Permissions",
+                    "Company Settings",
+                    "Audit Log",
+                  ]}
+                />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Compliance Module */}
+          <Route
+            path="/compliance/*"
+            element={
+              <ProtectedRoute>
+                <ModulePlaceholder
+                  moduleName="Compliance"
+                  description="CMMC Level 2 compliance, CUI management, and audits"
+                  features={[
+                    "CUI Document Tracking",
+                    "Control Assessments",
+                    "Audit Preparation",
+                    "Certification Management",
+                  ]}
+                />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Projects Module */}
+          <Route
+            path="/projects/*"
+            element={
+              <ProtectedRoute>
+                <ModulePlaceholder
+                  moduleName="Projects"
+                  description="Project management and portfolio overview"
+                  features={[
+                    "Project List",
+                    "Project Details",
+                    "Team Management",
+                    "Status Tracking",
+                  ]}
+                />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Alerts Module */}
+          <Route
+            path="/alerts/*"
+            element={
+              <ProtectedRoute>
+                <ModulePlaceholder
+                  moduleName="Alerts & Notifications"
+                  description="System alerts, notifications, and action items"
+                  features={[
+                    "Alert Center",
+                    "Notification Settings",
+                    "Action Items",
+                    "Alert History",
+                  ]}
                 />
               </ProtectedRoute>
             }

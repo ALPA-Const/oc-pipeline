@@ -24,6 +24,7 @@ import docsRoutes from './docs.routes';
 import tasksRoutes from './tasks.routes';
 import atlasRoutes from './atlas.routes';
 import portfolioRoutes from './portfolio.routes';
+import dashboardRoutes from './dashboard.routes';
 
 const router = Router();
 
@@ -58,6 +59,7 @@ router.use(`${API_PREFIX}/docs`, docsRoutes);
 router.use(`${API_PREFIX}/tasks`, tasksRoutes);
 router.use(`${API_PREFIX}/atlas`, atlasRoutes);
 router.use(`${API_PREFIX}/portfolio`, portfolioRoutes);
+router.use(`${API_PREFIX}/dashboard`, dashboardRoutes);
 
 export default router;
 
