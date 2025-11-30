@@ -1,0 +1,47 @@
+---
+description: AI Estimator module - PDF extraction and cost modeling
+alwaysApply: false
+---
+
+# MODULE: AI ESTIMATOR
+
+## 📋 OVERVIEW
+
+The AI Estimator module uses machine learning to extract data from PDFs and generate cost estimates.
+
+**Key Features:** PDF extraction, Cost modeling, Historical comparison
+
+---
+
+## 🔧 CAPABILITIES
+
+- Extract quantities from drawings
+- Parse specifications
+- Generate cost estimates
+- Compare to historical data
+- Identify scope gaps
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+POST   /estimator/upload
+GET    /estimator/extractions/:id
+POST   /estimator/generate
+GET    /estimator/compare
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `estimate-001`
+
+**Capabilities:**
+- PDF data extraction
+- Cost modeling
+- Historical comparison
+- Scope analysis
+
+$END$

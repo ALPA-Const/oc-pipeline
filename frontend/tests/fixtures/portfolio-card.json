@@ -1,0 +1,29 @@
+{
+  "org_id": "org_11111111-1111-1111-1111-111111111111",
+  "metric_type": "budget",
+  "value": 68.5,
+  "unit": "percentage",
+  "trend": {
+    "direction": "down",
+    "change": -3.2,
+    "change_percentage": -4.5,
+    "previous_value": 71.7,
+    "previous_as_of": "2025-10-23T22:30:00Z"
+  },
+  "breakdown": {
+    "by_status": {
+      "active": 65.2,
+      "bidding": 75.8,
+      "completed": 98.5
+    },
+    "by_type": {
+      "healthcare": 67.3,
+      "public_sector": 71.2
+    }
+  },
+  "projects_count": 140,
+  "as_of": "2025-10-30T22:30:00Z",
+  "calc_version": "v1.0",
+  "trace_id": "trace_portfolio_001",
+  "calculation_duration_ms": 125
+}

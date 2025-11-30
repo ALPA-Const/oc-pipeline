@@ -1,0 +1,577 @@
+---
+description: API routes documentation for all 60+ endpoints in OC Pipeline
+alwaysApply: false
+---
+
+# OC PIPELINE - API ROUTES
+
+## 🌐 OVERVIEW
+
+**Base URL:** `https://oc-pipeline.onrender.com/api/v1`
+**Authentication:** Bearer token (JWT)
+**Content-Type:** `application/json`
+
+---
+
+## 📋 ROUTE CATEGORIES
+
+| Category | Prefix | Endpoints |
+|----------|--------|-----------|
+| Auth | `/auth` | 8 |
+| Users | `/users` | 6 |
+| Organizations | `/orgs` | 5 |
+| Projects | `/projects` | 12 |
+| Preconstruction | `/precon` | 15 |
+| Cost | `/cost` | 10 |
+| Schedule | `/schedule` | 8 |
+| Risk | `/risks` | 6 |
+| Quality | `/quality` | 6 |
+| Safety | `/safety` | 8 |
+| Procurement | `/procurement` | 8 |
+| Communications | `/comms` | 10 |
+| Documents | `/docs` | 6 |
+| Tasks | `/tasks` | 6 |
+| ATLAS | `/atlas` | 8 |
+
+---
+
+## 🔐 AUTHENTICATION ROUTES
+
+### `POST /auth/login`
+Login with email/password.
+
+```typescript
+// Request
+{ email: string, password: string }
+
+// Response
+{
+  success: true,
+  data: {
+    user: User,
+    access_token: string,
+    refresh_token: string,
+    expires_at: number
+  }
+}
+```
+
+### `POST /auth/logout`
+Revoke current session.
+
+### `POST /auth/refresh`
+Refresh access token.
+
+### `POST /auth/register`
+Create new user account.
+
+### `POST /auth/forgot-password`
+Request password reset.
+
+### `POST /auth/reset-password`
+Reset password with token.
+
+### `GET /auth/me`
+Get current user profile.
+
+### `POST /auth/mfa/enable`
+Enable MFA for account.
+
+---
+
+## 👥 USER ROUTES
+
+### `GET /users`
+List users in organization.
+
+```typescript
+// Query params
+?page=1&limit=20&role=pm&search=john
+
+// Response
+{
+  success: true,
+  data: User[],
+  pagination: { page, limit, total, pages }
+}
+```
+
+### `GET /users/:id`
+Get user by ID.
+
+### `POST /users`
+Create new user (admin only).
+
+### `PATCH /users/:id`
+Update user.
+
+### `DELETE /users/:id`
+Deactivate user (soft delete).
+
+### `GET /users/:id/permissions`
+Get user's effective permissions.
+
+---
+
+## 🏢 ORGANIZATION ROUTES
+
+### `GET /orgs`
+List organizations (admin only).
+
+### `GET /orgs/:id`
+Get organization details.
+
+### `POST /orgs`
+Create organization.
+
+### `PATCH /orgs/:id`
+Update organization.
+
+### `GET /orgs/:id/members`
+List organization members.
+
+---
+
+## 📁 PROJECT ROUTES
+
+### `GET /projects`
+List projects.
+
+```typescript
+// Query params
+?status=active&page=1&limit=20&sort=-created_at
+
+// Response
+{
+  success: true,
+  data: Project[],
+  pagination: { page, limit, total, pages }
+}
+```
+
+### `GET /projects/:id`
+Get project details.
+
+### `POST /projects`
+Create new project.
+
+```typescript
+// Request
+{
+  name: string,
+  client: string,
+  value: number,
+  start_date: string,
+  end_date: string,
+  address: {
+    street: string,
+    city: string,
+    state: string,
+    zip: string
+  }
+}
+```
+
+### `PATCH /projects/:id`
+Update project.
+
+### `DELETE /projects/:id`
+Archive project.
+
+### `GET /projects/:id/team`
+Get project team members.
+
+### `POST /projects/:id/team`
+Add team member.
+
+### `DELETE /projects/:id/team/:userId`
+Remove team member.
+
+### `GET /projects/:id/dashboard`
+Get project dashboard data.
+
+### `GET /projects/:id/timeline`
+Get project timeline/activity.
+
+### `GET /projects/:id/metrics`
+Get project KPIs.
+
+### `POST /projects/:id/duplicate`
+Duplicate project structure.
+
+---
+
+## 🎯 PRECONSTRUCTION ROUTES
+
+### `GET /precon/pursuits`
+List pursuits/opportunities.
+
+### `GET /precon/pursuits/:id`
+Get pursuit details.
+
+### `POST /precon/pursuits`
+Create pursuit.
+
+### `PATCH /precon/pursuits/:id`
+Update pursuit.
+
+### `PATCH /precon/pursuits/:id/stage`
+Move pursuit to new stage.
+
+### `GET /precon/estimates`
+List estimates.
+
+### `GET /precon/estimates/:id`
+Get estimate with line items.
+
+### `POST /precon/estimates`
+Create estimate.
+
+### `PATCH /precon/estimates/:id`
+Update estimate.
+
+### `POST /precon/estimates/:id/items`
+Add estimate line item.
+
+### `GET /precon/bid-packages`
+List bid packages.
+
+### `POST /precon/bid-packages`
+Create bid package.
+
+### `POST /precon/bid-packages/:id/invite`
+Invite subcontractor to bid.
+
+### `GET /precon/pipeline`
+Get pipeline summary.
+
+### `GET /precon/analytics`
+Get preconstruction analytics.
+
+---
+
+## 💰 COST ROUTES
+
+### `GET /cost/budgets`
+List project budgets.
+
+### `GET /cost/budgets/:id`
+Get budget with line items.
+
+### `POST /cost/budgets`
+Create budget.
+
+### `PATCH /cost/budgets/:id`
+Update budget.
+
+### `GET /cost/change-orders`
+List change orders.
+
+### `POST /cost/change-orders`
+Create change order.
+
+### `PATCH /cost/change-orders/:id/approve`
+Approve change order.
+
+### `GET /cost/forecasts`
+Get cost forecasts.
+
+### `POST /cost/forecasts`
+Generate new forecast.
+
+### `GET /cost/earned-value`
+Get earned value metrics.
+
+---
+
+## 📅 SCHEDULE ROUTES
+
+### `GET /schedule/:projectId`
+Get project schedule.
+
+### `POST /schedule/:projectId/activities`
+Create activity.
+
+### `PATCH /schedule/activities/:id`
+Update activity.
+
+### `POST /schedule/activities/:id/progress`
+Update activity progress.
+
+### `GET /schedule/:projectId/critical-path`
+Get critical path.
+
+### `POST /schedule/:projectId/baseline`
+Create schedule baseline.
+
+### `GET /schedule/:projectId/lookahead`
+Get 3-week lookahead.
+
+### `GET /schedule/:projectId/milestones`
+Get milestones.
+
+---
+
+## ⚠️ RISK ROUTES
+
+### `GET /risks`
+List risks.
+
+### `GET /risks/:id`
+Get risk details.
+
+### `POST /risks`
+Create risk.
+
+### `PATCH /risks/:id`
+Update risk.
+
+### `POST /risks/:id/response`
+Add risk response.
+
+### `GET /risks/matrix`
+Get risk heat map data.
+
+---
+
+## ✅ QUALITY ROUTES
+
+### `GET /quality/deficiencies`
+List deficiencies.
+
+### `POST /quality/deficiencies`
+Create deficiency.
+
+### `PATCH /quality/deficiencies/:id`
+Update deficiency.
+
+### `GET /quality/inspections`
+List inspections.
+
+### `POST /quality/inspections`
+Create inspection.
+
+### `GET /quality/punch-lists`
+Get punch lists.
+
+---
+
+## 🦺 SAFETY ROUTES
+
+### `GET /safety/incidents`
+List incidents.
+
+### `POST /safety/incidents`
+Report incident.
+
+### `GET /safety/incidents/:id`
+Get incident details.
+
+### `POST /safety/incidents/:id/investigation`
+Add investigation.
+
+### `GET /safety/metrics`
+Get safety metrics (TRIR, DART, EMR).
+
+### `GET /safety/observations`
+List safety observations.
+
+### `POST /safety/observations`
+Create observation.
+
+### `GET /safety/toolbox-talks`
+List toolbox talks.
+
+---
+
+## 🛒 PROCUREMENT ROUTES
+
+### `GET /procurement/vendors`
+List vendors.
+
+### `POST /procurement/vendors`
+Create vendor.
+
+### `GET /procurement/vendors/:id`
+Get vendor details.
+
+### `GET /procurement/contracts`
+List contracts.
+
+### `POST /procurement/contracts`
+Create contract.
+
+### `GET /procurement/pos`
+List purchase orders.
+
+### `POST /procurement/pos`
+Create PO.
+
+### `GET /procurement/invoices`
+List invoices.
+
+---
+
+## 📧 COMMUNICATIONS ROUTES
+
+### `GET /comms/rfis`
+List RFIs.
+
+### `POST /comms/rfis`
+Create RFI.
+
+### `GET /comms/rfis/:id`
+Get RFI details.
+
+### `POST /comms/rfis/:id/respond`
+Respond to RFI.
+
+### `GET /comms/submittals`
+List submittals.
+
+### `POST /comms/submittals`
+Create submittal.
+
+### `POST /comms/submittals/:id/review`
+Review submittal.
+
+### `GET /comms/daily-reports`
+List daily reports.
+
+### `POST /comms/daily-reports`
+Create daily report.
+
+### `GET /comms/meetings`
+List meeting minutes.
+
+---
+
+## 📄 DOCUMENT ROUTES
+
+### `GET /docs`
+List documents.
+
+### `POST /docs/upload`
+Upload document.
+
+### `GET /docs/:id`
+Get document metadata.
+
+### `GET /docs/:id/download`
+Download document.
+
+### `DELETE /docs/:id`
+Delete document.
+
+### `GET /docs/folders`
+Get folder structure.
+
+---
+
+## ✔️ TASK ROUTES
+
+### `GET /tasks`
+List tasks.
+
+### `POST /tasks`
+Create task.
+
+### `GET /tasks/:id`
+Get task details.
+
+### `PATCH /tasks/:id`
+Update task.
+
+### `PATCH /tasks/:id/status`
+Update task status.
+
+### `GET /tasks/my`
+Get my assigned tasks.
+
+---
+
+## 🤖 ATLAS ROUTES
+
+### `GET /atlas/agents`
+List agents.
+
+### `GET /atlas/agents/:id`
+Get agent details.
+
+### `POST /atlas/agents/:id/task`
+Submit task to agent.
+
+### `GET /atlas/tasks`
+List agent tasks.
+
+### `GET /atlas/tasks/:id`
+Get task result.
+
+### `GET /atlas/events`
+Get system events.
+
+### `GET /atlas/metrics`
+Get agent metrics.
+
+### `POST /atlas/coordinate`
+Start multi-agent coordination.
+
+---
+
+## 📊 RESPONSE FORMAT
+
+### **Success Response**
+
+```typescript
+{
+  success: true,
+  data: T | T[],
+  pagination?: {
+    page: number,
+    limit: number,
+    total: number,
+    pages: number
+  },
+  meta?: {
+    request_id: string,
+    timestamp: string
+  }
+}
+```
+
+### **Error Response**
+
+```typescript
+{
+  success: false,
+  error: {
+    code: string,
+    message: string,
+    details?: any
+  },
+  meta: {
+    request_id: string,
+    timestamp: string
+  }
+}
+```
+
+### **Error Codes**
+
+| Code | HTTP Status | Description |
+|------|-------------|-------------|
+| `AUTH_REQUIRED` | 401 | Missing authentication |
+| `AUTH_INVALID` | 401 | Invalid token |
+| `AUTH_EXPIRED` | 401 | Token expired |
+| `FORBIDDEN` | 403 | Insufficient permissions |
+| `NOT_FOUND` | 404 | Resource not found |
+| `VALIDATION_ERROR` | 400 | Invalid request data |
+| `CONFLICT` | 409 | Resource conflict |
+| `RATE_LIMITED` | 429 | Too many requests |
+| `SERVER_ERROR` | 500 | Internal error |
+
+---
+
+$END$
+
+*Context added by API routes - 60+ endpoints across 15 categories with request/response formats.*

@@ -1,0 +1,244 @@
+# OC PIPELINE - GLOBAL PROJECT CONTEXT
+
+## 🎯 PROJECT IDENTITY
+
+**Name:** OC Pipeline
+**Type:** Federal-Grade Construction Management Platform
+**Owner:** O'Neill Contractors (8(a), SDVOSB, DBE certified)
+**Scale:** 16 modules, 126 database tables, 17 AI agents
+
+---
+
+## ⚠️ CRITICAL: THIS IS NOT A SIMPLE CRUD APP
+
+**DO NOT assume this is:**
+- ❌ A simple pipeline tracker (it's a full construction lifecycle suite)
+- ❌ A single-module app (16 integrated modules exist)
+- ❌ A basic CRUD system (ATLAS agentic AI is core)
+- ❌ A startup MVP (federal-grade compliance required)
+
+**THIS IS:**
+- ✅ Enterprise construction management platform
+- ✅ 16 modules covering Preconstruction → Execution → Closeout
+- ✅ ATLAS agentic system with 17 specialized AI agents
+- ✅ NIST 800-171, SOC 2, FISMA compliant
+- ✅ 7-year immutable audit trail
+- ✅ Multi-tenant with workspace/org isolation
+
+---
+
+## 🏗️ 16 MODULES (NOT 1!)
+
+1. **Preconstruction** - Bids, estimates, packages, pursuits, pipeline
+2. **Cost** - Budgets, change orders, forecasts, commitments
+3. **Schedule** - Gantt, milestones, dependencies, baselines
+4. **Risk** - Risk register, mitigation, heat maps
+5. **Quality** - Deficiencies, inspections, punch lists
+6. **Safety** - OSHA compliance, incidents, TRIR/DART/EMR
+7. **Procurement** - Vendors, contracts, POs, subcontracts
+8. **Communications** - RFIs, submittals, approvals, meetings
+9. **Staffing** - Resources, certifications, utilization
+10. **Closeout** - Warranties, as-builts, handover, lessons learned
+11. **Administration** - Users, roles, permissions, audit logs
+12. **Portfolio** - Cross-project analytics, KPIs, dashboards
+13. **AI Estimator** - PDF extraction, cost modeling
+14. **Documents** - Version control, folders, tags
+15. **Finance** - Detailed financial views, forecasting
+16. **Tasks** - Cross-module task engine, workflows
+
+---
+
+## 🗄️ DATABASE SCHEMA
+
+**Total Tables:** 126
+**Model:** Multi-tenant with `org_id` (NOT `workspace_id`)
+**Existing Tables:** `organizations`, `users`, `roles`, `permissions`, `projects`, etc.
+**Security:** Row-Level Security (RLS) on ALL tables
+**Audit:** 7-year immutable audit trail (partitioned by month)
+
+### **Critical Schema Facts:**
+- ✅ Use `organizations` table (NOT `workspaces`)
+- ✅ Use `org_id` foreign keys (NOT `workspace_id`)
+- ✅ 35 roles exist with `role_code`, `role_name`, `authority_level`
+- ✅ 6 users, 3 organizations, 182 role-permission mappings already exist
+- ✅ `workspaces` is a VIEW (alias to `organizations`)
+
+**See:** `docs/specs/database-tables-reference.md` for all 126 tables
+
+---
+
+## 🤖 ATLAS AGENTIC SYSTEM
+
+**DO NOT ignore this - it's core to the architecture!**
+
+**17 AI Agents:**
+- `atlas-001` - Master orchestrator
+- `precon-001` through `finance-001` - 16 module specialists
+
+**15 Agentic Infrastructure Tables:**
+- `agents`, `agent_tasks`, `agent_messages`, `agent_memory`
+- `knowledge_graph_nodes`, `knowledge_graph_edges`
+- `system_events`, `event_subscriptions`
+- `coordination_sessions`, `module_ownership`
+- `evolution_history`, `agent_metrics`, `safety_boundaries`
+
+**Agent States:** DORMANT, INITIALIZING, ACTIVE, PAUSED, ERROR, TERMINATED
+
+**See:** `.cursor/rules/02-agentic-system.mdc` for full details
+
+---
+
+## 🔐 SECURITY & COMPLIANCE
+
+**Compliance Requirements:**
+- ✅ NIST 800-171 (federal cybersecurity)
+- ✅ SOC 2 Type II (data security)
+- ✅ FISMA (federal information security)
+- ✅ GDPR (data privacy)
+- ✅ HIPAA (healthcare projects)
+
+**RBAC Matrix:**
+- 8 roles: Admin, Executive, PM, PE, Super, Precon, Sub, Client
+- 23 permissions: view, create, edit, delete, approve, export, comment, assign, close, reopen, archive, unarchive, change_status, change_budget, change_schedule, view_budget, view_schedule, view_safety, view_quality, manage_users, manage_roles, manage_org
+
+**Security Features:**
+- Row-Level Security (RLS) on all 126 tables
+- 7-year immutable audit trail (append-only)
+- MFA enforcement for admins
+- Session management with device/IP tracking
+- JWT tokens (1hr expiry, 30-day refresh)
+
+**See:** `.cursor/rules/03-rbac-security.mdc` for full RBAC matrix
+
+---
+
+## 🛠️ TECHNOLOGY STACK
+
+### **Frontend**
+- React 18, TypeScript, Vite
+- Tailwind CSS, shadcn/ui
+- TanStack Query, React Router
+- Deployed on **Vercel** (https://ocpipeline.vercel.app)
+
+### **Backend**
+- Node.js + Express, TypeScript
+- Prisma ORM (or raw SQL via pg)
+- Deployed on **Render** (https://oc-pipeline.onrender.com)
+
+### **Database**
+- PostgreSQL 15 via **Supabase**
+- Project ID: `cwrjhtpycynjzeiggyhf`
+- Real-time subscriptions, RLS, Auth
+
+### **Infrastructure**
+- Supabase Storage (S3-compatible)
+- Supabase Auth (JWT RS256/HS256)
+- Google OAuth, Microsoft OAuth
+
+---
+
+## 📁 PROJECT STRUCTURE
+
+```
+oc-pipeline/
+├── frontend/src/
+│   ├── components/     # UI components
+│   ├── pages/          # Route pages
+│   ├── hooks/          # React hooks
+│   ├── services/       # API calls
+│   └── types/          # TypeScript types
+│
+├── backend/src/
+│   ├── routes/         # API endpoints (60+ files)
+│   ├── controllers/    # Request handlers
+│   ├── middleware/     # Auth, RBAC, validation
+│   ├── services/       # Business logic
+│   └── config/         # Environment, Supabase
+│
+├── database/
+│   └── migrations/     # SQL migration files
+│
+└── docs/
+    ├── specs/          # Full specifications
+    ├── architecture/   # System design docs
+    └── modules/        # Module-specific docs
+```
+
+---
+
+## 🚨 CRITICAL RULES FOR CODE GENERATION
+
+### **ALWAYS:**
+1. ✅ Use `org_id` (NOT `workspace_id`)
+2. ✅ Check if table exists before creating (many already exist)
+3. ✅ Include RLS policies on ALL new tables
+4. ✅ Add audit triggers for CRUD operations
+5. ✅ Use parameterized queries (prevent SQL injection)
+6. ✅ Follow 8-role × 23-permission RBAC matrix
+7. ✅ Return standardized responses: `{ success: boolean, data/error }`
+8. ✅ Include request IDs in all logs/errors
+9. ✅ Use ES modules (import/export, not require)
+10. ✅ Add TypeScript types for all entities
+
+### **NEVER:**
+1. ❌ Create tables without checking existing schema
+2. ❌ Use `workspace_id` (use `org_id`)
+3. ❌ Skip RLS policies (federal compliance requirement)
+4. ❌ Skip audit logging (7-year retention required)
+5. ❌ Hardcode credentials or secrets
+6. ❌ Use string concatenation for SQL (SQL injection risk)
+7. ❌ Expose stack traces in production
+8. ❌ Bypass authentication on protected routes
+9. ❌ Ignore RBAC permissions
+10. ❌ Assume this is a simple CRUD app
+
+---
+
+## 📚 REFERENCE DOCUMENTS
+
+**Full Specifications:**
+- `docs/specs/00-MASTER-SPEC.md` - Complete project specification
+- `docs/specs/01-foundation-database.md` - 126 tables, tech stack
+- `docs/specs/02-api-routes.md` - All 60+ API endpoints
+- `docs/specs/03-agentic-implementation.md` - ATLAS system
+
+**Architecture:**
+- `.cursor/rules/00-project-overview.mdc` - High-level architecture
+- `.cursor/rules/01-database-schema.mdc` - Schema reference
+- `.cursor/rules/02-agentic-system.mdc` - ATLAS agents
+- `.cursor/rules/03-rbac-security.mdc` - Security & compliance
+- `.cursor/rules/04-api-routes.mdc` - API documentation
+
+**Module-Specific:**
+- `.cursor/rules/module-*.mdc` - One file per module (16 total)
+
+---
+
+## 🎯 WHEN WORKING ON CODE
+
+**Before generating any code, ask yourself:**
+1. Which of the 16 modules does this belong to?
+2. Does this table already exist in the schema?
+3. What RLS policies are needed?
+4. What audit logging is required?
+5. Which roles/permissions apply?
+6. Is this part of the agentic system?
+7. Does this need multi-tenant isolation?
+
+**If unsure, check:** `docs/specs/` or `.cursor/rules/` for context
+
+---
+
+## 🚀 CURRENT PROJECT STATE
+
+**Database:** Existing schema with `organizations`, `users`, `roles`, `projects`
+**Backend:** Node.js + Express on Render
+**Frontend:** React + Vite on Vercel
+**Phase:** Foundation complete, building modules incrementally
+**Next:** Implement remaining 15 modules + ATLAS agents
+
+---
+
+**Last Updated:** 2025-11-29
+**Version:** 2.0
+**Maintained By:** Bill Asmar, O'Neill Contractors

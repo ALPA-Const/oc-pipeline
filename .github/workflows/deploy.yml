@@ -14,19 +14,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'pnpm'
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install --prefer-offline
-      - run: pnpm run lint
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
 
   build:
     needs: lint
@@ -36,22 +26,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'pnpm'
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install --prefer-offline
-      - run: pnpm run build
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
       - name: Build backend (ensure devDeps present)
         working-directory: ./backend
-        run: pnpm run render-build
+        run: npm run render-build:npm
 
   deploy:
     needs: build
@@ -62,19 +42,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'pnpm'
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - run: pnpm install --prefer-offline
-      - run: pnpm run build
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
       - name: Deploy (placeholder)
         run: |
           echo "No deploy steps configured. Add provider-specific deploy steps here."

@@ -1,0 +1,55 @@
+---
+description: Administration module - Users, roles, permissions, and audit logs
+alwaysApply: false
+---
+
+# MODULE: ADMINISTRATION
+
+## 📋 OVERVIEW
+
+The Administration module manages users, roles, permissions, and system configuration.
+
+**Key Entities:** Users, Roles, Permissions, Sessions, Audit Logs
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `organizations` | Multi-tenant orgs |
+| `users` | User accounts |
+| `roles` | Role definitions |
+| `permissions` | Permission types |
+| `role_permissions` | Role-perm mapping |
+| `user_roles` | User-role mapping |
+| `sessions` | User sessions |
+| `audit_logs` | Immutable audit |
+| `settings` | System settings |
+| `notifications` | User notifications |
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /users
+POST   /users
+GET    /orgs
+PATCH  /orgs/:id
+GET    /audit-logs
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `admin-001`
+
+**Capabilities:**
+- User management
+- Permission auditing
+- System health monitoring
+- Security alerts
+
+$END$

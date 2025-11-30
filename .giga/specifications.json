@@ -1,0 +1,22 @@
+[
+  {
+    "fileName": "main-overview.mdc",
+    "description": "High-level system architecture, key components, and business domain overview of the construction pipeline management system"
+  },
+  {
+    "fileName": "pipeline-workflow-model.mdc",
+    "description": "Detailed documentation of the pipeline stage progression model, including stage definitions, transition rules, and validation requirements across Opportunity, Preconstruction, Execution, and Closeout phases"
+  },
+  {
+    "fileName": "analytics-algorithms.mdc",
+    "description": "Implementation details of core analytical algorithms including win rate calculations, what-if analysis engine, capacity utilization modeling, and pipeline velocity calculations"
+  },
+  {
+    "fileName": "metrics-engine.mdc",
+    "description": "Comprehensive documentation of the metrics calculation system, including KPI formulas, weighted pipeline values, financial projections, and stage-specific performance metrics"
+  },
+  {
+    "fileName": "data-flow-architecture.mdc",
+    "description": "Documentation of data flow between pipeline components, including real-time updates, state management, and component interaction patterns"
+  }
+]

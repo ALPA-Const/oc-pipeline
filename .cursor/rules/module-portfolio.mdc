@@ -1,0 +1,48 @@
+---
+description: Portfolio module - Cross-project analytics, KPIs, and dashboards
+alwaysApply: false
+---
+
+# MODULE: PORTFOLIO
+
+## 📋 OVERVIEW
+
+The Portfolio module provides executive-level views across all projects with aggregated KPIs and analytics.
+
+**Key Features:** Multi-project dashboards, KPI aggregation, Trend analysis
+
+---
+
+## 📊 KEY METRICS
+
+- Total portfolio value
+- Active project count
+- Overall CPI/SPI
+- Aggregate safety metrics
+- Resource utilization
+- Pipeline health
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /portfolio/dashboard
+GET    /portfolio/projects
+GET    /portfolio/kpis
+GET    /portfolio/trends
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `portfolio-001`
+
+**Capabilities:**
+- Cross-project analytics
+- KPI aggregation
+- Trend reporting
+- Executive insights
+
+$END$
