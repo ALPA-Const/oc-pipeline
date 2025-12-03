@@ -266,17 +266,19 @@ export function useDashboardData(
     gcTime: 10 * 60 * 1000, // 10 minutes - cache time (formerly cacheTime)
     refetchOnWindowFocus: true, // Refetch when user returns to tab
     refetchOnReconnect: true, // Refetch when internet reconnects
+    
     retry: (failureCount, error) => {
-      // Don't retry if it's an authentication error
-      if (error?.message?.includes('Authentication required') ||
-          error?.message?.includes('UNAUTHORIZED') ||
-          error?.message?.includes('Auth session missing') ||
-          error?.name === 'AuthSessionMissingError') {
-        return false;
-      }
-      return failureCount < 2;
-    },
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+  // TEMPORARY: Allow retries even for auth errors (mock auth will handle it)
+  // TODO: Restore after implementing real auth
+  // if (error?.message?.includes('Authentication required') ||
+  //     error?.message?.includes('UNAUTHORIZED') ||
+  //     error?.message?.includes('Auth session missing') ||
+  //     error?.name === 'AuthSessionMissingError') {
+  //   return false;
+  // }
+  return failureCount < 2;
+},
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     refetchInterval, // Optional polling interval
     // Suppress errors for authentication issues - redirect will handle it
     onError: (error: Error) => {
