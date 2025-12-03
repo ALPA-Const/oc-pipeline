@@ -1,0 +1,124 @@
+---
+description: Technical specification for construction project metrics calculation system, including KPIs, pipeline values, and stage analytics
+alwaysApply: false
+---
+
+# Metrics Engine
+
+## Core Metrics System
+
+### Pipeline Value Calculator
+
+**Weighted Pipeline Value Formula**:
+
+```typescript
+weightedValue = Σ(projectValue × stageWinProbability)
+
+// Stage probabilities
+const STAGE_PROBABILITIES = {
+  'lead': 0.10,
+  'proposal': 0.25,
+  'negotiation': 0.50,
+  'verbal_award': 0.75,
+  'awarded': 1.00,
+  'lost': 0.00
+};
+```
+
+**Key File**: `frontend/src/services/metrics/metrics.service.ts`
+
+### Construction KPI Framework
+
+| KPI                  | Formula                      | Update Trigger        |
+| -------------------- | ---------------------------- | --------------------- |
+| Total Pipeline       | Σ(all active project values) | Project add/update    |
+| Weighted Pipeline    | Σ(value × probability)       | Stage change          |
+| Win Rate             | wins / (wins + losses)       | Award/loss recorded   |
+| Capacity Utilization | active value / $30M          | Project status change |
+| Stage Velocity       | projects moved / time        | Stage transition      |
+
+**Key File**: `frontend/src/components/dashboard/DashboardKPICards.tsx`
+
+### Financial Projection Engine
+
+```typescript
+// Annual projection
+const projectedAnnual = (ytdAwards / monthsElapsed) * 12;
+
+// Required volume to hit target
+const requiredProjects = Math.ceil(
+  (annualTarget - ytdAwards) / averageProjectValue
+);
+
+// Months remaining calculation
+const monthsRemaining = 12 - currentMonth;
+const requiredMonthlyPace = (annualTarget - ytdAwards) / monthsRemaining;
+```
+
+**Key File**: `frontend/src/components/dashboard/WhatIfDrawer.tsx`
+
+### Stage Performance Analytics
+
+| Stage          | Avg Duration | Warning Threshold | Critical Threshold |
+| -------------- | ------------ | ----------------- | ------------------ |
+| Lead           | 14 days      | 21 days           | 28 days            |
+| Proposal       | 45 days      | 60 days           | 90 days            |
+| Negotiation    | 30 days      | 45 days           | 60 days            |
+| Award Decision | 15 days      | 21 days           | 30 days            |
+
+**Stalled Detection**:
+
+```typescript
+const isStalled = (project) => {
+  const daysInStage = daysSince(project.stageEntryDate);
+  const threshold = STAGE_THRESHOLDS[project.stage] * 1.5;
+  return daysInStage > threshold;
+};
+```
+
+## Key Formulas Reference
+
+### Weighted Pipeline Value
+
+```
+Weighted Value = Σ(Project Value × Stage Win Probability)
+```
+
+### Stage Velocity
+
+```
+Velocity = Projects Moved to Next Stage / Time Period (days)
+```
+
+### Resource Utilization
+
+```
+Utilization = (Active Project Value / Max Capacity) × 100
+Max Capacity = $30,000,000 (default)
+```
+
+### Geographic Distribution Score
+
+```
+Distribution = Σ(Regional Project Count × Market Weight)
+```
+
+### Capacity Requirement
+
+```
+Required Capacity = Σ(Project Value × Win Probability × Resource Factor)
+Resource Factor varies by stage (0.1 to 1.0)
+```
+
+## Threshold Rules
+
+| Metric            | Green       | Yellow      | Red         |
+| ----------------- | ----------- | ----------- | ----------- |
+| Capacity          | < 80%       | 80-100%     | > 100%      |
+| Stage Duration    | < avg       | avg to 1.5x | > 1.5x      |
+| Win Rate          | > 30%       | 20-30%      | < 20%       |
+| Pipeline Coverage | > 3x target | 2-3x target | < 2x target |
+
+$END$
+
+_Context added by Giga metrics-engine - Pipeline value calculations, KPI formulas, and threshold configurations._

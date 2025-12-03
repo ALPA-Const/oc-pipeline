@@ -1,0 +1,124 @@
+# ===================================
+# Cursor Ignore File for OC-Pipeline
+# ===================================
+# Optimized for 16-module construction management platform
+# Last Updated: 2025-11-29
+
+# ============ DEPENDENCIES ============
+node_modules/
+**/node_modules/
+
+# ============ BUILD OUTPUTS ============
+dist/
+build/
+**/dist/
+**/build/
+.next/
+out/
+
+# ============ PACKAGE LOCKS ============
+# Large files, auto-generated
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# ============ TYPESCRIPT BUILD ============
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ============ ENVIRONMENT FILES ============
+# Security - never index secrets
+.env
+.env.*
+!.env.example
+
+# ============ IDE & EDITOR ============
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============ OS FILES ============
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============ LOGS ============
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ============ TEST COVERAGE ============
+coverage/
+.nyc_output/
+
+# ============ CACHE ============
+.cache/
+.parcel-cache/
+.turbo/
+
+# ============ PREVIOUS AI TOOLS ============
+.mgx/
+.giga/
+
+# ============ TEMPORARY ============
+tmp/
+temp/
+*.tmp
+
+# ============ LARGE DATA FILES ============
+# Exclude SQL files except migrations and seeds
+*.sql
+!database/setup.sql
+!database/migrations/*.sql
+!database/seeds/*.sql
+!backend/prisma/migrations/*.sql
+!supabase/migrations/*.sql
+
+# ============ BINARY & MEDIA ============
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.svg
+*.mp4
+*.mp3
+*.pdf
+*.zip
+*.tar
+*.gz
+
+# ============ GOOGLE DRIVE SYNC ============
+*.gdoc
+*.gsheet
+*.gslides
+
+# ============ NESTED DUPLICATES ============
+# Prevent indexing duplicate project folders
+oc-pipeline/
+
+# ============ COMPILED OUTPUTS ============
+backend/dist/
+frontend/dist/
+
+# ============ PRISMA ============
+# Generated client (large)
+backend/node_modules/.prisma/
+
+# ============ SUPABASE ============
+# Local Supabase (if using local dev)
+.supabase/
+
+# ============ DOCUMENTATION ASSETS ============
+# Large doc images
+docs/**/*.png
+docs/**/*.jpg
+docs/**/*.gif
+
+# ============ FOLDER STRUCTURE LOGS ============
+*-folder-structure*.txt
+*-structure.txt
+local_folder_log.txt

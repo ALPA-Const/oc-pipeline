@@ -1,0 +1,62 @@
+---
+description: Risk module - Risk register, mitigation, and heat maps
+alwaysApply: false
+---
+
+# MODULE: RISK MANAGEMENT
+
+## 📋 OVERVIEW
+
+The Risk module identifies, assesses, and tracks project risks with mitigation strategies.
+
+**Key Entities:** Risks, Risk Responses, Risk Assessments, Lessons Learned
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `risks` | Risk register |
+| `risk_categories` | Categories |
+| `risk_responses` | Mitigations |
+| `risk_triggers` | Early warnings |
+| `risk_assessments` | Reviews |
+| `risk_impacts` | Impact analysis |
+| `lessons_learned` | Historical |
+
+---
+
+## 📊 RISK MATRIX
+
+| Impact ↓ / Probability → | Low | Medium | High |
+|--------------------------|-----|--------|------|
+| **High** | Medium | High | Critical |
+| **Medium** | Low | Medium | High |
+| **Low** | Low | Low | Medium |
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /risks
+POST   /risks
+PATCH  /risks/:id
+POST   /risks/:id/response
+GET    /risks/matrix
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `risk-001`
+
+**Capabilities:**
+- Risk identification
+- Probability assessment
+- Mitigation recommendations
+- Trend analysis
+
+$END$

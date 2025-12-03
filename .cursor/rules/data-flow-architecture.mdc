@@ -1,0 +1,140 @@
+---
+description: Documents data flow patterns and component interactions in construction pipeline management systems
+alwaysApply: false
+---
+
+# Data Flow Architecture
+
+## State Management Overview
+
+The application uses React Context for global state management with dedicated contexts for each domain:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        App Root                              │
+├─────────────────────────────────────────────────────────────┤
+│  AuthContext → PipelineContext → MetricsContext → UI        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Core Data Flows
+
+### 1. Pipeline State Management
+
+```
+User Action → PipelineContext → Supabase → Real-time Update → UI
+     │                                            │
+     └────────────── Optimistic Update ───────────┘
+```
+
+- Centralized `PipelineContext` manages all pipeline stage data
+- Real-time updates via Supabase subscriptions
+- Stage transitions trigger cascading metric recalculations
+
+**Key Files**:
+
+- `frontend/src/hooks/PipelineContext.tsx`
+- `frontend/src/services/pipeline.service.ts`
+
+### 2. KPI Update Flow
+
+```
+Project Change → MetricsService → MetricsContext → KPI Cards
+                      │
+                      ├── Pipeline velocity
+                      ├── Win rate projections
+                      ├── Capacity utilization
+                      └── Geographic distributions
+```
+
+**Key Files**:
+
+- `frontend/src/services/metrics/metrics.service.ts`
+- `frontend/src/components/dashboard/DashboardKPICards.tsx`
+
+### 3. What-If Analysis Data Flow
+
+```
+User Adjusts Slider → Isolated State Copy → Simulation Engine
+                              │
+                              ↓
+                    Projected Metrics (no main state mutation)
+                              │
+                              ↓
+                    Visualization Components
+```
+
+- Maintains isolated state copy for simulations
+- Results flow to visualizations without affecting main state
+- Reset mechanism restores baseline metrics
+
+### 4. Authentication Flow
+
+```
+Google OAuth → Supabase Auth → AuthContext → Protected Routes
+                    │
+                    └── JWT Token → API Requests
+```
+
+**Key Files**:
+
+- `frontend/src/hooks/AuthContext.tsx`
+- `frontend/src/components/auth/ProtectedRoute.tsx`
+
+### 5. API Request Pattern
+
+```typescript
+// Standard pattern for API calls
+const fetchData = async () => {
+  const { data, error } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("status", "active");
+
+  if (error) throw error;
+  return data;
+};
+```
+
+## Context Providers Hierarchy
+
+```tsx
+<AuthProvider>
+  <PipelineProvider>
+    <MetricsProvider>
+      <App />
+    </MetricsProvider>
+  </PipelineProvider>
+</AuthProvider>
+```
+
+## Real-time Subscriptions
+
+```typescript
+// Supabase real-time subscription pattern
+useEffect(() => {
+  const subscription = supabase
+    .channel("projects")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "projects" },
+      (payload) => handleUpdate(payload)
+    )
+    .subscribe();
+
+  return () => subscription.unsubscribe();
+}, []);
+```
+
+## Component Communication
+
+| From           | To        | Method                   |
+| -------------- | --------- | ------------------------ |
+| Parent → Child | Props     | Direct prop passing      |
+| Child → Parent | Callbacks | Event handlers via props |
+| Siblings       | Context   | Shared context state     |
+| Global         | Any       | Context providers        |
+
+$END$
+
+_Context added by Giga data-flow-architecture - React Context patterns, Supabase real-time subscriptions, and component communication._

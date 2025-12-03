@@ -1,0 +1,84 @@
+---
+description: Preconstruction module - Bids, estimates, packages, pursuits, and pipeline management
+alwaysApply: false
+---
+
+# MODULE: PRECONSTRUCTION
+
+## 📋 OVERVIEW
+
+The Preconstruction module manages the entire bidding lifecycle from opportunity identification through award/loss.
+
+**Key Entities:** Pursuits, Estimates, Bid Packages, Takeoffs, Pipeline Stages
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `pursuits` | Bid opportunities |
+| `estimates` | Cost estimates |
+| `estimate_items` | Estimate line items |
+| `bid_packages` | Trade packages |
+| `bid_invitations` | Sub invitations |
+| `bid_responses` | Sub bids |
+| `takeoffs` | Quantity takeoffs |
+| `pipeline_stages` | Stage definitions |
+| `pipeline_history` | Stage transitions |
+
+---
+
+## 🔄 PIPELINE STAGES
+
+| Stage | Order | Win Probability |
+|-------|-------|-----------------|
+| Lead | 1 | 10% |
+| Qualification | 2 | 15% |
+| Proposal | 3 | 25% |
+| Negotiation | 4 | 50% |
+| Verbal Award | 5 | 75% |
+| Awarded | 6 | 100% |
+| Lost | 7 | 0% |
+
+---
+
+## 📊 KEY METRICS
+
+- **Weighted Pipeline Value:** Σ(Value × Win Probability)
+- **Win Rate:** Wins / (Wins + Losses) over 90 days
+- **Average Pursuit Duration:** Days from Lead to Award
+- **Bid Hit Rate:** Proposals submitted / Pursuits qualified
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /precon/pursuits
+POST   /precon/pursuits
+GET    /precon/pursuits/:id
+PATCH  /precon/pursuits/:id
+PATCH  /precon/pursuits/:id/stage
+GET    /precon/estimates
+POST   /precon/estimates
+GET    /precon/bid-packages
+POST   /precon/bid-packages/:id/invite
+GET    /precon/pipeline
+GET    /precon/analytics
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `precon-001`
+
+**Capabilities:**
+- Bid analysis and go/no-go recommendations
+- Estimate validation against historical data
+- Pipeline optimization suggestions
+- Win probability predictions
+- Competitor analysis
+
+$END$

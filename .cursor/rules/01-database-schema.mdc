@@ -1,0 +1,275 @@
+---
+description: Database schema reference for all 126 tables in OC Pipeline
+alwaysApply: false
+---
+
+# OC PIPELINE - DATABASE SCHEMA
+
+## 📊 SCHEMA OVERVIEW
+
+**Total Tables:** 126
+**Database:** PostgreSQL 15 (Supabase)
+**Multi-tenancy:** `org_id` on all tables
+**Security:** Row-Level Security (RLS) enabled
+
+---
+
+## ⚠️ CRITICAL REMINDERS
+
+- ✅ Use `org_id` (NOT `workspace_id`)
+- ✅ `organizations` table exists (NOT `workspaces`)
+- ✅ `workspaces` is a VIEW aliasing `organizations`
+- ✅ Always check if table exists before creating
+- ✅ All tables require RLS policies
+
+---
+
+## 🗄️ TABLE CATEGORIES
+
+### **1. Foundation Tables (15)**
+Core infrastructure tables that other modules depend on.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `organizations` | Multi-tenant orgs | id, name, slug, settings |
+| `users` | User accounts | id, email, org_id, role_id |
+| `roles` | 35 predefined roles | id, role_code, role_name, authority_level |
+| `permissions` | 23 permission types | id, permission_code, description |
+| `role_permissions` | Role-permission mapping | role_id, permission_id |
+| `user_roles` | User-role assignments | user_id, role_id, org_id |
+| `projects` | Construction projects | id, name, org_id, status, value |
+| `project_members` | Project team | project_id, user_id, role |
+| `audit_logs` | Immutable audit trail | id, action, entity, user_id, timestamp |
+| `sessions` | User sessions | id, user_id, device, ip, expires_at |
+| `settings` | System settings | key, value, org_id |
+| `notifications` | User notifications | id, user_id, type, read, message |
+| `files` | File metadata | id, name, path, org_id, project_id |
+| `tags` | Entity tags | id, name, color, org_id |
+| `comments` | Entity comments | id, entity_type, entity_id, user_id, text |
+
+### **2. Preconstruction Tables (12)**
+Bidding, estimating, and pipeline management.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `pursuits` | Bid opportunities | id, name, client, value, stage |
+| `estimates` | Cost estimates | id, pursuit_id, total, version |
+| `estimate_items` | Line items | id, estimate_id, description, qty, unit_cost |
+| `bid_packages` | Bid package groups | id, pursuit_id, trade, status |
+| `bid_invitations` | Subcontractor invites | id, package_id, vendor_id, status |
+| `bid_responses` | Sub bid submissions | id, invitation_id, amount, notes |
+| `takeoffs` | Quantity takeoffs | id, estimate_id, item, quantity, unit |
+| `pursuit_contacts` | Client contacts | id, pursuit_id, name, email, role |
+| `pursuit_milestones` | Key dates | id, pursuit_id, name, date, status |
+| `win_loss_analysis` | Historical analysis | id, pursuit_id, outcome, factors |
+| `pipeline_stages` | Stage definitions | id, name, order, probability |
+| `pipeline_history` | Stage transitions | id, pursuit_id, from_stage, to_stage, date |
+
+### **3. Cost Management Tables (14)**
+Budgets, change orders, forecasts, and commitments.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `budgets` | Project budgets | id, project_id, original, revised, contingency |
+| `budget_items` | Budget line items | id, budget_id, cost_code, description, amount |
+| `cost_codes` | Standard cost codes | id, code, description, category |
+| `change_orders` | Contract changes | id, project_id, number, amount, status |
+| `change_order_items` | CO line items | id, change_order_id, description, amount |
+| `commitments` | Contracts/POs | id, project_id, vendor_id, amount, type |
+| `commitment_items` | Commitment details | id, commitment_id, description, amount |
+| `invoices` | Vendor invoices | id, commitment_id, number, amount, status |
+| `invoice_items` | Invoice line items | id, invoice_id, description, amount |
+| `cost_forecasts` | EAC projections | id, project_id, period, forecast_amount |
+| `actual_costs` | Recorded costs | id, project_id, cost_code, amount, date |
+| `contingency_draws` | Contingency usage | id, budget_id, amount, reason, date |
+| `cost_reports` | Period reports | id, project_id, period, data_json |
+| `earned_value` | EV metrics | id, project_id, period, bcws, bcwp, acwp |
+
+### **4. Schedule Tables (10)**
+Gantt, milestones, dependencies, and baselines.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `schedules` | Schedule versions | id, project_id, name, version, is_baseline |
+| `schedule_activities` | Tasks/activities | id, schedule_id, name, start, finish, duration |
+| `activity_dependencies` | Task links | id, predecessor_id, successor_id, type, lag |
+| `milestones` | Key milestones | id, project_id, name, date, status |
+| `schedule_baselines` | Baseline snapshots | id, schedule_id, baseline_date, data_json |
+| `schedule_updates` | Progress updates | id, activity_id, actual_start, actual_finish, percent |
+| `critical_path` | CP activities | id, schedule_id, activity_id, float |
+| `schedule_impacts` | Delay analysis | id, project_id, cause, days_impact, mitigation |
+| `lookahead_schedules` | 3-week lookahead | id, project_id, period_start, activities_json |
+| `schedule_narratives` | Monthly narratives | id, project_id, period, narrative |
+
+### **5. Risk Management Tables (8)**
+Risk register, mitigation, and heat maps.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `risks` | Risk register | id, project_id, title, probability, impact, status |
+| `risk_categories` | Risk categories | id, name, description |
+| `risk_responses` | Mitigation plans | id, risk_id, strategy, description, owner |
+| `risk_triggers` | Early warnings | id, risk_id, condition, threshold |
+| `risk_assessments` | Periodic reviews | id, risk_id, date, probability, impact, notes |
+| `risk_impacts` | Impact analysis | id, risk_id, cost_impact, schedule_impact |
+| `risk_reports` | Risk reports | id, project_id, period, summary_json |
+| `lessons_learned` | Historical lessons | id, project_id, category, lesson, recommendation |
+
+### **6. Quality Management Tables (8)**
+Deficiencies, inspections, and punch lists.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `deficiencies` | Quality issues | id, project_id, location, description, status |
+| `inspections` | QC inspections | id, project_id, type, date, inspector, result |
+| `inspection_items` | Checklist items | id, inspection_id, item, pass_fail, notes |
+| `punch_lists` | Punch list sets | id, project_id, area, status |
+| `punch_items` | Individual items | id, punch_list_id, description, responsible, status |
+| `ncrs` | Non-conformance | id, project_id, description, disposition, status |
+| `quality_plans` | QC plans | id, project_id, scope, procedures_json |
+| `test_reports` | Material tests | id, project_id, type, date, result, file_id |
+
+### **7. Safety Tables (10)**
+OSHA compliance, incidents, and metrics.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `incidents` | Safety incidents | id, project_id, date, type, severity, description |
+| `incident_investigations` | Root cause | id, incident_id, findings, corrective_actions |
+| `safety_observations` | Field observations | id, project_id, type, observation, action |
+| `toolbox_talks` | Safety meetings | id, project_id, topic, date, attendees_json |
+| `jhas` | Job hazard analysis | id, project_id, task, hazards_json, controls_json |
+| `safety_inspections` | Site inspections | id, project_id, date, inspector, findings_json |
+| `osha_logs` | OSHA 300 logs | id, project_id, year, log_data_json |
+| `safety_metrics` | TRIR/DART/EMR | id, project_id, period, trir, dart, emr |
+| `certifications` | Safety certs | id, user_id, type, issue_date, expiry_date |
+| `safety_plans` | Site safety plans | id, project_id, version, content_json |
+
+### **8. Procurement Tables (10)**
+Vendors, contracts, and subcontracts.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `vendors` | Vendor directory | id, org_id, name, type, status |
+| `vendor_contacts` | Vendor contacts | id, vendor_id, name, email, phone |
+| `vendor_certifications` | Vendor certs | id, vendor_id, type, expiry_date |
+| `vendor_ratings` | Performance ratings | id, vendor_id, project_id, rating, notes |
+| `contracts` | Prime contracts | id, project_id, number, value, type |
+| `subcontracts` | Subcontracts | id, project_id, vendor_id, value, scope |
+| `purchase_orders` | POs | id, project_id, vendor_id, number, amount |
+| `po_items` | PO line items | id, po_id, description, qty, unit_price |
+| `insurance_certs` | COIs | id, vendor_id, type, expiry_date, file_id |
+| `lien_waivers` | Lien releases | id, vendor_id, project_id, type, amount, date |
+
+### **9. Communications Tables (10)**
+RFIs, submittals, and approvals.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `rfis` | Requests for info | id, project_id, number, subject, status |
+| `rfi_responses` | RFI answers | id, rfi_id, response, responder_id, date |
+| `submittals` | Submittal register | id, project_id, number, description, status |
+| `submittal_reviews` | Review workflow | id, submittal_id, reviewer_id, action, date |
+| `transmittals` | Document transmit | id, project_id, number, recipient, items_json |
+| `meeting_minutes` | Meeting records | id, project_id, date, attendees_json, notes |
+| `action_items` | Meeting actions | id, meeting_id, description, assignee, due_date |
+| `daily_reports` | Daily logs | id, project_id, date, weather, activities_json |
+| `correspondence` | Letters/emails | id, project_id, type, subject, content |
+| `photo_logs` | Progress photos | id, project_id, date, location, file_id |
+
+### **10. Staffing Tables (8)**
+Resources, certifications, and utilization.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `resources` | Staff/equipment | id, org_id, type, name, rate |
+| `resource_assignments` | Project assignments | id, resource_id, project_id, role, allocation |
+| `timesheets` | Time tracking | id, user_id, project_id, date, hours |
+| `timesheet_entries` | Detailed entries | id, timesheet_id, cost_code, hours, notes |
+| `labor_rates` | Billing rates | id, org_id, role, rate, effective_date |
+| `equipment` | Equipment list | id, org_id, name, type, status |
+| `equipment_usage` | Usage logs | id, equipment_id, project_id, date, hours |
+| `resource_forecasts` | Staffing plans | id, project_id, period, resources_json |
+
+### **11. Closeout Tables (8)**
+Warranties, as-builts, and handover.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `warranties` | Warranty tracking | id, project_id, item, start_date, end_date |
+| `warranty_claims` | Claims | id, warranty_id, description, status |
+| `as_builts` | As-built docs | id, project_id, discipline, file_id, status |
+| `om_manuals` | O&M manuals | id, project_id, system, file_id |
+| `training_records` | Owner training | id, project_id, topic, date, attendees_json |
+| `spare_parts` | Attic stock | id, project_id, item, quantity, location |
+| `closeout_checklists` | Closeout items | id, project_id, item, status, date |
+| `final_inspections` | Final walkthrough | id, project_id, date, inspector, items_json |
+
+### **12. ATLAS Agentic Tables (15)**
+AI agent infrastructure.
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `agents` | Agent definitions | id, agent_code, name, module, status |
+| `agent_tasks` | Task queue | id, agent_id, task_type, payload, status |
+| `agent_messages` | Agent comms | id, from_agent, to_agent, message, timestamp |
+| `agent_memory` | Agent memory | id, agent_id, key, value, timestamp |
+| `agent_metrics` | Performance | id, agent_id, metric, value, timestamp |
+| `knowledge_graph_nodes` | KG nodes | id, type, label, properties_json |
+| `knowledge_graph_edges` | KG edges | id, from_node, to_node, relationship |
+| `system_events` | Event bus | id, event_type, payload, timestamp |
+| `event_subscriptions` | Event subs | id, agent_id, event_type, handler |
+| `coordination_sessions` | Multi-agent | id, initiator, participants_json, status |
+| `module_ownership` | Module mapping | id, module, agent_id |
+| `evolution_history` | Agent evolution | id, agent_id, version, changes_json |
+| `safety_boundaries` | Guardrails | id, agent_id, boundary_type, config_json |
+| `agent_logs` | Agent logs | id, agent_id, level, message, timestamp |
+| `agent_configs` | Agent config | id, agent_id, config_json |
+
+---
+
+## 🔑 KEY RELATIONSHIPS
+
+```
+organizations (1) ──────< (N) users
+organizations (1) ──────< (N) projects
+projects (1) ──────< (N) budgets
+projects (1) ──────< (N) schedules
+projects (1) ──────< (N) risks
+projects (1) ──────< (N) rfis
+projects (1) ──────< (N) submittals
+users (1) ──────< (N) user_roles
+roles (1) ──────< (N) role_permissions
+```
+
+---
+
+## 🔐 RLS POLICY TEMPLATE
+
+```sql
+-- Enable RLS
+ALTER TABLE table_name ENABLE ROW LEVEL SECURITY;
+
+-- Org isolation policy
+CREATE POLICY "org_isolation" ON table_name
+  FOR ALL
+  USING (org_id = auth.jwt() ->> 'org_id');
+
+-- Admin bypass policy
+CREATE POLICY "admin_bypass" ON table_name
+  FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM user_roles ur
+      JOIN roles r ON ur.role_id = r.id
+      WHERE ur.user_id = auth.uid()
+      AND r.role_code = 'admin'
+    )
+  );
+```
+
+---
+
+$END$
+
+*Context added by database schema - 126 tables across 12 categories with RLS policy templates.*

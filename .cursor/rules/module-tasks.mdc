@@ -1,0 +1,50 @@
+---
+description: Tasks module - Cross-module task engine and workflows
+alwaysApply: false
+---
+
+# MODULE: TASKS
+
+## 📋 OVERVIEW
+
+The Tasks module provides a unified task management system across all modules with workflow automation.
+
+**Key Features:** Task tracking, Workflows, Dependencies, Notifications
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `tasks` | Task definitions |
+| `task_assignments` | Assignees |
+| `task_dependencies` | Task links |
+| `task_comments` | Discussion |
+| `workflows` | Workflow definitions |
+| `workflow_steps` | Step configs |
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /tasks
+POST   /tasks
+PATCH  /tasks/:id/status
+GET    /tasks/my
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `tasks-001`
+
+**Capabilities:**
+- Workflow automation
+- Deadline tracking
+- Dependency management
+- Assignment optimization
+
+$END$

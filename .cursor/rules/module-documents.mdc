@@ -1,0 +1,49 @@
+---
+description: Documents module - Version control, folders, and tags
+alwaysApply: false
+---
+
+# MODULE: DOCUMENTS
+
+## 📋 OVERVIEW
+
+The Documents module manages file storage, version control, and document organization.
+
+**Key Features:** Version control, Folder hierarchy, Tagging, Search
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `files` | File metadata |
+| `file_versions` | Version history |
+| `folders` | Folder structure |
+| `tags` | Document tags |
+| `file_tags` | Tag associations |
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /docs
+POST   /docs/upload
+GET    /docs/:id/download
+GET    /docs/folders
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `docs-001`
+
+**Capabilities:**
+- Auto-tagging
+- Version control
+- Search optimization
+- Document classification
+
+$END$
