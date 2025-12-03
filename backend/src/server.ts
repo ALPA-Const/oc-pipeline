@@ -20,6 +20,9 @@ import closeoutRoutes from "./routes/closeout";
 // Import error handler
 import { errorHandler } from "./middleware/errorHandler";
 
+// TEMPORARY: Import mock auth for testing
+import { mockAuthenticate } from "./middleware/auth";
+
 // Load environment variables
 dotenv.config();
 
@@ -69,6 +72,23 @@ if (process.env.NODE_ENV === "development") {
 } else {
   app.use(morgan("combined"));
 }
+// Request logging
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+} else {
+  app.use(morgan("combined"));
+}
+
+// ============================================
+// TEMPORARY MOCK AUTHENTICATION
+// ============================================
+// TODO: REMOVE THIS BEFORE PRODUCTION!
+// Added: 2025-12-03 for dashboard testing
+// This bypasses all authentication - NOT SECURE
+console.log("⚠️ WARNING: Mock authentication is ENABLED");
+console.log("⚠️ This should ONLY be used for testing");
+app.use(mockAuthenticate);
+// ============================================
 
 // ============================================
 // ROUTES

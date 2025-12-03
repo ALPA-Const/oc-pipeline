@@ -231,3 +231,36 @@ export async function logAuditEvent(
   // TODO: Implement full audit logging
   console.log('[AUDIT]', { userId, entityType, entityId, action, beforeData, afterData });
 }
+
+// ========================================
+// TEMPORARY MOCK AUTH FOR TESTING
+// ========================================
+// TODO: REMOVE THIS BEFORE PRODUCTION!
+// This bypasses all authentication checks for testing purposes only.
+// Added: 2025-12-03 for dashboard testing
+// Remove by: Week 1 Tuesday (real auth implementation)
+
+/**
+ * Mock authentication middleware - TESTING ONLY
+ * Bypasses JWT validation and creates a fake admin user
+ * WARNING: NOT SECURE - DO NOT USE IN PRODUCTION
+ */
+export async function mockAuthenticate(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  console.log('⚠️ WARNING: Using MOCK authentication - NOT SECURE!');
+  console.log('⚠️ This should ONLY be used for local testing');
+  
+  // Create a fake admin user
+  req.user = {
+    id: '00000000-0000-0000-0000-000000000001',
+    org_id: '1',
+    email: 'bill@oneillcontractors.com',
+    roles: ['admin'],
+    permissions: getUserPermissions(['admin']),
+  };
+
+  next();
+}
