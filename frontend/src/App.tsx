@@ -45,298 +45,67 @@ function App() {
           <Route path="/auth/callback" element={<AuthCallback />} />
 
           {/* Protected Routes - All with Sidebar */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedPage>
-                <Dashboard />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
+          
           {/* Preconstruction Module */}
-          <Route
-            path="/preconstruction"
-            element={
-              <ProtectedPage>
-                <Preconstruction />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/preconstruction/*"
-            element={
-              <ProtectedPage>
-                <Preconstruction />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/preconstruction" element={<ProtectedPage><Preconstruction /></ProtectedPage>} />
+          <Route path="/preconstruction/*" element={<ProtectedPage><Preconstruction /></ProtectedPage>} />
+          
           {/* Cost/Financial Module */}
-          <Route
-            path="/cost"
-            element={
-              <ProtectedPage>
-                <FinancialManagement />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/cost/*"
-            element={
-              <ProtectedPage>
-                <FinancialManagement />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/financial"
-            element={
-              <ProtectedPage>
-                <FinancialManagement />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/cost" element={<ProtectedPage><FinancialManagement /></ProtectedPage>} />
+          <Route path="/cost/*" element={<ProtectedPage><FinancialManagement /></ProtectedPage>} />
+          <Route path="/financial" element={<ProtectedPage><FinancialManagement /></ProtectedPage>} />
+          
           {/* Schedule Module */}
-          <Route
-            path="/schedule"
-            element={
-              <ProtectedPage>
-                <ProjectManagement />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/schedule/*"
-            element={
-              <ProtectedPage>
-                <ProjectManagement />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/schedule" element={<ProtectedPage><ProjectManagement /></ProtectedPage>} />
+          <Route path="/schedule/*" element={<ProtectedPage><ProjectManagement /></ProtectedPage>} />
+          
           {/* Risk Module */}
-          <Route
-            path="/risk"
-            element={
-              <ProtectedPage>
-                <ProjectManagement />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/risk/*"
-            element={
-              <ProtectedPage>
-                <ProjectManagement />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/risk" element={<ProtectedPage><ProjectManagement /></ProtectedPage>} />
+          <Route path="/risk/*" element={<ProtectedPage><ProjectManagement /></ProtectedPage>} />
+          
           {/* Quality Module */}
-          <Route
-            path="/quality"
-            element={
-              <ProtectedPage>
-                <FieldOperations />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/quality/*"
-            element={
-              <ProtectedPage>
-                <FieldOperations />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/quality" element={<ProtectedPage><FieldOperations /></ProtectedPage>} />
+          <Route path="/quality/*" element={<ProtectedPage><FieldOperations /></ProtectedPage>} />
+          
           {/* Safety Module */}
-          <Route
-            path="/safety"
-            element={
-              <ProtectedPage>
-                <SafetyCompliance />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/safety/*"
-            element={
-              <ProtectedPage>
-                <SafetyCompliance />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/safety" element={<ProtectedPage><SafetyCompliance /></ProtectedPage>} />
+          <Route path="/safety/*" element={<ProtectedPage><SafetyCompliance /></ProtectedPage>} />
+          
           {/* Procurement Module */}
-          <Route
-            path="/procurement"
-            element={
-              <ProtectedPage>
-                <Procurement />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/procurement/*"
-            element={
-              <ProtectedPage>
-                <Procurement />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/procurement" element={<ProtectedPage><Procurement /></ProtectedPage>} />
+          <Route path="/procurement/*" element={<ProtectedPage><Procurement /></ProtectedPage>} />
+          
           {/* Communications Module */}
-          <Route
-            path="/communications"
-            element={
-              <ProtectedPage>
-                <DocumentControl />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/communications/*"
-            element={
-              <ProtectedPage>
-                <DocumentControl />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/communications" element={<ProtectedPage><DocumentControl /></ProtectedPage>} />
+          <Route path="/communications/*" element={<ProtectedPage><DocumentControl /></ProtectedPage>} />
+          
           {/* Staffing Module */}
-          <Route
-            path="/staffing"
-            element={
-              <ProtectedPage>
-                <Administration />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/staffing/*"
-            element={
-              <ProtectedPage>
-                <Administration />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/staffing" element={<ProtectedPage><Administration /></ProtectedPage>} />
+          <Route path="/staffing/*" element={<ProtectedPage><Administration /></ProtectedPage>} />
+          
           {/* Closeout Module */}
-          <Route
-            path="/closeout"
-            element={
-              <ProtectedPage>
-                <CloseoutWarranty />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/closeout/*"
-            element={
-              <ProtectedPage>
-                <CloseoutWarranty />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/closeout" element={<ProtectedPage><CloseoutWarranty /></ProtectedPage>} />
+          <Route path="/closeout/*" element={<ProtectedPage><CloseoutWarranty /></ProtectedPage>} />
+          
           {/* Documents Module */}
-          <Route
-            path="/documents"
-            element={
-              <ProtectedPage>
-                <DocumentControl />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/documents/*"
-            element={
-              <ProtectedPage>
-                <DocumentControl />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/documents" element={<ProtectedPage><DocumentControl /></ProtectedPage>} />
+          <Route path="/documents/*" element={<ProtectedPage><DocumentControl /></ProtectedPage>} />
+          
           {/* Analytics */}
-          <Route
-            path="/analytics"
-            element={
-              <ProtectedPage>
-                <Analytics />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/analytics" element={<ProtectedPage><Analytics /></ProtectedPage>} />
+          
           {/* Admin Routes */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedPage>
-                <Administration />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/admin/*"
-            element={
-              <ProtectedPage>
-                <Administration />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/administration"
-            element={
-              <ProtectedPage>
-                <Administration />
-              </ProtectedPage>
-            }
-          />
-
+          <Route path="/admin" element={<ProtectedPage><Administration /></ProtectedPage>} />
+          <Route path="/admin/*" element={<ProtectedPage><Administration /></ProtectedPage>} />
+          <Route path="/administration" element={<ProtectedPage><Administration /></ProtectedPage>} />
+          
           {/* Other Routes */}
-          <Route
-            path="/pipeline"
-            element={
-              <ProtectedPage>
-                <Pipeline />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/import"
-            element={
-              <ProtectedPage>
-                <Import />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/projects"
-            element={
-              <ProtectedPage>
-                <ProjectManagement />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/field-operations"
-            element={
-              <ProtectedPage>
-                <FieldOperations />
-              </ProtectedPage>
-            }
-          />
-          <Route
-            path="/client-portal"
-            element={
-              <ProtectedPage>
-                <ClientPortal />
-              </ProtectedPage>
-            }
-          />
+          <Route path="/pipeline" element={<ProtectedPage><Pipeline /></ProtectedPage>} />
+          <Route path="/import" element={<ProtectedPage><Import /></ProtectedPage>} />
+          <Route path="/projects" element={<ProtectedPage><ProjectManagement /></ProtectedPage>} />
+          <Route path="/field-operations" element={<ProtectedPage><FieldOperations /></ProtectedPage>} />
+          <Route path="/client-portal" element={<ProtectedPage><ClientPortal /></ProtectedPage>} />
 
           {/* Default redirect */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -346,4 +115,5 @@ function App() {
     </AuthProvider>
   );
 }
+
 export default App;

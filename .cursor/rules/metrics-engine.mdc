@@ -1,4 +1,9 @@
 ---
+description: Specification for metrics calculation system including KPIs, pipeline values, financial projections and stage-specific metrics
+---
+
+# === USER INSTRUCTIONS ===
+---
 description: Technical specification for construction project metrics calculation system, including KPIs, pipeline values, and stage analytics
 alwaysApply: false
 ---
@@ -122,3 +127,57 @@ Resource Factor varies by stage (0.1 to 1.0)
 $END$
 
 _Context added by Giga metrics-engine - Pipeline value calculations, KPI formulas, and threshold configurations._
+# === END USER INSTRUCTIONS ===
+
+# metrics-engine
+
+## Core KPI Calculation Engine
+Path: frontend/src/services/metrics/metrics.service.ts
+- Monthly award pace calculations with fiscal year projections
+- Win rate trending with statistical confidence intervals
+- Pipeline velocity measurements across stages
+- Capacity modeling with what-if scenario support
+Importance Score: 95/100
+
+## Pipeline Stage Analytics
+Path: frontend/src/services/pipeline.service.ts
+- Stage-specific conversion rate tracking
+- Bottleneck detection algorithms
+- Stall pattern identification
+- Stage duration analysis against benchmarks
+Importance Score: 85/100
+
+## Financial Projection System
+Path: frontend/src/components/dashboard/WhatIfDrawer.tsx
+- Scenario-based financial outcome modeling
+- Win rate sensitivity analysis
+- Award size impact calculations
+- Capacity utilization projections
+Importance Score: 85/100
+
+## Performance Metrics Dashboard
+Path: frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx
+- Bidding capacity threshold monitoring (>100% red, >80% yellow, <80% green)
+- Pipeline velocity calculations
+- Risk-adjusted bid value computations
+Importance Score: 75/100
+
+## Data Quality Control
+Path: frontend/scripts/audit/qa-check.js
+- Pipeline velocity validation
+- Financial projection integrity checks
+- Geographic data completeness validation
+- Data freshness monitoring with severity thresholds
+Importance Score: 80/100
+
+## KPI Audit System
+Path: frontend/scripts/audit/audit-kpis.js
+- YTD awards tracking
+- Pipeline value calculations
+- Monthly award pace monitoring
+- Historical KPI snapshots with attribution
+Importance Score: 85/100
+
+$END$
+
+ If you're using this file in context, clearly say in italics in one small line that "Context added by Giga metrics-engine" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.

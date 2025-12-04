@@ -67,17 +67,8 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Request logging
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-} else {
-  app.use(morgan("combined"));
-}
-// Request logging
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-} else {
-  app.use(morgan("combined"));
-}
+const loggerFormat = process.env.NODE_ENV === "development" ? "dev" : "combined";
+app.use(morgan(loggerFormat));
 
 // ============================================
 // TEMPORARY MOCK AUTHENTICATION
@@ -85,9 +76,14 @@ if (process.env.NODE_ENV === "development") {
 // TODO: REMOVE THIS BEFORE PRODUCTION!
 // Added: 2025-12-03 for dashboard testing
 // This bypasses all authentication - NOT SECURE
-console.log("⚠️ WARNING: Mock authentication is ENABLED");
-console.log("⚠️ This should ONLY be used for testing");
-app.use(mockAuthenticate);
+const useMockAuth = process.env.USE_MOCK_AUTH === "true";
+if (useMockAuth) {
+  console.warn("[AUTH] Mock authentication is ENABLED");
+  console.warn("[AUTH] This should ONLY be used for local testing");
+  app.use(mockAuthenticate);
+} else if (process.env.NODE_ENV === "development") {
+  console.info("[AUTH] Mock authentication disabled. Provide real credentials.");
+}
 // ============================================
 
 // ============================================
@@ -149,19 +145,19 @@ async function start() {
   try {
     const connected = await testConnection();
     if (!connected) {
-      console.error("❌ Failed to connect to database");
+      console.error("[STARTUP] Failed to connect to database");
       process.exit(1);
     }
 
     app.listen(PORT, () => {
-      console.log(`🚀 OC Pipeline Backend started`);
-      console.log(`🔐 Environment: ${process.env.NODE_ENV}`);
-      console.log(`🔗 Server running on port ${PORT}`);
-      console.log(`✅ ISDC Module: Loaded`);
-      console.log(`✅ Health check: http://localhost:${PORT}/health`);
+      console.log("[SERVER] OC Pipeline Backend started");
+      console.log(`[SERVER] Environment: ${process.env.NODE_ENV}`);
+      console.log(`[SERVER] Listening on port ${PORT}`);
+      console.log("[SERVER] ISDC Module loaded");
+      console.log(`[SERVER] Health check: http://localhost:${PORT}/health`);
     });
   } catch (error) {
-    console.error("❌ Failed to start server:", error);
+    console.error("[STARTUP] Failed to start server:", error);
     process.exit(1);
   }
 }

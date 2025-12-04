@@ -1,4 +1,9 @@
 ---
+description: Pipeline workflow documentation and stage management for construction project progression
+---
+
+# === USER INSTRUCTIONS ===
+---
 description: Documents construction project pipeline workflow stages, transitions, and validation rules
 alwaysApply: false
 ---
@@ -150,3 +155,53 @@ const calculatePhaseValue = (project) => {
 $END$
 
 _Context added by Giga pipeline-workflow-model - Four-phase lifecycle, stage transitions, and approval requirements._
+# === END USER INSTRUCTIONS ===
+
+# pipeline-workflow-model
+
+Pipeline Stage Definitions:
+
+1. Opportunity Phase
+- Lead Generation → Proposal → Negotiation → Award/Lost
+- Stage transition rules based on bid submission status
+- Automated stall detection at 30/60/90 day thresholds
+- Win probability calculations affect downstream capacity
+
+2. Preconstruction Phase  
+- Planning → Design → Permitting → Ready
+- Document control requirements for each stage transition
+- Automated submittal tracking and approval workflows
+- Design review cycles with validation gates
+
+3. Execution Phase
+- Mobilization → Construction → Punch List → Substantial Completion 
+- Progress tracking against baseline schedule
+- Daily report requirements for stage advancement
+- Quality control checklist validation
+
+4. Closeout Phase
+- Final Inspection → Documentation → Warranty → Complete
+- Document package completeness verification
+- Warranty period countdown tracking
+- As-built drawing submission requirements
+
+Stage Transition Rules:
+- Required document sets per transition
+- Approval workflow configurations
+- Financial milestone validations
+- Compliance requirement checks
+
+Custom Business Metrics:
+- Stage duration vs industry benchmarks
+- Stall detection with risk scoring
+- Resource capacity impact calculations
+- Pipeline velocity measurements
+
+Files:
+frontend/src/components/pipeline/KanbanBoard.tsx
+frontend/src/config/pipeline-stages.ts
+frontend/src/services/pipeline.service.ts
+
+$END$
+
+ If you're using this file in context, clearly say in italics in one small line that "Context added by Giga pipeline-workflow-model" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.

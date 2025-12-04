@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "futuretechnexus.getbotai",
-        "fabiospampinato.vscode-open-in-github"
+        "fabiospampinato.vscode-open-in-github",
+        "openai.chatgpt"
     ]
 }
