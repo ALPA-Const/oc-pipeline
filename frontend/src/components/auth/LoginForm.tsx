@@ -181,12 +181,17 @@ export const LoginForm = () => {
               </Button>
             </div>
 
-            <p className="text-center text-sm text-gray-600">
-              Don't have an account?{' '}
-              <a href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
-                Sign up
+            <div className="text-center space-y-2">
+              <a href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium block">
+                Forgot your password?
               </a>
-            </p>
+              <p className="text-sm text-gray-600">
+                Don't have an account?{' '}
+                <a href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
+                  Sign up
+                </a>
+              </p>
+            </div>
           </CardContent>
         </Card>
 

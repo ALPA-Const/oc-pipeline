@@ -7,6 +7,8 @@ import {
 import { AuthProvider } from "@/hooks/AuthContext";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { AuthCallback } from "@/pages/AuthCallback";
+import { ForgotPassword } from "@/pages/ForgotPassword";
+import { ResetPassword } from "@/pages/ResetPassword";
 import { Dashboard } from "@/pages/Dashboard";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { MainLayout } from "@/components/layout/MainLayout";
@@ -42,6 +44,8 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
 
           {/* Protected Routes - All with Sidebar */}
