@@ -1,5 +1,5 @@
 ---
-description: Technical specification for metrics calculation system including KPIs, pipeline values, and financial projections.
+description: Specification for construction project metrics calculation system including KPIs, pipeline values, and performance analytics
 ---
 
 # === USER INSTRUCTIONS ===
@@ -131,53 +131,48 @@ _Context added by Giga metrics-engine - Pipeline value calculations, KPI formula
 
 # metrics-engine
 
-## Core Metrics Components
+Core metrics calculation system implementing construction industry-specific analytics:
 
-### Pipeline Analytics Engine
-Location: frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx
-- Weighted pipeline value calculations with win probability factors
-- Custom capacity threshold monitoring (80% warning, 100% critical) 
-- Project velocity metrics by stage with minimum sample requirements
-- Win rate trends with trailing period analysis
-Importance Score: 85/100
+## Pipeline Value Calculations (Score: 95)
+- Weighted pipeline values based on stage-specific win probabilities
+- Project magnitude range classifications
+- Set-aside category value aggregation
+- Year-to-date award tracking against targets
+- Monthly velocity calculations with minimum sample thresholds
 
-### Financial Projection System
-Location: frontend/src/components/dashboard/WhatIfDrawer.tsx
-- Business forecasting simulation with multiple scenario support
-- Award size projections based on historical patterns
-- Real-time capacity planning with threshold analysis
-- Custom algorithms for win rate projections
-Importance Score: 90/100
+## Performance Analytics (Score: 90) 
+- Stage-specific conversion rates with trend analysis
+- Stalled project percentage calculation by stage
+- Average cycle time metrics per pipeline phase
+- Bottleneck detection using variance analysis
+- Resource capacity utilization tracking
 
-### KPI Management System
-Location: frontend/src/services/metrics/metrics.service.ts
-- Pipeline velocity calculations requiring minimum 5 samples
-- Geographic distribution analysis for project portfolio
-- Annual target tracking with run-rate calculations
-- Trend analysis with win probability weighting
-Importance Score: 85/100
+## Financial Projections (Score: 85)
+- Fiscal year-end projections using win rate modeling
+- Scenario planning with adjustable parameters
+- Award size distribution analysis
+- Geographic market penetration metrics
+- Run rate calculations against annual targets
 
-### Project Distribution Analysis
-Location: frontend/src/components/dashboard/BarDistributionChart.tsx
-- Project value normalization to millions
-- State and set-aside type distribution tracking
-- Federal contract category grouping
-Importance Score: 65/100
+## Industry KPIs (Score: 80)
+/src/services/metrics/kpi-definitions.ts
+- Bid-hit ratio tracking
+- Win rate by project type
+- Stage duration compliance 
+- Submittal cycle time analysis
+- Change order percentage monitoring
 
-## Key Metrics Formulas
+## Stage Analytics (Score: 75)
+- Stage transition velocity tracking
+- Stage-specific value thresholds
+- Duration monitoring against baselines
+- Risk-adjusted portfolio valuation
+- Stage completion rate analysis
 
-### Pipeline Value Calculations
-- Weighted Value = Σ(Project Value × Win Probability × Stage Weight)
-- Capacity Utilization = (Active Projects Value / Maximum Capacity) × 100
-- Run Rate = (YTD Awards / Days in Year) × 365
-- Velocity = Projects Moved / Time Period
-
-### Performance Thresholds
-- Critical Capacity: >100% utilization
-- Warning Capacity: >80% utilization
-- Minimum Sample Size: 5 projects for velocity calculations
-- Stall Warning: >30 days in stage
-- Data Freshness: 48 hour maximum
+Key locations:
+/src/services/metrics/
+/src/components/dashboard/metrics/
+/src/utils/calculations/
 
 $END$
 

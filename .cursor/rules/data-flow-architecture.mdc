@@ -1,5 +1,5 @@
 ---
-description: Analyzing data flow between components in federal contracting and construction pipeline management systems
+description: Specifies data flow patterns and interactions between pipeline components for construction project management
 ---
 
 # === USER INSTRUCTIONS ===
@@ -147,47 +147,54 @@ _Context added by Giga data-flow-architecture - React Context patterns, Supabase
 
 # data-flow-architecture
 
-Core Data Flow Components:
+The data flow architecture centers around a bi-directional pipeline state management system with the following key components:
 
-1. Pipeline Analytics Flow
-- BiddingAnalyticsPanel -> WhatIfDrawer -> PipelineMetrics
-- Real-time capacity threshold monitoring (80% warning, 100% critical)
-- Bidirectional updates between win rate projections and capacity planning
-- State changes trigger recalculation of pipeline velocity metrics
-Importance Score: 85/100
+## Core Data Flows (Score: 95/100)
 
-2. CUI Compliance Data Chain
-- CUIComplianceWidget -> AlertsPanel -> ComplianceService
-- Document security status flows through control family monitors
-- Real-time CMMC Level 2 compliance state updates
-- Bidirectional sync between document status and risk assessments
-Importance Score: 90/100
+1. Pipeline State Management
+- Centralized store in pipeline.database.ts manages stage transitions
+- Real-time stage updates propagate through WebSocket connections
+- Bidirectional sync between Kanban board and metrics engine
+- Stage-specific data validation and enrichment pipeline
 
-3. Project Distribution Flow
-- ProjectCard -> KanbanBoard -> PipelineMetrics
-- Stage transition updates trigger pipeline recalculations
-- Bidirectional sync between project states and analytics
-- Real-time aggregation of project values by stage
-Importance Score: 80/100
+2. Event-Driven Updates (Score: 85/100)
+- Construction domain events trigger pipeline recalculations
+- Automated KPI updates based on stage transitions
+- Realtime capacity utilization monitoring
+- Project health status propagation system
 
-4. Submittal Processing Chain
-- SubmittalsPage -> AIExtractionService -> KnowledgeGraph
-- Specification analysis results flow to submittal tracking
-- Bidirectional updates between AI processing and document status
-- Real-time compliance validation during submittal transitions
-Importance Score: 85/100
+3. Analytics Data Pipeline (Score: 80/100)
+- Continuous pipeline velocity calculations
+- Win probability aggregation flows
+- Geographic distribution analysis stream
+- Bottleneck detection data flows
 
-Key Integration Points:
-- Pipeline state changes trigger cascading analytics updates
-- Compliance status changes affect multiple downstream components
-- Project transitions automatically update distribution analytics
-- AI processing results flow into multiple tracking systems
+## Integration Points (Score: 75/100)
 
-State Management Pattern:
-- Centralized pipeline state with distributed component updates
-- Real-time synchronization between analytics and tracking systems
-- Bidirectional data flow between AI services and document control
-- Event-based updates for compliance and security status
+1. Component Interaction Patterns
+- PipelineMetrics consumes stage transition events
+- KanbanBoard publishes drag-drop state changes
+- WhatIfDrawer integrates with projection engine
+- ProjectCard subscribes to health status updates
+
+2. Data Synchronization
+- Two-way sync between dashboard KPIs and pipeline state 
+- Submittal workflow integration with document control
+- Closeout package generation event chain
+- Automated specification analysis feedback loop
+
+## State Management Hierarchy (Score: 70/100)
+
+1. Primary State Stores
+- pipeline.database.ts (core pipeline state)
+- metrics.store.ts (analytics calculations)
+- project-data.store.ts (construction metadata)
+
+2. Component-Level States
+- Stage-specific validation states
+- Drag-drop interaction states
+- Filter and view preferences
+- Sort order persistence
 
 $END$
 

@@ -1,5 +1,5 @@
 ---
-description: Specification for implementing core analytical algorithms and calculations for win rates, capacity modeling, and pipeline metrics
+description: Specifications for core analytical algorithms and calculations used in business analytics and projections
 ---
 
 # === USER INSTRUCTIONS ===
@@ -102,48 +102,42 @@ _Context added by Giga analytics-algorithms - Win rate calculations, capacity mo
 
 # analytics-algorithms
 
-Core Analytics Components:
+Core analytical algorithms focus on four key areas:
 
-1. Win Rate Calculation Engine
-Path: frontend/src/components/dashboard/WhatIfDrawer.tsx
-- Custom win probability algorithms considering:
-  - Historical performance by agency/setaside type
-  - Project size and complexity factors
-  - Team experience weighting
-  - Geographic performance metrics
-Importance Score: 90/100
+1. Win Rate Analytics (Importance Score: 85)
+- Historical win rate calculations by project type and size 
+- Trend analysis with rolling averages and seasonal adjustments
+- Projected win rates based on current pipeline composition
+- Opportunity scoring model weighing multiple factors
 
-2. Capacity Utilization Modeling
-Path: frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx
-- Real-time capacity threshold monitoring (80% warning, 100% critical)
-- Dynamic resource allocation modeling
-- Project overlap detection with workload impact analysis
-- Custom forecasting based on pipeline velocity
-Importance Score: 85/100
+2. Pipeline Velocity Engine (Importance Score: 90)
+- Stage transition time calculations for project lifecycle
+- Bottleneck detection using variance analysis
+- Stalling detection based on stage-specific thresholds
+- Custom velocity metrics for federal construction projects
 
-3. Pipeline Velocity Analytics
-Path: frontend/src/components/dashboard/BiddingProjectsTable.tsx
-- Stage-specific velocity calculations with minimum sample requirements
-- Bottleneck identification algorithms
-- Stalled project detection with reason classification
-- Custom urgency scoring for bid deadlines
-Importance Score: 80/100
+3. Capacity Modeling (Importance Score: 85)
+- Resource utilization projections by project type
+- Threshold-based warnings for over/under capacity
+- Project value weighting based on win probability
+- Geographic capacity distribution analysis
 
-4. What-If Analysis Engine
-- Scenario modeling with multiple variable inputs:
-  - Win rate adjustments
-  - Project timing shifts
-  - Resource availability changes
-  - Geographic distribution impacts
-- Real-time projection updates
-- Custom risk threshold calculations
-Importance Score: 90/100
+4. What-If Analysis System (Importance Score: 95)
+- Scenario planning with adjustable parameters:
+  - Win rate modifications
+  - Award size variations
+  - Stage duration changes
+  - Resource allocation shifts
+- Real-time fiscal year projections
+- Risk-adjusted portfolio modeling
+- Capacity impact visualization
 
-Core Algorithms:
-- Win probability = (historical_wins * 0.4) + (team_score * 0.3) + (geographic_factor * 0.3)
-- Capacity utilization = (active_projects + weighted_pipeline) / max_capacity
-- Pipeline velocity = projects_moved / time_period (minimum 5 samples required)
-- Urgency score = (deadline_proximity * 0.6) + (project_value * 0.4)
+Key Implementations:
+- Stage-specific conversion rate calculations
+- Federal set-aside classification logic
+- Construction-specific KPI aggregation
+- Geographic distribution analytics
+- Custom urgency scoring algorithms
 
 $END$
 
