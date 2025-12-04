@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,23 +8,43 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, AlertCircle } from 'lucide-react';
 
 export const LoginForm = () => {
-  const { signIn, signInWithGoogle, signInWithMicrosoft, loading, error } = useAuth();
+  const navigate = useNavigate();
+  const { signIn, signInWithGoogle, signInWithMicrosoft, loading, error, isAuthenticated } = useAuth();
   const [email, setEmail] = useState('bill@oneillcontractors.com');
   const [password, setPassword] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);
 
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError(null);
+    
+    console.log('=== SIGN IN CLICKED ===');
+    console.log('Email:', email);
+    console.log('Password length:', password.length);
 
     if (!email || !password) {
       setLocalError('Email and password are required');
       return;
     }
 
+    console.log('Calling signIn...');
     const result = await signIn(email, password);
+    console.log('SignIn result:', result);
+    
     if (!result.success) {
+      console.log('SignIn failed:', result.error);
       setLocalError(result.error || 'Sign in failed');
+    } else {
+      console.log('SignIn success, navigating to dashboard...');
+      // Redirect to dashboard on successful login
+      navigate('/dashboard', { replace: true });
     }
   };
 

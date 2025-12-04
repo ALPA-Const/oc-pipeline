@@ -99,18 +99,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       setError(null);
+      
+      console.log('=== AuthContext signIn ===');
+      console.log('Attempting signInWithPassword for:', email);
 
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      
+      console.log('Supabase response - data:', data);
+      console.log('Supabase response - error:', signInError);
 
       if (signInError) {
+        console.log('SignIn error:', signInError.message);
         setError(signInError.message);
         return { success: false, error: signInError.message };
       }
 
       if (data.user) {
+        console.log('User signed in:', data.user.email);
         setUser({
           id: data.user.id,
           email: data.user.email || '',
@@ -121,6 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       return { success: false, error: 'Unknown error' };
     } catch (err) {
+      console.log('SignIn catch error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Sign in failed';
       setError(errorMessage);
       return { success: false, error: errorMessage };
