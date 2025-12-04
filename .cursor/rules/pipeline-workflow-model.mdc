@@ -1,5 +1,5 @@
 ---
-description: Pipeline workflow documentation and stage management for construction project progression
+description: Governs project lifecycle progression through defined pipeline stages from opportunity identification through closeout
 ---
 
 # === USER INSTRUCTIONS ===
@@ -159,48 +159,51 @@ _Context added by Giga pipeline-workflow-model - Four-phase lifecycle, stage tra
 
 # pipeline-workflow-model
 
-Pipeline Stage Definitions:
+The pipeline workflow model defines four primary phases with strict progression rules and validation requirements:
 
-1. Opportunity Phase
+## 1. Opportunity Pipeline (Importance: 90)
 - Lead Generation → Proposal → Negotiation → Award/Lost
-- Stage transition rules based on bid submission status
-- Automated stall detection at 30/60/90 day thresholds
-- Win probability calculations affect downstream capacity
+- Required fields and validations per stage:
+  - Lead: Project name, estimated value, agency
+  - Proposal: Solicitation number, due date, bid strategy
+  - Negotiation: Final price, terms, conditions
+  - Award: Contract number, period of performance
 
-2. Preconstruction Phase  
+## 2. Preconstruction Pipeline (Importance: 85)
 - Planning → Design → Permitting → Ready
-- Document control requirements for each stage transition
-- Automated submittal tracking and approval workflows
-- Design review cycles with validation gates
+- Stage transition requirements:
+  - Planning to Design: Complete site surveys, preliminary budget
+  - Design to Permitting: 90% design documents, specifications
+  - Permitting to Ready: All permits obtained, subcontractor commitments
 
-3. Execution Phase
-- Mobilization → Construction → Punch List → Substantial Completion 
-- Progress tracking against baseline schedule
-- Daily report requirements for stage advancement
-- Quality control checklist validation
+## 3. Execution Pipeline (Importance: 85)
+- Mobilization → Construction → Punch List → Substantial
+- Key validation points:
+  - Mobilization: Site access, safety plan, logistics plan
+  - Construction: Progress tracking, milestone verification
+  - Punch List: Deficiency documentation, completion tracking
+  - Substantial: Systems testing, occupancy requirements
 
-4. Closeout Phase
+## 4. Closeout Pipeline (Importance: 80)
 - Final Inspection → Documentation → Warranty → Complete
-- Document package completeness verification
-- Warranty period countdown tracking
-- As-built drawing submission requirements
+- Required completion criteria:
+  - Final Inspection: Agency approval, life safety verification
+  - Documentation: As-builts, O&M manuals, warranties
+  - Warranty: Start/end dates, contact information
+  - Complete: All financial reconciliation, contract closure
 
 Stage Transition Rules:
-- Required document sets per transition
-- Approval workflow configurations
-- Financial milestone validations
-- Compliance requirement checks
+- No skipping stages within phases
+- Required approvals for phase transitions
+- Automated status calculations based on milestone completion
+- Stalled project detection after configurable thresholds
 
-Custom Business Metrics:
-- Stage duration vs industry benchmarks
-- Stall detection with risk scoring
-- Resource capacity impact calculations
-- Pipeline velocity measurements
-
-Files:
-frontend/src/components/pipeline/KanbanBoard.tsx
-frontend/src/config/pipeline-stages.ts
-frontend/src/services/pipeline.service.ts
+Each stage maintains:
+- Duration tracking
+- Document requirements
+- Approval workflows
+- Validation checklists
+- Risk assessments
 
 $END$
 

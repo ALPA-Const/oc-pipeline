@@ -257,48 +257,34 @@ oc-pipeline/
 - Explain your OBSERVATIONS clearly, then provide REASONING to identify the exact issue. Add console logs when needed to gather more information.
 
 
-The system implements specialized federal construction project management through three core business domains:
+The system implements specialized construction bidding and project management logic across three core areas:
 
-## Bidding and Capacity Management
-Core logic for managing federal construction bids and resource allocation:
+## Pipeline Analytics & Compliance (Score: 90)
+- Construction bidding analytics engine tracking pipeline velocity, capacity calculations, and win rates
+- CMMC Level 2 compliance monitoring for federal construction projects
+- Document security status tracking with CUI certification management
+- Risk assessment scoring and audit trail implementation
 
-1. Bidding Analytics Engine
-- Threshold-based capacity monitoring (>100% red, >80% yellow, <80% green) 
-- Pipeline velocity calculations
-- Project value aggregation with win probability weighting
-Importance Score: 75/100
+## Project Distribution Analysis (Score: 85)
+- Construction project distribution analysis by state and set-aside type
+- Specialized bid simulation engine with win rate modeling
+- Capacity utilization projections and required project volume calculations
+- Federal contract categorization and aggregation
 
-2. Scenario Analysis System
-- What-if modeling for bid outcomes
-- Financial projections based on win rates
-- Capacity utilization simulations
-Importance Score: 85/100
+## Bidding Management (Score: 80)
+- Federal construction bidding lifecycle tracking
+- Set-aside classification handling
+- Bid urgency calculation system
+- Organizational capacity limit monitoring
 
-## Compliance Tracking
-Federal compliance monitoring framework:
+The core business value centers on federal construction contract management with emphasis on:
+- CMMC compliance workflows
+- Construction-specific KPI tracking
+- Pipeline velocity monitoring
+- Set-aside contract handling
+- Capacity planning algorithms
 
-1. CMMC Level 2 Compliance Monitor
-- Security domain tracking across control families
-- Certification status monitoring
-- Document security validation
-- Risk indicator calculations
-Importance Score: 90/100
-
-## Project Distribution Analysis
-Geographic and classification analysis system:
-
-1. Distribution Analytics
-- Set-aside classification tracking
-- State-level project aggregation
-- Category-based grouping rules
-Importance Score: 70/100
-
-The system prioritizes federal construction requirements with emphasis on:
-- Bid management workflows
-- CMMC compliance validation
-- Capacity planning rules
-- Set-aside program handling
-- Geographic distribution analysis
+Key integration points connect compliance monitoring, bidding analytics, and project distribution tracking to provide comprehensive federal construction contract management capabilities.
 
 $END$
 

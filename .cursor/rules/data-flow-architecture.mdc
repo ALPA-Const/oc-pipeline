@@ -1,5 +1,5 @@
 ---
-description: Documents data flow patterns between components in a construction project management system
+description: Analyzes and documents data flow patterns between components in a construction project management system
 ---
 
 # === USER INSTRUCTIONS ===
@@ -147,53 +147,50 @@ _Context added by Giga data-flow-architecture - React Context patterns, Supabase
 
 # data-flow-architecture
 
-## Core Data Flow Components
+Primary Data Flow Components:
 
-1. Real-Time Pipeline Updates
-- BiddingAnalyticsPanel streams capacity data to WhatIfDrawer via metrics service
-- Threshold-based status indicators trigger UI updates (>100% red, >80% yellow)
-- Bidding velocity calculations propagate through dependency chain
-Importance Score: 85/100
+1. Pipeline State Management
+- Bidirectional data flow between KanbanBoard and ProjectCard components
+- Real-time project stage transitions trigger pipeline metrics recalculation
+- Custom event bus publishes stage changes to analytics components
+- Files: 
+  - /src/components/pipeline/KanbanBoard.tsx
+  - /src/components/pipeline/ProjectCard.tsx
+Importance Score: 85
 
-2. Compliance Data Integration
-- CUIComplianceWidget maintains real-time sync with security domain services
-- Compliance scores flow through multi-level validation pipeline
-- Certificate expiration triggers cascade through notification system
-Importance Score: 90/100
+2. Analytics Data Processing
+- Streaming updates from pipeline components feed into BiddingAnalyticsPanel
+- Aggregated KPIs flow to executive dashboard components
+- Geographic distribution data flows to heat map visualizations
+- Files:
+  - /src/components/dashboard/BiddingAnalyticsPanel.tsx
+  - /src/templates/maps/GeoMapTemplate_KPI_Synced.tsx
+Importance Score: 80
 
-3. Project Distribution Flow
-- Geographic data flows from BarDistributionChart to capacity planning system
-- Set-aside classifications trigger validation rules in bidding workflow
-- State-based aggregation feeds executive dashboard metrics
-Importance Score: 75/100
+3. Multi-Agent Knowledge Flow (ATLAS)
+- Event-driven communication between 16 specialized construction agents
+- Knowledge graph maintains relationship data between projects
+- Bi-directional data flow between agents and central orchestrator
+- Files:
+  - /backend/src/services/ai/agent-orchestrator.service.ts
+  - /backend/src/services/ai/knowledge-graph.service.ts
+Importance Score: 90
 
-## State Management Patterns
+4. Document Control Pipeline
+- AI extraction results flow to submittal management components
+- Specification sections map to automated requirement tracking
+- Closeout documentation validation triggers compliance updates
+- Files:
+  - /backend/src/services/aiExtractionService.ts
+  - /backend/src/controllers/closeoutController.ts
+Importance Score: 85
 
-1. Pipeline Stage Transitions
-- Stage progression triggers capacity recalculation
-- Project status updates flow through validation chain
-- Stalled project detection initiates alert workflow
-Importance Score: 80/100
-
-2. Metrics Propagation
-- KPI calculations trigger dashboard component updates
-- Win rate adjustments cascade through scenario analysis
-- Financial projections flow to capacity planning system
-Importance Score: 85/100
-
-## Integration Points
-
-1. AI Analysis Pipeline
-- Specification analysis results flow to submittal extraction
-- Knowledge graph updates trigger document relationship recalculation
-- Compliance requirements propagate through validation system
-Importance Score: 90/100
-
-2. Federal Compliance Chain
-- Document security status flows through multi-stage validation
-- Certification updates trigger compliance score recalculation
-- Closeout documentation feeds automated package generation
-Importance Score: 85/100
+Core Data Flows:
+- Project stage transitions trigger cascading updates
+- Real-time KPI recalculation based on pipeline changes
+- Geographic data aggregation for regional analysis
+- Multi-agent communication via event bus
+- Document processing pipeline with AI integration
 
 $END$
 

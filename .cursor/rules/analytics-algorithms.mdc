@@ -1,5 +1,5 @@
 ---
-description: Specification for implementing core analytics algorithms and calculations in federal construction bidding system
+description: Analytics algorithm implementation details for core business metrics calculations in construction project tracking
 ---
 
 # === USER INSTRUCTIONS ===
@@ -102,41 +102,52 @@ _Context added by Giga analytics-algorithms - Win rate calculations, capacity mo
 
 # analytics-algorithms
 
-Core analytical algorithms for federal construction bidding:
+Core Analytics Components:
 
-1. Win Rate Calculations (90/100)
-Path: frontend/src/services/metrics/metrics.service.ts
-- Historical trend analysis incorporating past 24 months of bid data
-- Segmented win rates by project type, magnitude range, and set-aside status 
-- Weighted probability adjustments based on competitive factors
-- Moving average calculations with outlier detection
+1. Win Rate Calculation Engine
+Path: src/services/metrics/win-rate.service.ts
+- Rolling 90-day win rate calculations with weighted factors
+- Set-aside specific win probability modeling
+- Regional performance variance analysis
+- Historical trend pattern recognition
+Importance Score: 85
 
-2. What-If Analysis Engine (85/100)
-Path: frontend/src/components/dashboard/WhatIfDrawer.tsx
-- Scenario modeling for bid outcomes and financial projections
-- Capacity impact simulations for varying win rates
-- Award size probability distributions
-- Multi-variable sensitivity analysis
+2. Pipeline Velocity Analytics 
+Path: src/services/metrics/pipeline-velocity.ts
+- Stage-based velocity calculations considering:
+  - Duration in each pipeline phase
+  - Stall detection with threshold alerts
+  - Bottleneck identification algorithms
+  - Stage transition probability modeling
+- Custom weighted scoring for project progression speed
+Importance Score: 90
 
-3. Capacity Utilization Modeling (80/100)
-Path: frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx
-- Real-time capacity threshold monitoring (>100% red, >80% yellow, <80% green)
-- Resource allocation projections
-- Weighted utilization based on win probability
-- Geographic capacity distribution analysis
+3. Capacity Utilization Engine
+Path: src/services/metrics/capacity.service.ts
+- Resource allocation algorithms for construction projects
+- Multi-factor capacity modeling including:
+  - Personnel availability
+  - Equipment utilization
+  - Geographic distribution constraints
+- Forward-looking capacity forecasting
+Importance Score: 85
 
-4. Pipeline Velocity Calculations (75/100)
-- Stage transition timing analysis
-- Bottleneck detection algorithms
-- Cycle time calculations per project type
-- Stalled project identification rules
+4. What-If Analysis System
+Path: src/services/analytics/what-if.service.ts
+- Scenario modeling engine for pipeline modifications
+- Parameter-based outcome projections:
+  - Win rate adjustments
+  - Stage duration modifications
+  - Resource allocation changes
+- Confidence scoring for projected outcomes
+Importance Score: 80
 
-5. Project Distribution Analysis (70/100)
-Path: frontend/src/components/dashboard/BarDistributionChart.tsx
-- Geographic clustering algorithms
-- Set-aside category distribution modeling
-- Agency concentration risk assessment
-- Regional market penetration calculations
+Key Calculation Methods:
+- Construction-specific KPI formulations
+- Federal contracting performance metrics
+- Geographic distribution analysis
+- Pipeline health scoring algorithms
+- Project risk assessment calculations
 
 $END$
 
