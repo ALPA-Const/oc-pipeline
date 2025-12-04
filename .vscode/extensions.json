@@ -2,6 +2,7 @@
     "recommendations": [
         "futuretechnexus.getbotai",
         "fabiospampinato.vscode-open-in-github",
-        "openai.chatgpt"
+        "openai.chatgpt",
+        "ft.devtools-test"
     ]
 }
