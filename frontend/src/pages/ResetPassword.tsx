@@ -91,9 +91,10 @@ export function ResetPassword() {
         setError(updateError.message);
       } else {
         setSuccess(true);
-        // Redirect to dashboard after 2 seconds
+        // Sign out and redirect to login after 2 seconds
+        await supabase.auth.signOut();
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate('/login');
         }, 2000);
       }
     } catch (err) {
@@ -125,7 +126,7 @@ export function ResetPassword() {
           </CardHeader>
           <CardContent className="text-center">
             <p className="text-gray-600">
-              Your password has been successfully reset. Redirecting to dashboard...
+              Your password has been successfully reset. Redirecting to login...
             </p>
           </CardContent>
         </Card>
