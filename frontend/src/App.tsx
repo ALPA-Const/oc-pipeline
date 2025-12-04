@@ -12,6 +12,7 @@ import { ResetPassword } from "@/pages/ResetPassword";
 import { Dashboard } from "@/pages/Dashboard";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { RecoveryDetector } from "@/components/RecoveryDetector";
 
 // Module Pages - using default imports (no curly braces)
 import Preconstruction from "@/pages/modules/Preconstruction";
@@ -41,12 +42,14 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
+        <RecoveryDetector>
+          <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<LoginForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/auth/confirm" element={<AuthCallback />} />
 
           {/* Protected Routes - All with Sidebar */}
           <Route path="/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
@@ -115,6 +118,7 @@ function App() {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+        </RecoveryDetector>
       </Router>
     </AuthProvider>
   );
