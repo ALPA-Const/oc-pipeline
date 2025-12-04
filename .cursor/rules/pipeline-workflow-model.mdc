@@ -1,5 +1,5 @@
 ---
-description: Business logic specification for construction project pipeline workflow stages, transitions, and validation rules.
+description: Defines construction project pipeline progression model across opportunity, preconstruction, execution and closeout phases
 ---
 
 # === USER INSTRUCTIONS ===
@@ -159,50 +159,51 @@ _Context added by Giga pipeline-workflow-model - Four-phase lifecycle, stage tra
 
 # pipeline-workflow-model
 
-Pipeline Stage Definitions (Importance: 95/100)
-- Four major phases with distinct workflow rules:
-  1. Opportunity Phase
-     - Lead Generation → Proposal → Negotiation → Award/Lost
-     - Win probability calculations required for transitions
-     - Stage-specific duration thresholds for stalled detection
+Stage Progression Model:
 
-  2. Preconstruction Phase  
-     - Planning → Design → Permitting → Ready
-     - Document requirements validation per stage
-     - Agency approval tracking for federal projects
+1. Primary Pipeline Phases
+- Opportunity Phase
+  * Lead Generation → Proposal → Negotiation → Award/Lost
+  * Win probability calculations at each stage
+  * Weighted value projections based on stage maturity
 
-  3. Execution Phase
-     - Mobilization → Construction → Punch List → Substantial Completion
-     - Progress tracking with weighted milestones
-     - Resource allocation requirements per stage
+- Preconstruction Phase  
+  * Planning → Design → Permitting → Ready
+  * Document compliance tracking per stage
+  * Stage-specific budget validation rules
 
-  4. Closeout Phase
-     - Final Inspection → Documentation → Warranty → Complete
-     - Compliance document validation rules
-     - Warranty period tracking logic
+- Execution Phase
+  * Mobilization → Construction → Punch List → Substantial  
+  * Progress tracking with milestone validations
+  * Schedule variance monitoring
 
-Stage Transition Rules (Importance: 90/100)
-- Strict validation requirements between stages:
-  - Financial thresholds for opportunity progression
-  - Document completeness checks for preconstruction
-  - Agency signoff requirements for execution phases
-  - Warranty documentation for closeout completion
+- Closeout Phase
+  * Final Inspection → Documentation → Warranty → Complete
+  * Document package requirements by stage
+  * Warranty period tracking
 
-Pipeline Analytics (Importance: 85/100)
-- Stage-specific metrics tracking:
-  - Weighted pipeline value calculations
-  - Conversion rates between stages
-  - Average duration per stage
-  - Stalled project detection
-  - Bottleneck identification algorithms
+2. Stage Transition Rules
+- Forward progression requires completion of all predecessor tasks
+- Backward movement limited to single stage regression
+- Stage skipping prohibited except for lost/cancelled status
+- Automated stall detection after stage duration threshold exceeded
+Importance Score: 90/100
 
-Data Validation Rules (Importance: 80/100)
-- Required fields per stage:
-  - Set-aside classifications for federal projects
-  - Agency-specific documentation requirements
-  - Construction magnitude ranges
-  - Geographic location validation
-  - Project type categorization
+3. Stage-Specific Validation Requirements
+- Opportunity: Agency, set-aside status, estimated value
+- Preconstruction: Permits, design documents, schedules
+- Execution: Safety plans, quality control docs, submittals
+- Closeout: As-builts, warranties, O&M manuals
+Importance Score: 85/100
+
+4. Pipeline Analytics
+- Stage duration tracking against benchmarks
+- Bottleneck identification through dwell time analysis
+- Velocity calculations per phase
+- Stage-specific value aggregation
+Importance Score: 80/100
+
+The model implements strict stage progression control with industry-specific validation rules and analytics focused on construction project workflow optimization.
 
 $END$
 

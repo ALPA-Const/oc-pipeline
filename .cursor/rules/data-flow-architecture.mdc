@@ -1,5 +1,5 @@
 ---
-description: Documents data flow patterns between components for construction project pipeline management and analytics
+description: Analyzing data flow between components in federal contracting and construction pipeline management systems
 ---
 
 # === USER INSTRUCTIONS ===
@@ -147,48 +147,47 @@ _Context added by Giga data-flow-architecture - React Context patterns, Supabase
 
 # data-flow-architecture
 
-## Core Data Flow Components
+Core Data Flow Components:
 
-### Analytics Pipeline (Score: 95)
-Path: frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx
-- Real-time capacity metrics flow from project status changes to dashboard
-- Bidirectional sync between capacity thresholds and risk assessment engine
-- Push-based updates for utilization calculations across project timeline
+1. Pipeline Analytics Flow
+- BiddingAnalyticsPanel -> WhatIfDrawer -> PipelineMetrics
+- Real-time capacity threshold monitoring (80% warning, 100% critical)
+- Bidirectional updates between win rate projections and capacity planning
+- State changes trigger recalculation of pipeline velocity metrics
+Importance Score: 85/100
 
-### State Management Pipeline (Score: 90)
-Path: frontend/src/services/pipeline.service.ts
-- Centralized pipeline state with distributed observers for stage transitions
-- Event-driven updates from project status changes to metrics aggregation
-- Bidirectional data flow between project cards and stage management system
+2. CUI Compliance Data Chain
+- CUIComplianceWidget -> AlertsPanel -> ComplianceService
+- Document security status flows through control family monitors
+- Real-time CMMC Level 2 compliance state updates
+- Bidirectional sync between document status and risk assessments
+Importance Score: 90/100
 
-### Dashboard Updates (Score: 85)
-Path: frontend/src/services/metrics/metrics.service.ts
-- Real-time KPI recalculation triggered by pipeline state changes
-- Push notifications for threshold breaches and capacity warnings
-- Aggregated metrics flow through validation before UI updates
+3. Project Distribution Flow
+- ProjectCard -> KanbanBoard -> PipelineMetrics
+- Stage transition updates trigger pipeline recalculations
+- Bidirectional sync between project states and analytics
+- Real-time aggregation of project values by stage
+Importance Score: 80/100
 
-### Document Control Flow (Score: 80)
-Path: frontend/src/services/isdcService.ts
-- Asynchronous document status updates with compliance validation
-- Bidirectional sync between submittal tracking and compliance scoring
-- State propagation from document changes to compliance widgets
+4. Submittal Processing Chain
+- SubmittalsPage -> AIExtractionService -> KnowledgeGraph
+- Specification analysis results flow to submittal tracking
+- Bidirectional updates between AI processing and document status
+- Real-time compliance validation during submittal transitions
+Importance Score: 85/100
 
-## Key Integration Points
+Key Integration Points:
+- Pipeline state changes trigger cascading analytics updates
+- Compliance status changes affect multiple downstream components
+- Project transitions automatically update distribution analytics
+- AI processing results flow into multiple tracking systems
 
-1. Pipeline Stage Transitions
-- Event-based updates between KanbanBoard and metrics engine
-- Real-time capacity recalculation on project movement
-- State synchronization between drag-drop interface and backend
-
-2. Compliance Monitoring
-- Continuous data flow from document status to compliance scores
-- Push updates for security status changes
-- Bidirectional sync with risk assessment system
-
-3. What-If Analysis
-- Isolated state management for simulation scenarios
-- One-way data flow from main pipeline to analysis engine
-- Results propagation to visualization components
+State Management Pattern:
+- Centralized pipeline state with distributed component updates
+- Real-time synchronization between analytics and tracking systems
+- Bidirectional data flow between AI services and document control
+- Event-based updates for compliance and security status
 
 $END$
 

@@ -257,63 +257,51 @@ oc-pipeline/
 - Explain your OBSERVATIONS clearly, then provide REASONING to identify the exact issue. Add console logs when needed to gather more information.
 
 
-Construction Project Management Business Logic Architecture
+Federal Contracting Pipeline Management System integrating compliance tracking, risk analysis, and capacity planning:
 
-## Core Analytics Components
+## Core Business Components
 
-Dashboard Analytics Pipeline
-- Capacity utilization calculations for construction projects
-- Risk-based thresholds with critical (>100%) and warning (>80%) levels
-- Pipeline velocity metrics for project timelines
-Path: frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx
-Importance: 85
+### Bid Pipeline Analytics
+`frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx`
+- Capacity threshold monitoring (80% warning, 100% critical)
+- Win rate metrics with pipeline velocity calculations
+Importance Score: 75/100
 
-CUI Compliance System
-- CMMC Level 2 compliance tracking for federal projects
-- Document security monitoring and compliance scoring
-- Weighted control family assessments
-Path: frontend/src/components/dashboard/CUIComplianceWidget.tsx
-Importance: 90
+### CUI Compliance System
+`frontend/src/components/dashboard/CUIComplianceWidget.tsx`
+- CMMC Level 2 compliance status tracking 
+- Control family monitoring for Access Control, Awareness, Audit Logs
+- Risk-based status determination
+Importance Score: 85/100
 
-## Pipeline Management
+### What-If Analysis Engine 
+`frontend/src/components/dashboard/WhatIfDrawer.tsx`
+- Business forecasting simulation with custom algorithms
+- Real-time projection updates for win rates and award sizes
+Importance Score: 90/100
 
-What-If Analysis Engine
-- Win rate impact simulations
-- Award size sensitivity analysis
-- Capacity projection algorithms
-Path: frontend/src/components/dashboard/WhatIfDrawer.tsx
-Importance: 88
+### Pipeline Analytics
+`frontend/src/components/dashboard/BiddingProjectsTable.tsx`
+- Urgency calculations for bid deadlines
+- Set-aside classification system
+- Capacity percentage tracking with risk thresholds
+Importance Score: 80/100
 
-Stage Management System
-- Construction-specific pipeline stages
-- Stage transition validation rules
-- Weighted value calculations per stage
-Path: frontend/src/services/pipeline.service.ts
-Importance: 85
+## Integration Points
 
-## Project Analytics
+### Executive Metrics Service
+`frontend/src/services/metrics/metrics.service.ts`
+- Pipeline velocity calculations with minimum sample requirements
+- Geographic distribution analysis
+- Annual target tracking with run-rate calculations
+Importance Score: 90/100
 
-Executive Metrics Engine
-- Win rate trend analysis
-- Capacity utilization forecasting
-- Geographic distribution analytics
-Path: frontend/src/services/metrics/metrics.service.ts
-Importance: 90
-
-ISDC (Integrated Submittal & Document Control)
-- Federal construction submittal workflows
-- AI-powered specification analysis
-- Specialized warranty/certification tracking
-Path: frontend/src/pages/isdc/SubmittalsPage.tsx
-Importance: 85
-
-## Key Domain Patterns
-- Federal construction bidding workflows
-- Government contract set-aside categorization
-- Construction project capacity management
-- CUI documentation compliance tracking
-- Submittal extraction and processing
-- Joint venture partnership handling
+### Pipeline Management 
+`frontend/src/services/pipeline.service.ts`
+- Stage transition logic with audit trails
+- Bottleneck analysis and stalled project handling
+- Data integrity validation for pipeline processes
+Importance Score: 85/100
 
 $END$
 
