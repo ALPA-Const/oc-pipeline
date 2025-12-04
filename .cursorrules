@@ -257,61 +257,59 @@ oc-pipeline/
 - Explain your OBSERVATIONS clearly, then provide REASONING to identify the exact issue. Add console logs when needed to gather more information.
 
 
-## Core Business Systems
+Construction Pipeline Management System
 
-### Pipeline Management (85/100)
-- Stage-based workflow for federal construction projects
-- Weighted value calculations for project portfolio
-- Automated stalling detection system with custom thresholds
-- Stage-specific conversion rate tracking
-- Set-aside classification for government contracts
+Core Business Components:
 
-### Federal Compliance (90/100)
-- CMMC Level 2 compliance monitoring
-- Control family tracking:
-  - Access control
-  - Awareness training
-  - Audit logging
-  - Incident response
-- Risk assessment scoring with status indicators
+1. Pipeline Analytics Engine
+- Pipeline velocity tracking with construction-specific KPIs
+- Win rate analysis incorporating bid outcomes
+- Capacity planning with resource allocation forecasting
+- Geographic distribution analysis for project concentration
+Importance Score: 90
 
-### Construction Analytics (80/100)
-- Pipeline velocity calculations with minimum sample requirements
-- Capacity utilization analysis with risk thresholds
-- Bid value aggregation with win rate correlations
-- Geographic distribution analysis
-- What-if scenario planning for financial projections
+2. What-If Analysis Engine
+- Interactive simulation for bid outcomes
+- Dynamic capacity planning 
+- Project requirement forecasting
+- Timeline impact assessment
+Importance Score: 85
 
-### Document Control (85/100)
-- AI-powered specification analysis
-- Automated submittal extraction
-- Construction-specific closeout workflows
-- Subcontractor outreach campaign management
-- Multi-stage document processing with confidence scoring
+3. CUI Compliance System
+- CMMC Level 2 compliance monitoring for federal projects
+- Document security status tracking
+- Certification expiration management
+- Real-time compliance scoring
+Importance Score: 85
 
-## Key Integration Points
+4. Project Distribution Analysis
+- Project categorization by state and set-aside type
+- Construction magnitude calculations
+- Regional capacity impact assessment
+- Geographic clustering analysis
+Importance Score: 75
 
-### Project Classification
-- Priority-based indicators (critical, high, medium, low)
-- Health status calculations based on:
-  - Stage duration
-  - Stall detection
-  - Win probability
-  - Agency requirements
+Business Domain Architecture:
 
-### Pipeline Metrics
+1. Pipeline Stages
+- Opportunity Pipeline (Lead Gen → Award)
+- Preconstruction Pipeline (Planning → Ready)
+- Execution Pipeline (Mobilization → Completion)
+- Closeout Pipeline (Inspection → Warranty)
+
+2. Document Management
+- Submittal workflow automation
+- AI-powered specification extraction
+- Closeout package generation
+- Compliance document tracking
+
+3. Analytics Framework
 - Stage-wise conversion tracking
 - Bottleneck detection algorithms
+- Value distribution analysis
 - Cycle time calculations
-- Financial roll-ups by stage
-- Stalled project percentage monitoring
 
-### Business Rules
-- Federal contract compliance validation
-- Bid pipeline capacity thresholds
-- Win rate projection models
-- Set-aside classification logic
-- Project urgency calculations
+The system implements specialized workflows for federal construction project management, focusing on bid management, compliance tracking, and resource planning. Core value stems from industry-specific validation rules and calculation methods for construction project tracking.
 
 $END$
 

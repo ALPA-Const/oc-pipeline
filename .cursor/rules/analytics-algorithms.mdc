@@ -1,5 +1,5 @@
 ---
-description: Specifications for core analytical algorithms and calculations used in business analytics and projections
+description: Specification for analytics and algorithmic implementations in construction project management system
 ---
 
 # === USER INSTRUCTIONS ===
@@ -102,42 +102,47 @@ _Context added by Giga analytics-algorithms - Win rate calculations, capacity mo
 
 # analytics-algorithms
 
-Core analytical algorithms focus on four key areas:
+Core Analytical Components:
 
-1. Win Rate Analytics (Importance Score: 85)
-- Historical win rate calculations by project type and size 
-- Trend analysis with rolling averages and seasonal adjustments
-- Projected win rates based on current pipeline composition
-- Opportunity scoring model weighing multiple factors
+1. Pipeline Velocity Analysis
+Path: frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx
+- Rolling 90-day win rate calculations with minimum sample thresholds
+- Stage-specific conversion rate analysis
+- Weighted project value distribution tracking
+- Geographic concentration risk scoring
+Importance Score: 85
 
-2. Pipeline Velocity Engine (Importance Score: 90)
-- Stage transition time calculations for project lifecycle
-- Bottleneck detection using variance analysis
-- Stalling detection based on stage-specific thresholds
-- Custom velocity metrics for federal construction projects
+2. What-If Analysis Engine
+Path: frontend/src/components/dashboard/WhatIfDrawer.tsx
+- Interactive fiscal year-end projections based on:
+  - Win rate adjustments
+  - Average award size modifications
+  - Capacity utilization scenarios
+- Dynamic resource requirement forecasting
+Importance Score: 90
 
-3. Capacity Modeling (Importance Score: 85)
-- Resource utilization projections by project type
-- Threshold-based warnings for over/under capacity
-- Project value weighting based on win probability
-- Geographic capacity distribution analysis
+3. Capacity Utilization Modeling
+Path: frontend/src/services/metrics/metrics.service.ts
+- Resource allocation algorithms with regional constraints
+- Project overlap detection and impact assessment
+- Multi-region capacity balancing calculations
+- Forward-looking availability projections
+Importance Score: 95
 
-4. What-If Analysis System (Importance Score: 95)
-- Scenario planning with adjustable parameters:
-  - Win rate modifications
-  - Award size variations
-  - Stage duration changes
-  - Resource allocation shifts
-- Real-time fiscal year projections
-- Risk-adjusted portfolio modeling
-- Capacity impact visualization
+4. Distribution Analysis
+Path: frontend/src/components/dashboard/BarDistributionChart.tsx
+- Project categorization by state/region
+- Set-aside type distribution analysis
+- Magnitude-based project segmentation
+- Regional capacity impact calculations
+Importance Score: 75
 
-Key Implementations:
-- Stage-specific conversion rate calculations
-- Federal set-aside classification logic
-- Construction-specific KPI aggregation
-- Geographic distribution analytics
-- Custom urgency scoring algorithms
+Key Analytics Features:
+- Minimum sample requirements for statistical validity
+- Construction-specific KPI calculations
+- Geographic risk assessment algorithms
+- Resource utilization forecasting
+- Bid success probability modeling
 
 $END$
 

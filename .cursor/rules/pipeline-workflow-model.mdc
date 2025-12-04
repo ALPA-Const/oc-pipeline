@@ -1,5 +1,5 @@
 ---
-description: Documents the construction project pipeline progression model including stage definitions and workflow rules
+description: Documents construction project pipeline stage progression, transitions, and validation rules across project lifecycle phases
 ---
 
 # === USER INSTRUCTIONS ===
@@ -159,64 +159,66 @@ _Context added by Giga pipeline-workflow-model - Four-phase lifecycle, stage tra
 
 # pipeline-workflow-model
 
-The pipeline workflow implements a four-phase construction project lifecycle:
-
-## Phase Structure (Importance: 95)
-
+## Stage Definitions
 1. Opportunity Pipeline
-- Lead Generation 
-- Proposal Development
-- Negotiation
-- Award/Lost Decision
+- Lead Generation → Qualification → Proposal → Negotiation → Award/Lost
+- Each stage requires minimum data completeness before progression
+- Qualification stage enforces bid/no-bid decision documentation
+- Proposal stage tracks resource commitments and risk assessments
+- Win probability calculations adjust based on stage progression
 
-2. Preconstruction Pipeline
-- Planning
-- Design Development
-- Permitting
-- Construction Readiness
+2. Preconstruction Pipeline  
+- Planning → Design → Permitting → Ready
+- Design stage enforces document version control
+- Permitting tracks regulatory compliance requirements
+- Stage gates prevent progression without required approvals
+- Resource allocation tracking across concurrent projects
 
-3. Execution Pipeline  
-- Mobilization
-- Active Construction
-- Punch List
-- Substantial Completion
+3. Execution Pipeline
+- Mobilization → Construction → Punch List → Substantial Completion
+- Construction stage tracks progress against baseline schedule
+- Quality control checkpoints at defined milestones
+- Automated stall detection based on industry standard durations
+- Resource utilization tracking with capacity alerts
 
 4. Closeout Pipeline
-- Final Inspection
-- Documentation Collection
-- Warranty Period
-- Project Complete
+- Final Inspection → Documentation → Warranty → Complete
+- Documentation stage validates required closeout package components
+- Warranty period tracking with expiration notifications
+- Project archival requirements based on contract type
+- Final financial reconciliation enforcement
 
-## Stage Transition Rules (Importance: 90)
+## Transition Rules
+- Stage progression requires manager approval above defined value thresholds
+- Automated notification system for stalled projects (>30 days in stage)
+- Backward transitions require documented justification
+- Stage skipping prevented except for defined fast-track scenarios
+- Cross-pipeline transitions blocked until predecessor pipeline complete
 
-Stage transitions require:
-- Completion of all predecessor stage requirements
-- Required documentation upload
-- Financial metric validation
-- Stakeholder approvals
-- Duration threshold checks
-- Risk assessment completion
+## Validation Requirements
+- Project value validation against annual capacity thresholds
+- Geographic constraints based on licensing/registration status
+- Set-aside compliance verification at qualification stage 
+- Bonding capacity verification before bid submission
+- Resource availability confirmation at stage transitions
 
-## Validation Requirements (Importance: 85)
+## Project Classification
+- Priority levels: Critical, High, Medium, Low
+- Classification based on:
+  - Contract value
+  - Resource requirements
+  - Geographic location
+  - Client strategic importance
+  - Regulatory requirements
 
-Each stage enforces:
-- Project value thresholds
-- Required field completion
-- Document package requirements
-- Stage-specific KPI targets
-- Maximum duration limits
-- Minimum documentation standards
-- Role-based approval workflows
+## Metrics Tracking
+- Stage duration vs industry benchmarks
+- Conversion rates between stages
+- Resource utilization by stage
+- Geographic distribution analysis
+- Pipeline value weighted by stage
 
-## Project Classification (Importance: 80)
-
-Projects are classified by:
-- Contract type (Federal, Commercial, Design-Build)
-- Set-aside categories (SDVOSB, 8(a), WOSB) 
-- Magnitude ranges
-- Geographic region
-- Agency/Owner type
-- Construction specialty
+Importance Score: 95/100
 
 $END$
 

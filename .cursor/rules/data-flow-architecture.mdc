@@ -1,5 +1,5 @@
 ---
-description: Specifies data flow patterns and interactions between pipeline components for construction project management
+description: Specification for analyzing and documenting data flow patterns in pipeline management components
 ---
 
 # === USER INSTRUCTIONS ===
@@ -147,54 +147,47 @@ _Context added by Giga data-flow-architecture - React Context patterns, Supabase
 
 # data-flow-architecture
 
-The data flow architecture centers around a bi-directional pipeline state management system with the following key components:
+Core Data Flow Components:
 
-## Core Data Flows (Score: 95/100)
+1. Pipeline Analytics Flow
+Path: frontend/src/services/pipeline.service.ts -> frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx
+- Real-time KPI updates via WebSocket connections
+- Bidirectional sync for bid status changes
+- State management for pipeline stage transitions
+Importance Score: 85
 
-1. Pipeline State Management
-- Centralized store in pipeline.database.ts manages stage transitions
-- Real-time stage updates propagate through WebSocket connections
-- Bidirectional sync between Kanban board and metrics engine
-- Stage-specific data validation and enrichment pipeline
+2. What-If Analysis Stream
+Path: frontend/src/services/metrics/metrics.service.ts -> frontend/src/components/dashboard/WhatIfDrawer.tsx
+- Event-driven simulation updates
+- Reactive capacity planning calculations
+- Bi-directional state sync for scenario modeling
+Importance Score: 90
 
-2. Event-Driven Updates (Score: 85/100)
-- Construction domain events trigger pipeline recalculations
-- Automated KPI updates based on stage transitions
-- Realtime capacity utilization monitoring
-- Project health status propagation system
+3. Compliance Data Pipeline
+Path: backend/src/services/aiExtractionService.ts -> frontend/src/components/dashboard/CUIComplianceWidget.tsx
+- Streaming document security status updates
+- Real-time compliance score calculations
+- Push notifications for certification changes
+Importance Score: 85
 
-3. Analytics Data Pipeline (Score: 80/100)
-- Continuous pipeline velocity calculations
-- Win probability aggregation flows
-- Geographic distribution analysis stream
-- Bottleneck detection data flows
+4. Project Distribution Flow
+Path: frontend/src/services/project-data.service.ts -> frontend/src/components/dashboard/BarDistributionChart.tsx
+- Geographic data aggregation pipeline
+- Region-based capacity impact streaming
+- Set-aside classification updates
+Importance Score: 75
 
-## Integration Points (Score: 75/100)
+Key Integration Points:
+- WebSocket connections for real-time pipeline updates
+- Server-Sent Events for compliance monitoring
+- Redux state management for scenario modeling
+- Event bus for cross-component communication
 
-1. Component Interaction Patterns
-- PipelineMetrics consumes stage transition events
-- KanbanBoard publishes drag-drop state changes
-- WhatIfDrawer integrates with projection engine
-- ProjectCard subscribes to health status updates
-
-2. Data Synchronization
-- Two-way sync between dashboard KPIs and pipeline state 
-- Submittal workflow integration with document control
-- Closeout package generation event chain
-- Automated specification analysis feedback loop
-
-## State Management Hierarchy (Score: 70/100)
-
-1. Primary State Stores
-- pipeline.database.ts (core pipeline state)
-- metrics.store.ts (analytics calculations)
-- project-data.store.ts (construction metadata)
-
-2. Component-Level States
-- Stage-specific validation states
-- Drag-drop interaction states
-- Filter and view preferences
-- Sort order persistence
+Data Flow Patterns:
+1. Real-time KPI updates using WebSocket streams
+2. Event-driven updates for capacity planning
+3. Push-based compliance monitoring
+4. Geographic data aggregation pipeline
 
 $END$
 

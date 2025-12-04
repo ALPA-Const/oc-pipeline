@@ -1,5 +1,5 @@
 ---
-description: Specification for construction project metrics calculation system including KPIs, pipeline values, and performance analytics
+description: Specifications for metrics calculation engine including KPIs, pipeline values, and stage-specific performance analytics
 ---
 
 # === USER INSTRUCTIONS ===
@@ -131,48 +131,46 @@ _Context added by Giga metrics-engine - Pipeline value calculations, KPI formula
 
 # metrics-engine
 
-Core metrics calculation system implementing construction industry-specific analytics:
+Core Metrics Components:
 
-## Pipeline Value Calculations (Score: 95)
-- Weighted pipeline values based on stage-specific win probabilities
-- Project magnitude range classifications
-- Set-aside category value aggregation
-- Year-to-date award tracking against targets
-- Monthly velocity calculations with minimum sample thresholds
+1. Pipeline Value Calculator
+Path: src/services/metrics/pipelineValue.ts
+- Weighted pipeline value calculations based on stage progression
+- Win probability adjustments per construction phase
+- Risk-adjusted financial projections incorporating historical performance
+- Stage-specific value distribution analysis
+Importance Score: 95
 
-## Performance Analytics (Score: 90) 
-- Stage-specific conversion rates with trend analysis
-- Stalled project percentage calculation by stage
-- Average cycle time metrics per pipeline phase
-- Bottleneck detection using variance analysis
-- Resource capacity utilization tracking
+2. KPI Engine
+Path: src/services/metrics/kpiEngine.ts
+- Construction bid win rate calculations with minimum sample requirements
+- Pipeline velocity metrics across project stages  
+- Capacity utilization formulas with resource allocation
+- Geographic distribution scoring
+Importance Score: 90
 
-## Financial Projections (Score: 85)
-- Fiscal year-end projections using win rate modeling
-- Scenario planning with adjustable parameters
-- Award size distribution analysis
-- Geographic market penetration metrics
-- Run rate calculations against annual targets
+3. Project Stage Analytics
+Path: src/services/metrics/stageMetrics.ts
+- Stage-specific conversion rates and durations
+- Bottleneck detection algorithms
+- Stalled project identification rules
+- Stage efficiency scoring with industry benchmarks
+Importance Score: 85
 
-## Industry KPIs (Score: 80)
-/src/services/metrics/kpi-definitions.ts
-- Bid-hit ratio tracking
-- Win rate by project type
-- Stage duration compliance 
-- Submittal cycle time analysis
-- Change order percentage monitoring
+Key Formulas:
 
-## Stage Analytics (Score: 75)
-- Stage transition velocity tracking
-- Stage-specific value thresholds
-- Duration monitoring against baselines
-- Risk-adjusted portfolio valuation
-- Stage completion rate analysis
+Pipeline Value = Σ(Project Value × Stage Weight × Win Probability)
+Stage Efficiency = (Actual Duration / Expected Duration) × 100
+Pipeline Velocity = (Projects Moved / Time Period) per stage
+Win Rate = (Won Projects / Total Decided) with 90-day rolling window
+Capacity Impact = (Project Value × Resource Requirements) / Available Capacity
 
-Key locations:
-/src/services/metrics/
-/src/components/dashboard/metrics/
-/src/utils/calculations/
+Business Rules:
+- Minimum 10 projects required for valid win rate calculation
+- Stage weights increase progressively through pipeline phases
+- Geographic concentration cannot exceed 35% per region
+- Stalled status triggered after 30 days in same stage
+- Capacity calculations use 90-day forward-looking window
 
 $END$
 
