@@ -257,34 +257,63 @@ oc-pipeline/
 - Explain your OBSERVATIONS clearly, then provide REASONING to identify the exact issue. Add console logs when needed to gather more information.
 
 
-The system implements specialized construction bidding and project management logic across three core areas:
+Construction Project Management Business Logic Architecture
 
-## Pipeline Analytics & Compliance (Score: 90)
-- Construction bidding analytics engine tracking pipeline velocity, capacity calculations, and win rates
-- CMMC Level 2 compliance monitoring for federal construction projects
-- Document security status tracking with CUI certification management
-- Risk assessment scoring and audit trail implementation
+## Core Analytics Components
 
-## Project Distribution Analysis (Score: 85)
-- Construction project distribution analysis by state and set-aside type
-- Specialized bid simulation engine with win rate modeling
-- Capacity utilization projections and required project volume calculations
-- Federal contract categorization and aggregation
+Dashboard Analytics Pipeline
+- Capacity utilization calculations for construction projects
+- Risk-based thresholds with critical (>100%) and warning (>80%) levels
+- Pipeline velocity metrics for project timelines
+Path: frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx
+Importance: 85
 
-## Bidding Management (Score: 80)
-- Federal construction bidding lifecycle tracking
-- Set-aside classification handling
-- Bid urgency calculation system
-- Organizational capacity limit monitoring
+CUI Compliance System
+- CMMC Level 2 compliance tracking for federal projects
+- Document security monitoring and compliance scoring
+- Weighted control family assessments
+Path: frontend/src/components/dashboard/CUIComplianceWidget.tsx
+Importance: 90
 
-The core business value centers on federal construction contract management with emphasis on:
-- CMMC compliance workflows
-- Construction-specific KPI tracking
-- Pipeline velocity monitoring
-- Set-aside contract handling
-- Capacity planning algorithms
+## Pipeline Management
 
-Key integration points connect compliance monitoring, bidding analytics, and project distribution tracking to provide comprehensive federal construction contract management capabilities.
+What-If Analysis Engine
+- Win rate impact simulations
+- Award size sensitivity analysis
+- Capacity projection algorithms
+Path: frontend/src/components/dashboard/WhatIfDrawer.tsx
+Importance: 88
+
+Stage Management System
+- Construction-specific pipeline stages
+- Stage transition validation rules
+- Weighted value calculations per stage
+Path: frontend/src/services/pipeline.service.ts
+Importance: 85
+
+## Project Analytics
+
+Executive Metrics Engine
+- Win rate trend analysis
+- Capacity utilization forecasting
+- Geographic distribution analytics
+Path: frontend/src/services/metrics/metrics.service.ts
+Importance: 90
+
+ISDC (Integrated Submittal & Document Control)
+- Federal construction submittal workflows
+- AI-powered specification analysis
+- Specialized warranty/certification tracking
+Path: frontend/src/pages/isdc/SubmittalsPage.tsx
+Importance: 85
+
+## Key Domain Patterns
+- Federal construction bidding workflows
+- Government contract set-aside categorization
+- Construction project capacity management
+- CUI documentation compliance tracking
+- Submittal extraction and processing
+- Joint venture partnership handling
 
 $END$
 

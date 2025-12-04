@@ -1,5 +1,5 @@
 ---
-description: Analytics algorithm implementation details for core business metrics calculations in construction project tracking
+description: Analytics and algorithm implementations for construction bid management and pipeline analysis
 ---
 
 # === USER INSTRUCTIONS ===
@@ -104,50 +104,46 @@ _Context added by Giga analytics-algorithms - Win rate calculations, capacity mo
 
 Core Analytics Components:
 
-1. Win Rate Calculation Engine
-Path: src/services/metrics/win-rate.service.ts
-- Rolling 90-day win rate calculations with weighted factors
-- Set-aside specific win probability modeling
-- Regional performance variance analysis
-- Historical trend pattern recognition
-Importance Score: 85
+1. Win Rate Analytics Engine
+- Historical win rate calculations weighted by project value
+- Segmented analysis by project type, agency, and set-aside status
+- Rolling average calculations with configurable lookback periods
+- Win probability modeling based on competitive factors
+Importance Score: 95
 
-2. Pipeline Velocity Analytics 
-Path: src/services/metrics/pipeline-velocity.ts
-- Stage-based velocity calculations considering:
-  - Duration in each pipeline phase
-  - Stall detection with threshold alerts
-  - Bottleneck identification algorithms
-  - Stage transition probability modeling
-- Custom weighted scoring for project progression speed
+2. Capacity Utilization Modeling
+- Dynamic capacity thresholds (>100% critical, >80% warning) 
+- Resource allocation forecasting with project overlap detection
+- Geographic capacity distribution analysis
+- Trade/discipline-specific utilization tracking
 Importance Score: 90
 
-3. Capacity Utilization Engine
-Path: src/services/metrics/capacity.service.ts
-- Resource allocation algorithms for construction projects
-- Multi-factor capacity modeling including:
-  - Personnel availability
-  - Equipment utilization
-  - Geographic distribution constraints
-- Forward-looking capacity forecasting
+3. Pipeline Velocity Analysis
+- Stage duration modeling with stalled state detection
+- Bottleneck identification using variance analysis
+- Conversion rate tracking between pipeline stages
+- Volume forecasting based on historical patterns
 Importance Score: 85
 
-4. What-If Analysis System
-Path: src/services/analytics/what-if.service.ts
-- Scenario modeling engine for pipeline modifications
-- Parameter-based outcome projections:
-  - Win rate adjustments
-  - Stage duration modifications
-  - Resource allocation changes
-- Confidence scoring for projected outcomes
-Importance Score: 80
+4. What-If Analysis Engine  
+- Win rate impact simulation on project pipeline
+- Award size sensitivity modeling
+- Capacity projection algorithms with variable parameters
+- Risk-adjusted portfolio value calculations
+Importance Score: 88
 
-Key Calculation Methods:
-- Construction-specific KPI formulations
-- Federal contracting performance metrics
-- Geographic distribution analysis
-- Pipeline health scoring algorithms
-- Project risk assessment calculations
+Key Domain Calculations:
+- Weighted pipeline value based on win probability and project size
+- Risk-adjusted capacity requirements per project
+- Stage-specific conversion rates with minimum sample thresholds
+- Geographic workload distribution analysis
+- Trade-specific resource utilization forecasting
+
+Notable Analytical Features:
+- Federal construction bidding analytics
+- Government set-aside program impact analysis
+- Construction project capacity forecasting
+- Pipeline performance metrics for federal contracts
 
 $END$
 

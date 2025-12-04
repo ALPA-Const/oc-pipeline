@@ -250,8 +250,8 @@ export async function mockAuthenticate(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  console.log('⚠️ WARNING: Using MOCK authentication - NOT SECURE!');
-  console.log('⚠️ This should ONLY be used for local testing');
+  console.warn('[AUTH] WARNING: Using MOCK authentication - NOT SECURE!');
+  console.warn('[AUTH] This should ONLY be used for local testing');
   
   // Create a fake admin user
   req.user = {

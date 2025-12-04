@@ -1,5 +1,5 @@
 ---
-description: Metrics calculation system for construction project pipeline analytics including KPIs, weighted values, and stage performance
+description: Specification for construction project metrics calculation engine including KPIs, weighted values, and performance analytics
 ---
 
 # === USER INSTRUCTIONS ===
@@ -131,56 +131,58 @@ _Context added by Giga metrics-engine - Pipeline value calculations, KPI formula
 
 # metrics-engine
 
-## Core Metric Components
+Core Metrics Components:
 
-1. Pipeline Value Calculations (90/100)
-- Weighted project values based on win probability per stage
-- Rolling 90-day win rate analysis by project type
-- Capacity utilization formulas for project portfolio
-- Annual target tracking with projection algorithms
+1. Pipeline Value Calculator
+Path: src/services/metrics/pipelineValue.ts
+- Weighted pipeline value calculation incorporating:
+  - Win probability adjustments
+  - Risk-adjusted project values
+  - Joint venture share calculations
+  - Set-aside category factors
+Importance Score: 95
 
-2. Construction KPI System (85/100)
-Path: frontend/src/services/metrics/metrics.service.ts
-- Pipeline velocity calculations across construction stages
-- Stage-specific conversion rate metrics
-- Bottleneck detection algorithms with duration variance analysis
-- Project stalling identification based on industry standards
+2. Performance Analytics Engine
+Path: src/components/dashboard/BiddingAnalyticsPanel.ts
+- Capacity utilization metrics
+- Risk thresholds (>100% critical, >80% warning) 
+- Pipeline velocity calculations
+- Stage-specific conversion rates
+Importance Score: 90
 
-3. Executive Analytics Engine (80/100)
-- Complex pipeline analytics including:
-  - YTD awards tracking
-  - Monthly award pace calculations
-  - Projected fiscal year end values
-  - Geographic distribution metrics
-- Custom KPI aggregations with trend analysis
+3. KPI Framework
+Path: src/stores/metrics/kpiStore.ts
+- Construction-specific KPIs:
+  - Weighted bid values
+  - Win rate by project type
+  - Geographic distribution scores
+  - Agency relationship strength
+Importance Score: 85
 
-## Metric Calculation Rules
+4. What-If Analysis System
+Path: src/services/metrics/whatif.ts
+- Project pipeline simulations:
+  - Award size sensitivity testing
+  - Capacity projection algorithms
+  - Win rate impact modeling
+  - Geographic expansion analysis
+Importance Score: 85
 
-1. Pipeline Stage Metrics
-- Stage-wise value aggregation with probability weighting
-- Construction-specific cycle time calculations
-- Stalled project percentage by stage
-- Capacity risk assessment scoring
+5. Metrics Data Models
+Path: src/types/metrics.ts
+- Specialized calculation schemas:
+  - Federal construction financial formulas
+  - Risk assessment scoring
+  - Project timing estimates
+  - Resource allocation metrics
+Importance Score: 80
 
-2. Performance Indicators
-- Win rate calculations with rolling windows
-- Pipeline velocity normalized by project value
-- Stage efficiency scoring based on industry benchmarks
-- Geographic performance distribution analysis
-
-## Key Business Formulas
-
-1. Weighted Pipeline Value:
-- Sum of (Project Value × Win Probability × Stage Weight)
-- Stage weights decrease from early to late stages
-
-2. Capacity Utilization:
-- (Active Project Value / Maximum Capacity) × 100
-- Includes risk-adjusted future project values
-
-3. Pipeline Velocity:
-- (Total Value Moved / Time Period) per stage
-- Normalized against organizational benchmarks
+Key Domain Features:
+- Construction project valuation
+- Federal bid pipeline analytics  
+- Risk-adjusted financial projections
+- Geographic market analysis
+- Agency relationship scoring
 
 $END$
 

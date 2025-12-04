@@ -1,5 +1,5 @@
 ---
-description: Analyzes and documents data flow patterns between components in a construction project management system
+description: Documents data flow patterns between components for construction project pipeline management and analytics
 ---
 
 # === USER INSTRUCTIONS ===
@@ -147,50 +147,48 @@ _Context added by Giga data-flow-architecture - React Context patterns, Supabase
 
 # data-flow-architecture
 
-Primary Data Flow Components:
+## Core Data Flow Components
 
-1. Pipeline State Management
-- Bidirectional data flow between KanbanBoard and ProjectCard components
-- Real-time project stage transitions trigger pipeline metrics recalculation
-- Custom event bus publishes stage changes to analytics components
-- Files: 
-  - /src/components/pipeline/KanbanBoard.tsx
-  - /src/components/pipeline/ProjectCard.tsx
-Importance Score: 85
+### Analytics Pipeline (Score: 95)
+Path: frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx
+- Real-time capacity metrics flow from project status changes to dashboard
+- Bidirectional sync between capacity thresholds and risk assessment engine
+- Push-based updates for utilization calculations across project timeline
 
-2. Analytics Data Processing
-- Streaming updates from pipeline components feed into BiddingAnalyticsPanel
-- Aggregated KPIs flow to executive dashboard components
-- Geographic distribution data flows to heat map visualizations
-- Files:
-  - /src/components/dashboard/BiddingAnalyticsPanel.tsx
-  - /src/templates/maps/GeoMapTemplate_KPI_Synced.tsx
-Importance Score: 80
+### State Management Pipeline (Score: 90)
+Path: frontend/src/services/pipeline.service.ts
+- Centralized pipeline state with distributed observers for stage transitions
+- Event-driven updates from project status changes to metrics aggregation
+- Bidirectional data flow between project cards and stage management system
 
-3. Multi-Agent Knowledge Flow (ATLAS)
-- Event-driven communication between 16 specialized construction agents
-- Knowledge graph maintains relationship data between projects
-- Bi-directional data flow between agents and central orchestrator
-- Files:
-  - /backend/src/services/ai/agent-orchestrator.service.ts
-  - /backend/src/services/ai/knowledge-graph.service.ts
-Importance Score: 90
+### Dashboard Updates (Score: 85)
+Path: frontend/src/services/metrics/metrics.service.ts
+- Real-time KPI recalculation triggered by pipeline state changes
+- Push notifications for threshold breaches and capacity warnings
+- Aggregated metrics flow through validation before UI updates
 
-4. Document Control Pipeline
-- AI extraction results flow to submittal management components
-- Specification sections map to automated requirement tracking
-- Closeout documentation validation triggers compliance updates
-- Files:
-  - /backend/src/services/aiExtractionService.ts
-  - /backend/src/controllers/closeoutController.ts
-Importance Score: 85
+### Document Control Flow (Score: 80)
+Path: frontend/src/services/isdcService.ts
+- Asynchronous document status updates with compliance validation
+- Bidirectional sync between submittal tracking and compliance scoring
+- State propagation from document changes to compliance widgets
 
-Core Data Flows:
-- Project stage transitions trigger cascading updates
-- Real-time KPI recalculation based on pipeline changes
-- Geographic data aggregation for regional analysis
-- Multi-agent communication via event bus
-- Document processing pipeline with AI integration
+## Key Integration Points
+
+1. Pipeline Stage Transitions
+- Event-based updates between KanbanBoard and metrics engine
+- Real-time capacity recalculation on project movement
+- State synchronization between drag-drop interface and backend
+
+2. Compliance Monitoring
+- Continuous data flow from document status to compliance scores
+- Push updates for security status changes
+- Bidirectional sync with risk assessment system
+
+3. What-If Analysis
+- Isolated state management for simulation scenarios
+- One-way data flow from main pipeline to analysis engine
+- Results propagation to visualization components
 
 $END$
 
