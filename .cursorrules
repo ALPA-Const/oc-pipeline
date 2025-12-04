@@ -257,51 +257,61 @@ oc-pipeline/
 - Explain your OBSERVATIONS clearly, then provide REASONING to identify the exact issue. Add console logs when needed to gather more information.
 
 
-Federal Contracting Pipeline Management System integrating compliance tracking, risk analysis, and capacity planning:
+## Core Business Systems
 
-## Core Business Components
+### Pipeline Management (85/100)
+- Stage-based workflow for federal construction projects
+- Weighted value calculations for project portfolio
+- Automated stalling detection system with custom thresholds
+- Stage-specific conversion rate tracking
+- Set-aside classification for government contracts
 
-### Bid Pipeline Analytics
-`frontend/src/components/dashboard/BiddingAnalyticsPanel.tsx`
-- Capacity threshold monitoring (80% warning, 100% critical)
-- Win rate metrics with pipeline velocity calculations
-Importance Score: 75/100
+### Federal Compliance (90/100)
+- CMMC Level 2 compliance monitoring
+- Control family tracking:
+  - Access control
+  - Awareness training
+  - Audit logging
+  - Incident response
+- Risk assessment scoring with status indicators
 
-### CUI Compliance System
-`frontend/src/components/dashboard/CUIComplianceWidget.tsx`
-- CMMC Level 2 compliance status tracking 
-- Control family monitoring for Access Control, Awareness, Audit Logs
-- Risk-based status determination
-Importance Score: 85/100
-
-### What-If Analysis Engine 
-`frontend/src/components/dashboard/WhatIfDrawer.tsx`
-- Business forecasting simulation with custom algorithms
-- Real-time projection updates for win rates and award sizes
-Importance Score: 90/100
-
-### Pipeline Analytics
-`frontend/src/components/dashboard/BiddingProjectsTable.tsx`
-- Urgency calculations for bid deadlines
-- Set-aside classification system
-- Capacity percentage tracking with risk thresholds
-Importance Score: 80/100
-
-## Integration Points
-
-### Executive Metrics Service
-`frontend/src/services/metrics/metrics.service.ts`
+### Construction Analytics (80/100)
 - Pipeline velocity calculations with minimum sample requirements
+- Capacity utilization analysis with risk thresholds
+- Bid value aggregation with win rate correlations
 - Geographic distribution analysis
-- Annual target tracking with run-rate calculations
-Importance Score: 90/100
+- What-if scenario planning for financial projections
 
-### Pipeline Management 
-`frontend/src/services/pipeline.service.ts`
-- Stage transition logic with audit trails
-- Bottleneck analysis and stalled project handling
-- Data integrity validation for pipeline processes
-Importance Score: 85/100
+### Document Control (85/100)
+- AI-powered specification analysis
+- Automated submittal extraction
+- Construction-specific closeout workflows
+- Subcontractor outreach campaign management
+- Multi-stage document processing with confidence scoring
+
+## Key Integration Points
+
+### Project Classification
+- Priority-based indicators (critical, high, medium, low)
+- Health status calculations based on:
+  - Stage duration
+  - Stall detection
+  - Win probability
+  - Agency requirements
+
+### Pipeline Metrics
+- Stage-wise conversion tracking
+- Bottleneck detection algorithms
+- Cycle time calculations
+- Financial roll-ups by stage
+- Stalled project percentage monitoring
+
+### Business Rules
+- Federal contract compliance validation
+- Bid pipeline capacity thresholds
+- Win rate projection models
+- Set-aside classification logic
+- Project urgency calculations
 
 $END$
 
