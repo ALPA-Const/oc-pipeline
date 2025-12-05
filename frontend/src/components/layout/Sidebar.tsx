@@ -460,6 +460,20 @@ export function Sidebar() {
             location.pathname.startsWith('/analytics/')
           }
         />
+        {/* Admin - Always Visible */}
+        <NavItem
+          item={{
+            name: 'Admin',
+            href: '/admin',
+            icon: Settings,
+            description: 'System administration',
+          }}
+          collapsed={collapsed}
+          isActive={
+            location.pathname === '/admin' ||
+            location.pathname.startsWith('/admin/')
+          }
+        />
 
         {/* Admin items (permission-gated) */}
         {companyAdminNavigation.map((item) => {
