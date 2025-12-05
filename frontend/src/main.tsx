@@ -1,10 +1,17 @@
+// C:\Users\Bill Asmar\oc-pipeline\oc-pipeline-main\frontend\src\main.tsx
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+// RBAC / permissions context (dual-scope org + project)
+import { PermissionProvider } from './contexts/PermissionContext';
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <PermissionProvider>
+      <App />
+    </PermissionProvider>
   </React.StrictMode>
 );

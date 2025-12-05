@@ -1,5 +1,10 @@
+/**
+ * OC Pipeline - Sidebar Navigation
+ * Updated with dual-scope admin sections (Company + Project)
+ */
+
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import {
   LayoutDashboard,
   Building2,
@@ -19,10 +24,20 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronUp,
+  Building,
+  UserCog,
+  Layers,
+  FileText,
+  Link as LinkIcon,
+  CreditCard,
+  ScrollText,
+  UsersRound,
+  FolderCog,
 } from 'lucide-react';
+import { usePermissions, PermissionGate } from '@/contexts/PermissionContext';
 
 // OC Pipeline Module Navigation Structure
-const navigation = [
+const moduleNavigation = [
   {
     name: 'Dashboard',
     href: '/dashboard',
@@ -156,50 +171,120 @@ const navigation = [
   },
 ];
 
-const bottomNavigation = [
+// Company (Org-level) Admin Navigation
+const companyAdminNavigation = [
   {
-    name: 'Analytics',
-    href: '/analytics',
-    icon: BarChart3,
-    description: 'Reports & insights',
+    name: 'Company Profile',
+    href: '/admin/company',
+    icon: Building,
+    permission: { resource: 'org', action: 'read_org_profile' },
   },
   {
-    name: 'Admin',
-    href: '/admin',
-    icon: Settings,
-    description: 'System settings',
+    name: 'Users & Roles',
+    href: '/admin/users',
+    icon: UserCog,
+    permission: { resource: 'org', action: 'view_org_users' },
     children: [
-      { name: 'Users', href: '/admin/users' },
+      { name: 'All Users', href: '/admin/users' },
       { name: 'Roles', href: '/admin/roles' },
-      { name: 'Company', href: '/admin/company' },
-      { name: 'Audit Log', href: '/admin/audit-log' },
     ],
+  },
+  {
+    name: 'Departments',
+    href: '/admin/departments',
+    icon: Layers,
+    permission: { resource: 'org', action: 'view_org_departments' },
+  },
+  {
+    name: 'Cost Codes',
+    href: '/admin/cost-codes',
+    icon: FileText,
+    permission: { resource: 'org', action: 'view_org_cost_codes' },
+  },
+  {
+    name: 'Templates',
+    href: '/admin/templates',
+    icon: FolderCog,
+    permission: { resource: 'org', action: 'view_org_templates' },
+  },
+  {
+    name: 'Integrations',
+    href: '/admin/integrations',
+    icon: LinkIcon,
+    permission: { resource: 'org', action: 'view_org_integrations' },
+  },
+  {
+    name: 'Billing',
+    href: '/admin/billing',
+    icon: CreditCard,
+    permission: { resource: 'org', action: 'view_org_billing' },
+  },
+  {
+    name: 'Audit Log',
+    href: '/admin/audit-log',
+    icon: ScrollText,
+    permission: { resource: 'org_audit', action: 'view_audit_logs' },
+  },
+];
+
+// Project-level Admin Navigation (shown when inside a project)
+const projectAdminNavigation = [
+  {
+    name: 'Project Settings',
+    href: '/project/:projectId/settings',
+    icon: Settings,
+    permission: { resource: 'project', action: 'manage_project_settings' },
+  },
+  {
+    name: 'Project Team',
+    href: '/project/:projectId/team',
+    icon: UsersRound,
+    permission: { resource: 'project', action: 'manage_project_team' },
   },
 ];
 
 interface NavItemProps {
-  item: typeof navigation[0];
+  item: {
+    name: string;
+    href: string;
+    icon: React.ComponentType<{ className?: string }>;
+    description?: string;
+    children?: Array<{ name: string; href: string }>;
+    permission?: { resource: string; action: string };
+  };
   collapsed: boolean;
   isActive: boolean;
+  projectId?: string;
 }
 
-function NavItem({ item, collapsed, isActive }: NavItemProps) {
+function NavItem({ item, collapsed, isActive, projectId }: NavItemProps) {
   const [expanded, setExpanded] = useState(false);
   const location = useLocation();
   const Icon = item.icon;
   const hasChildren = item.children && item.children.length > 0;
 
-  const isChildActive = hasChildren && item.children?.some(
-    (child) => location.pathname === child.href || location.pathname.startsWith(child.href + '/')
-  );
+  // Replace :projectId placeholder if present
+  const href = projectId ? item.href.replace(':projectId', projectId) : item.href;
+  const children = item.children?.map((child) => ({
+    ...child,
+    href: projectId ? child.href.replace(':projectId', projectId) : child.href,
+  }));
+
+  const isChildActive =
+    hasChildren &&
+    children?.some(
+      (child) =>
+        location.pathname === child.href ||
+        location.pathname.startsWith(child.href + '/')
+    );
 
   const isCurrentActive = isActive || isChildActive;
 
-  return (
+  const content = (
     <div>
       <div className="flex items-center">
         <Link
-          to={item.href}
+          to={href}
           className={`flex flex-1 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
             isCurrentActive
               ? 'bg-blue-50 text-blue-700'
@@ -207,7 +292,11 @@ function NavItem({ item, collapsed, isActive }: NavItemProps) {
           }`}
           title={collapsed ? item.name : undefined}
         >
-          <Icon className={`h-5 w-5 flex-shrink-0 ${isCurrentActive ? 'text-blue-700' : 'text-gray-500'}`} />
+          <Icon
+            className={`h-5 w-5 flex-shrink-0 ${
+              isCurrentActive ? 'text-blue-700' : 'text-gray-500'
+            }`}
+          />
           {!collapsed && <span className="flex-1">{item.name}</span>}
         </Link>
         {!collapsed && hasChildren && (
@@ -215,16 +304,22 @@ function NavItem({ item, collapsed, isActive }: NavItemProps) {
             onClick={() => setExpanded(!expanded)}
             className="p-2 text-gray-400 hover:text-gray-600"
           >
-            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            {expanded ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
           </button>
         )}
       </div>
-      
+
       {/* Children */}
       {!collapsed && hasChildren && expanded && (
         <div className="ml-8 mt-1 space-y-1">
-          {item.children?.map((child) => {
-            const childActive = location.pathname === child.href || location.pathname.startsWith(child.href + '/');
+          {children?.map((child) => {
+            const childActive =
+              location.pathname === child.href ||
+              location.pathname.startsWith(child.href + '/');
             return (
               <Link
                 key={child.href}
@@ -243,11 +338,31 @@ function NavItem({ item, collapsed, isActive }: NavItemProps) {
       )}
     </div>
   );
+
+  // Wrap in permission gate if permission is specified
+  if (item.permission) {
+    return (
+      <PermissionGate
+        resource={item.permission.resource}
+        action={item.permission.action}
+        projectId={projectId}
+      >
+        {content}
+      </PermissionGate>
+    );
+  }
+
+  return content;
 }
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { projectId } = useParams<{ projectId?: string }>();
+  const { isOrgAdmin } = usePermissions();
+
+  // Determine if we're in a project context
+  const isInProject = location.pathname.includes('/project/') || !!projectId;
 
   return (
     <aside
@@ -277,9 +392,11 @@ export function Sidebar() {
             </h3>
           </div>
         )}
-        {navigation.map((item) => {
-          const isActive = location.pathname === item.href || 
-            (item.href !== '/dashboard' && location.pathname.startsWith(item.href + '/'));
+        {moduleNavigation.map((item) => {
+          const isActive =
+            location.pathname === item.href ||
+            (item.href !== '/dashboard' &&
+              location.pathname.startsWith(item.href + '/'));
           return (
             <NavItem
               key={item.href}
@@ -291,17 +408,64 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Bottom Navigation */}
+      {/* Project Admin Section (when inside a project) */}
+      {isInProject && projectId && (
+        <div className="border-t border-gray-200 p-3">
+          {!collapsed && (
+            <div className="mb-2 px-3 py-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                Project
+              </h3>
+            </div>
+          )}
+          {projectAdminNavigation.map((item) => {
+            const href = item.href.replace(':projectId', projectId);
+            const isActive =
+              location.pathname === href ||
+              location.pathname.startsWith(href + '/');
+            return (
+              <NavItem
+                key={item.href}
+                item={item}
+                collapsed={collapsed}
+                isActive={isActive}
+                projectId={projectId}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {/* Company Admin Section */}
       <div className="border-t border-gray-200 p-3">
         {!collapsed && (
           <div className="mb-2 px-3 py-2">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-              System
+              Company
             </h3>
           </div>
         )}
-        {bottomNavigation.map((item) => {
-          const isActive = location.pathname === item.href || location.pathname.startsWith(item.href + '/');
+
+        {/* Analytics (visible to all) */}
+        <NavItem
+          item={{
+            name: 'Analytics',
+            href: '/analytics',
+            icon: BarChart3,
+            description: 'Reports & insights',
+          }}
+          collapsed={collapsed}
+          isActive={
+            location.pathname === '/analytics' ||
+            location.pathname.startsWith('/analytics/')
+          }
+        />
+
+        {/* Admin items (permission-gated) */}
+        {companyAdminNavigation.map((item) => {
+          const isActive =
+            location.pathname === item.href ||
+            location.pathname.startsWith(item.href + '/');
           return (
             <NavItem
               key={item.href}
@@ -325,3 +489,6 @@ export function Sidebar() {
     </aside>
   );
 }
+
+export default Sidebar;
+

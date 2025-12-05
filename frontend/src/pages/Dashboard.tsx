@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { AppLayout } from '@/components/layout/AppLayout';
 import { useAuth } from '@/hooks/AuthContext';
 import {
   Building2,
@@ -82,19 +81,19 @@ export function Dashboard() {
 
   if (loading) {
     return (
-      <AppLayout>
+      
         <div className="flex h-full items-center justify-center">
           <div className="text-center">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent mx-auto" />
             <p className="mt-4 text-sm text-gray-600">Loading dashboard...</p>
           </div>
         </div>
-      </AppLayout>
+      
     );
   }
 
   return (
-    <AppLayout>
+    
       <div className="space-y-6">
         {/* Header */}
         <div>
@@ -289,6 +288,6 @@ export function Dashboard() {
           </div>
         </div>
       </div>
-    </AppLayout>
+    
   );
 }
