@@ -44,14 +44,15 @@ export function EnhancedKPICard({
   };
 
   const formatValue = (value: number | null) => {
-    if (value === null) return 'N/A';
-    
+    if (value === null || value === undefined) return 'N/A';
+
     // Format based on metric type
-    if (metric.metric.includes('rate') || metric.metric.includes('percentage')) {
+    const metricName = metric?.metric || '';
+    if (metricName.includes('rate') || metricName.includes('percentage')) {
       return `${value.toFixed(1)}%`;
     }
-    
-    if (metric.metric.includes('value') || metric.metric.includes('ytd') || metric.metric.includes('projected')) {
+
+    if (metricName.includes('value') || metricName.includes('ytd') || metricName.includes('projected')) {
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
@@ -59,15 +60,15 @@ export function EnhancedKPICard({
         maximumFractionDigits: 0,
       }).format(value);
     }
-    
-    if (metric.metric.includes('velocity')) {
+
+    if (metricName.includes('velocity')) {
       return `${value} days`;
     }
-    
+
     return value.toString();
   };
 
-  const lastRefresh = new Date(metric.as_of).toLocaleString();
+  const lastRefresh = metric?.as_of ? new Date(metric.as_of).toLocaleString() : 'N/A';
 
   return (
     <Card
@@ -83,7 +84,7 @@ export function EnhancedKPICard({
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <CardTitle className="text-sm font-medium text-muted-foreground">
-            {metric.metric.replace(/_/g, ' ').toUpperCase()}
+            {(metric?.metric || 'METRIC').replace(/_/g, ' ').toUpperCase()}
           </CardTitle>
           <TooltipProvider>
             <Tooltip>
@@ -98,7 +99,7 @@ export function EnhancedKPICard({
                   </div>
                   <div>
                     <p className="font-semibold">Window:</p>
-                    <p className="text-xs">{metric.window.replace(/_/g, ' ')}</p>
+                    <p className="text-xs">{metric?.window?.replace(/_/g, ' ') || 'N/A'}</p>
                   </div>
                   <div>
                     <p className="font-semibold">Last Refresh:</p>

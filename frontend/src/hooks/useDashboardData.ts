@@ -84,27 +84,29 @@ const fetchPortfolioDashboard = async (
     });
     // Backend returns { kpis, projects, recentProjects, notifications, lastUpdated }
     // Transform to match frontend expected format
-    const backendData = response.data;
+    const backendData = response?.data || {};
+    const kpis = backendData?.kpis || {};
+
     return {
       success: true,
       data: {
         metrics: {
-          activeProjects: backendData.kpis?.schedule?.value || 0,
-          pipelineValue: backendData.kpis?.budget?.value || 0,
-          budgetAtRisk: backendData.kpis?.cost?.value || 0,
+          activeProjects: kpis?.schedule?.value ?? 0,
+          pipelineValue: kpis?.budget?.value ?? 0,
+          budgetAtRisk: kpis?.cost?.value ?? 0,
           winRate: 0,
           cuiDocumentsSecured: 0,
           trends: {
-            activeProjects: backendData.kpis?.schedule?.change || 0,
-            pipelineValue: backendData.kpis?.budget?.change || 0,
-            budgetAtRisk: backendData.kpis?.cost?.change || 0,
+            activeProjects: kpis?.schedule?.change ?? 0,
+            pipelineValue: kpis?.budget?.change ?? 0,
+            budgetAtRisk: kpis?.cost?.change ?? 0,
             winRate: 0,
           },
         },
-        projects: backendData.projects || backendData.recentProjects || [],
+        projects: backendData?.projects || backendData?.recentProjects || [],
         budgetTrend: [],
         scheduleData: [],
-        alerts: backendData.notifications || [],
+        alerts: backendData?.notifications || [],
         cuiCompliance: {
           overallScore: 100,
           status: "compliant" as const,
@@ -125,7 +127,7 @@ const fetchPortfolioDashboard = async (
           },
         },
       },
-      timestamp: backendData.lastUpdated || new Date().toISOString(),
+      timestamp: backendData?.lastUpdated || new Date().toISOString(),
       correlationId: "",
     };
   } catch (error: any) {
