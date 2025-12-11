@@ -1,17 +1,20 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, AlertCircle } from "lucide-react";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const { signIn, signInWithGoogle, signInWithMicrosoft, loading, error, isAuthenticated } = useAuth();
-  const [email, setEmail] = useState('bill@oneillcontractors.com');
-  const [password, setPassword] = useState('');
+
+  const { signIn, signInWithGoogle, signInWithMicrosoft, loading, error } =
+    useAuth();
+
+  const [email, setEmail] = useState("bill@oneillcontractors.com");
+  const [password, setPassword] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
 
   // Redirect to dashboard if already logged in
@@ -30,29 +33,27 @@ export const LoginForm = () => {
     console.log('Password length:', password.length);
 
     if (!email || !password) {
-      setLocalError('Email and password are required');
+      setLocalError("Email and password are required");
       return;
     }
 
     console.log('Calling signIn...');
     const result = await signIn(email, password);
-    console.log('SignIn result:', result);
-    
+
     if (!result.success) {
-      console.log('SignIn failed:', result.error);
-      setLocalError(result.error || 'Sign in failed');
-    } else {
-      console.log('SignIn success, navigating to dashboard...');
-      // Redirect to dashboard on successful login
-      navigate('/dashboard', { replace: true });
+      setLocalError(result.error || "Sign in failed");
+      return;
     }
+
+    // ✅ Auth succeeded – redirect to dashboard (adjust route if needed)
+    navigate("/dashboard");
   };
 
   const handleGoogleLogin = async () => {
     setLocalError(null);
     const result = await signInWithGoogle();
     if (result && !result.success) {
-      setLocalError(result.error || 'Google sign in failed');
+      setLocalError(result.error || "Google sign in failed");
     }
   };
 
@@ -60,7 +61,7 @@ export const LoginForm = () => {
     setLocalError(null);
     const result = await signInWithMicrosoft();
     if (result && !result.success) {
-      setLocalError(result.error || 'Microsoft sign in failed');
+      setLocalError(result.error || "Microsoft sign in failed");
     }
   };
 
@@ -72,7 +73,9 @@ export const LoginForm = () => {
         <Card className="shadow-lg">
           <CardHeader className="space-y-2">
             <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-            <p className="text-sm text-gray-600">Sign in to your OC Pipeline account</p>
+            <p className="text-sm text-gray-600">
+              Sign in to your OC Pipeline account
+            </p>
           </CardHeader>
           <CardContent className="space-y-6">
             {displayError && (
@@ -84,7 +87,10 @@ export const LoginForm = () => {
 
             <form onSubmit={handleEmailLogin} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Email
                 </label>
                 <Input
@@ -99,7 +105,10 @@ export const LoginForm = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Password
                 </label>
                 <Input
@@ -124,7 +133,7 @@ export const LoginForm = () => {
                     Signing in...
                   </>
                 ) : (
-                  'Sign in'
+                  "Sign in"
                 )}
               </Button>
             </form>
@@ -134,7 +143,9 @@ export const LoginForm = () => {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">OR CONTINUE WITH</span>
+                <span className="px-2 bg-white text-gray-500">
+                  OR CONTINUE WITH
+                </span>
               </div>
             </div>
 
@@ -191,10 +202,34 @@ export const LoginForm = () => {
                 ) : (
                   <>
                     <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
-                      <rect x="1" y="1" width="9" height="9" fill="currentColor" />
-                      <rect x="14" y="1" width="9" height="9" fill="currentColor" />
-                      <rect x="1" y="14" width="9" height="9" fill="currentColor" />
-                      <rect x="14" y="14" width="9" height="9" fill="currentColor" />
+                      <rect
+                        x="1"
+                        y="1"
+                        width="9"
+                        height="9"
+                        fill="currentColor"
+                      />
+                      <rect
+                        x="14"
+                        y="1"
+                        width="9"
+                        height="9"
+                        fill="currentColor"
+                      />
+                      <rect
+                        x="1"
+                        y="14"
+                        width="9"
+                        height="9"
+                        fill="currentColor"
+                      />
+                      <rect
+                        x="14"
+                        y="14"
+                        width="9"
+                        height="9"
+                        fill="currentColor"
+                      />
                     </svg>
                     Sign in with Microsoft
                   </>
@@ -202,9 +237,13 @@ export const LoginForm = () => {
               </Button>
             </div>
 
-            <div className="text-center space-y-2">
-              <a href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium block">
-                Forgot your password?
+            <p className="text-center text-sm text-gray-600">
+              Don't have an account?{" "}
+              <a
+                href="/signup"
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Sign up
               </a>
               <p className="text-sm text-gray-600">
                 Don't have an account?{' '}
@@ -220,20 +259,44 @@ export const LoginForm = () => {
           <h2 className="text-3xl font-bold mb-4">Welcome to OC Pipeline</h2>
           <ul className="space-y-3">
             <li className="flex items-center">
-              <svg className="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg
+                className="h-5 w-5 mr-3"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
               Reduce bid creation time by 75%
             </li>
             <li className="flex items-center">
-              <svg className="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg
+                className="h-5 w-5 mr-3"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
               AI-powered extraction (94% accuracy)
             </li>
             <li className="flex items-center">
-              <svg className="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg
+                className="h-5 w-5 mr-3"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
               Mobile-first design
             </li>
