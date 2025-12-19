@@ -10,7 +10,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 export const LoginForm = () => {
   const navigate = useNavigate();
 
-  const { signIn, signInWithGoogle, signInWithMicrosoft, loading, error } =
+  const { signIn, signInWithGoogle, signInWithMicrosoft, loading, error, isAuthenticated } =
     useAuth();
 
   const [email, setEmail] = useState("bill@oneillcontractors.com");
