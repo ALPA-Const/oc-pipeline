@@ -5,7 +5,7 @@
  * split-screen viewer with drawing-to-data linking
  */
 
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import type {
   ProjectDocument,
   DrawingSheet,

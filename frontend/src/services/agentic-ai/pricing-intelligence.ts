@@ -5,7 +5,7 @@
  * real-time market integration
  */
 
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import Decimal from 'decimal.js';
 import type {
   MarketPriceIndex,

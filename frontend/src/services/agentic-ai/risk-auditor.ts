@@ -5,7 +5,7 @@
  * hidden killers identification
  */
 
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import Decimal from 'decimal.js';
 import type {
   RiskCategory,

@@ -6,7 +6,7 @@
  * historical alignment, market data freshness, and risk assessment
  */
 
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import Decimal from 'decimal.js';
 import type {
   EstimateConfidenceScore,
