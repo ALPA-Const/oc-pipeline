@@ -29,6 +29,7 @@ import { Analytics } from "@/pages/Analytics";
 import { Pipeline } from "@/pages/Pipeline";
 import { Import } from "@/pages/Import";
 import { ClientPortal } from "@/pages/ClientPortal";
+import { AIEstimatingDashboard } from "@/pages/AIEstimatingDashboard";
 
 import { RecoveryDetector } from "@/components/RecoveryDetector";
 
@@ -79,6 +80,16 @@ function App() {
               element={
                 <ProtectedPage>
                   <Preconstruction />
+                </ProtectedPage>
+              }
+            />
+
+            {/* AI Estimating Module */}
+            <Route
+              path="/estimating/:id/ai"
+              element={
+                <ProtectedPage>
+                  <AIEstimatingDashboard />
                 </ProtectedPage>
               }
             />
