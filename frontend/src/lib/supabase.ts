@@ -5,22 +5,17 @@
 import { createClient } from "@supabase/supabase-js";
 
 // Get Supabase credentials from environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 
 // Debug logging
 console.log("=== SUPABASE DEBUG INFO ===");
-console.log("Environment:", process.env.NODE_ENV);
+console.log("Environment:", import.meta.env.MODE);
 console.log("Supabase URL:", supabaseUrl);
 console.log("Supabase Key exists:", !!supabaseAnonKey);
 console.log("Supabase Key length:", supabaseAnonKey.length);
-console.log(
-  "All env vars:",
-  Object.keys(process.env).filter((k) => k.startsWith("NEXT_PUBLIC_"))
-);
 console.log("===========================");
 
-<<<<<<< HEAD
 // Check if credentials are valid (not placeholders)
 const hasValidCredentials =
   supabaseUrl &&
@@ -34,7 +29,6 @@ if (!hasValidCredentials) {
   console.warn('URL:', supabaseUrl || 'MISSING');
   console.warn('Key:', supabaseAnonKey && supabaseAnonKey !== 'your-anon-key-here' && supabaseAnonKey !== 'your-anon-key' ? 'EXISTS' : 'MISSING OR PLACEHOLDER');
   console.warn('Please update .env.local with your actual Supabase credentials.');
-  console.warn('Get your credentials from: https://supabase.com/dashboard/project/cwrjhtpycynjzeiggyhf/settings/api');
 }
 
 // Create Supabase client with OAuth support
@@ -48,40 +42,12 @@ export const supabase = createClient(
       autoRefreshToken: true,
       detectSessionInUrl: true,
     },
-=======
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error("❌ MISSING SUPABASE CREDENTIALS!");
-  console.error("URL:", supabaseUrl || "MISSING");
-  console.error("Key:", supabaseAnonKey ? "EXISTS" : "MISSING");
-  throw new Error(
-    "Missing Supabase environment variables. Check your .env.local file."
-  );
-}
-
-// Create Supabase client with OAuth support
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-  },
-});
-
-// Test connection
-supabase.auth.getSession().then(({ data, error }) => {
-  if (error) {
-    console.error("❌ Supabase connection error:", error);
-  } else {
-    console.log("✅ Supabase connected successfully");
-    console.log("Current session:", data.session ? "Active" : "None");
->>>>>>> 5bd6e4a (fix: Update Supabase config from Vite to Next.js env vars)
   }
 );
 
 // Test connection only if credentials are valid
 if (hasValidCredentials) {
   supabase.auth.getSession().then(({ data, error }) => {
-    // Don't log AuthSessionMissingError - it's expected when user is not logged in
     if (error) {
       if (error.name !== 'AuthSessionMissingError' &&
           !error.message?.includes('Auth session missing')) {
@@ -92,7 +58,6 @@ if (hasValidCredentials) {
       console.log('Current session:', data.session ? 'Active' : 'None');
     }
   }).catch((err) => {
-    // Suppress AuthSessionMissingError in catch block too
     if (err?.name !== 'AuthSessionMissingError' &&
         !err?.message?.includes('Auth session missing')) {
       console.error('❌ Supabase connection error:', err);
@@ -181,43 +146,24 @@ export interface DatabaseTransition {
 // AUTHENTICATION FUNCTIONS
 // ============================================================================
 
-/**
- * Get the current authenticated user
- */
 export async function getCurrentUser() {
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-
+  const { data: { user }, error } = await supabase.auth.getUser();
   if (error) {
     console.error("Error getting current user:", error);
     return null;
   }
-
   return user;
 }
 
-/**
- * Get the current session
- */
 export async function getCurrentSession() {
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession();
-
+  const { data: { session }, error } = await supabase.auth.getSession();
   if (error) {
     console.error("Error getting session:", error);
     return null;
   }
-
   return session;
 }
 
-/**
- * Sign out the current user
- */
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) {
@@ -226,9 +172,6 @@ export async function signOut() {
   }
 }
 
-/**
- * Sign up with email and password
- */
 export async function signUpWithEmail(email: string, password: string) {
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -237,35 +180,25 @@ export async function signUpWithEmail(email: string, password: string) {
       emailRedirectTo: `${window.location.origin}/auth/callback`,
     },
   });
-
   if (error) {
     console.error("Error signing up:", error);
     throw error;
   }
-
   return data;
 }
 
-/**
- * Sign in with email and password
- */
 export async function signInWithEmail(email: string, password: string) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
-
   if (error) {
     console.error("Error signing in:", error);
     throw error;
   }
-
   return data;
 }
 
-/**
- * Sign in with Google OAuth
- */
 export async function signInWithGoogle() {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -273,16 +206,12 @@ export async function signInWithGoogle() {
       redirectTo: `${window.location.origin}/auth/callback`,
     },
   });
-
   if (error) {
     console.error("Error signing in with Google:", error);
     throw error;
   }
 }
 
-/**
- * Sign in with Microsoft/Azure OAuth
- */
 export async function signInWithMicrosoft() {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "azure",
@@ -290,25 +219,16 @@ export async function signInWithMicrosoft() {
       redirectTo: `${window.location.origin}/auth/callback`,
     },
   });
-
   if (error) {
     console.error("Error signing in with Microsoft:", error);
     throw error;
   }
 }
 
-/**
- * Listen for auth state changes
- */
-export function onAuthStateChange(
-  callback: (event: string, session: any) => void
-) {
-  const {
-    data: { subscription },
-  } = supabase.auth.onAuthStateChange((event, session) => {
+export function onAuthStateChange(callback: (event: string, session: any) => void) {
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
     callback(event, session);
   });
-
   return subscription;
 }
 
@@ -316,123 +236,85 @@ export function onAuthStateChange(
 // DATABASE QUERY FUNCTIONS
 // ============================================================================
 
-/**
- * Fetch all projects for the current user
- */
 export async function fetchProjects() {
   const { data, error } = await supabase
     .from("projects")
     .select("*")
     .order("created_at", { ascending: false });
-
   if (error) {
     console.error("Error fetching projects:", error);
     throw error;
   }
-
   return data as DatabaseProject[];
 }
 
-/**
- * Fetch a single project by ID
- */
 export async function fetchProjectById(projectId: string) {
   const { data, error } = await supabase
     .from("projects")
     .select("*")
     .eq("id", projectId)
     .single();
-
   if (error) {
     console.error("Error fetching project:", error);
     throw error;
   }
-
   return data as DatabaseProject;
 }
 
-/**
- * Create a new project
- */
 export async function createProject(project: Partial<DatabaseProject>) {
   const { data, error } = await supabase
     .from("projects")
     .insert([project])
     .select()
     .single();
-
   if (error) {
     console.error("Error creating project:", error);
     throw error;
   }
-
   return data as DatabaseProject;
 }
 
-/**
- * Update a project
- */
-export async function updateProject(
-  projectId: string,
-  updates: Partial<DatabaseProject>
-) {
+export async function updateProject(projectId: string, updates: Partial<DatabaseProject>) {
   const { data, error } = await supabase
     .from("projects")
     .update(updates)
     .eq("id", projectId)
     .select()
     .single();
-
   if (error) {
     console.error("Error updating project:", error);
     throw error;
   }
-
   return data as DatabaseProject;
 }
 
-/**
- * Delete a project
- */
 export async function deleteProject(projectId: string) {
   const { error } = await supabase
     .from("projects")
     .delete()
     .eq("id", projectId);
-
   if (error) {
     console.error("Error deleting project:", error);
     throw error;
   }
 }
 
-/**
- * Fetch all stages
- */
 export async function fetchStages() {
   const { data, error } = await supabase
     .from("stages")
     .select("*")
     .order("order", { ascending: true });
-
   if (error) {
     console.error("Error fetching stages:", error);
     throw error;
   }
-
   return data as DatabaseStage[];
 }
 
-/**
- * Subscribe to real-time project updates
- */
 export function subscribeToProjects(callback: (payload: any) => void) {
   const subscription = supabase
-    .from("projects")
-    .on("*", (payload) => {
-      callback(payload);
-    })
+    .channel('projects-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, callback)
     .subscribe();
-
   return subscription;
 }
