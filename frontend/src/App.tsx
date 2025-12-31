@@ -30,6 +30,8 @@ import { Pipeline } from "@/pages/Pipeline";
 import { Import } from "@/pages/Import";
 import { ClientPortal } from "@/pages/ClientPortal";
 import { AIEstimatingDashboard } from "@/pages/AIEstimatingDashboard";
+import { AIChat } from "@/pages/AIChat";
+import { AIChatDemo } from "@/pages/AIChatDemo";
 
 import { RecoveryDetector } from "@/components/RecoveryDetector";
 
@@ -53,6 +55,9 @@ function App() {
             <Route path="/auth/reset-password" element={<ResetPassword />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/auth/confirm" element={<AuthCallback />} />
+            
+            {/* Demo Routes (No Auth Required) */}
+            <Route path="/demo/ai-chat" element={<AIChatDemo />} />
 
             {/* Protected Routes - All with ProtectedPage wrapper */}
 
@@ -90,6 +95,16 @@ function App() {
               element={
                 <ProtectedPage>
                   <AIEstimatingDashboard />
+                </ProtectedPage>
+              }
+            />
+
+            {/* AI Chat Module */}
+            <Route
+              path="/ai-chat"
+              element={
+                <ProtectedPage>
+                  <AIChat />
                 </ProtectedPage>
               }
             />
