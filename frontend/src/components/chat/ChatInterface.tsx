@@ -15,6 +15,9 @@ import { chatService } from '@/services/chat.service';
 import { cn } from '@/lib/utils';
 import { Sparkles, MessageSquare } from 'lucide-react';
 
+// Constants
+const AI_RESPONSE_DELAY = 500; // ms - delay before showing AI response for natural feel
+
 interface ChatInterfaceProps {
   conversationId?: string;
   className?: string;
@@ -111,7 +114,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         if (response.conversation_id) {
           setCurrentConversationId(response.conversation_id);
         }
-      }, 500);
+      }, AI_RESPONSE_DELAY);
     } catch (error) {
       console.error('Error sending message:', error);
       setMessages((prev) =>

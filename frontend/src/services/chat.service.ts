@@ -7,7 +7,7 @@
 import { ChatMessage, ChatConversation, ChatRequest, ChatResponse } from '@/types/chat';
 
 class ChatService {
-  private baseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
+  private baseUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? '/api' : '');
 
   /**
    * Send a message to the AI chat
