@@ -33,6 +33,7 @@ import {
   ScrollText,
   UsersRound,
   FolderCog,
+  Sparkles,
 } from 'lucide-react';
 import { usePermissions, PermissionGate } from '@/contexts/PermissionContext';
 
@@ -43,6 +44,12 @@ const moduleNavigation = [
     href: '/dashboard',
     icon: LayoutDashboard,
     description: 'Portfolio overview & KPIs',
+  },
+  {
+    name: 'AI Chat',
+    href: '/ai-chat',
+    icon: Sparkles,
+    description: 'Elite AI Assistant',
   },
   {
     name: 'Preconstruction',
