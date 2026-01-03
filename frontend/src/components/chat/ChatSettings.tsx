@@ -40,7 +40,6 @@ import {
   Settings as SettingsIcon,
   Sparkles,
   Database,
-  FileText,
   Cloud,
   HardDrive,
   Save,
