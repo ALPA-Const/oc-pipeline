@@ -38,7 +38,7 @@ export const AIChatDemo: React.FC = () => {
 
       {/* Chat Interface */}
       <div className="flex-1 min-h-0">
-        <ChatInterface showHeader={false} />
+        <ChatInterface showHeader={true} />
       </div>
     </div>
   );
