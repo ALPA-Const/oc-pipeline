@@ -1,19 +1,26 @@
 /**
  * Chat Interface Component
  * 
- * Main chat interface with message display, input, and suggestions
+ * Main chat interface with message display, input, settings, and file uploads
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ChatMessage as ChatMessageType } from '@/types/chat';
+import {
+  ChatMessage as ChatMessageType,
+  ChatSettings,
+  DEFAULT_CHAT_SETTINGS,
+  FileAttachment,
+} from '@/types/chat';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import { TypingIndicator } from './TypingIndicator';
 import { Suggestions } from './Suggestions';
+import { ChatSettingsPanel } from './ChatSettings';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { chatService } from '@/services/chat.service';
 import { cn } from '@/lib/utils';
 import { Sparkles, MessageSquare } from 'lucide-react';
+import { toast } from 'sonner';
 
 // Constants
 const AI_RESPONSE_DELAY = 500; // ms - delay before showing AI response for natural feel
@@ -42,6 +49,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     'Generate progress report',
   ]);
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
+  const [settings, setSettings] = useState<ChatSettings>(DEFAULT_CHAT_SETTINGS);
+  const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -66,8 +75,55 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       const conversation = await chatService.getConversation(convId);
       setMessages(conversation.messages);
       setCurrentConversationId(convId);
+      if (conversation.settings) {
+        setSettings(conversation.settings);
+      }
     } catch (error) {
       console.error('Error loading conversation:', error);
+    }
+  };
+
+  const handleSettingsChange = (newSettings: ChatSettings) => {
+    setSettings(newSettings);
+  };
+
+  const handleSettingsSave = () => {
+    if (currentConversationId) {
+      chatService.updateConversationSettings(currentConversationId, settings);
+      toast.success('Settings saved successfully');
+    } else {
+      toast.success('Settings will be applied to new conversations');
+    }
+  };
+
+  const handleFileUpload = async (files: FileList) => {
+    const file = files[0];
+    if (!file) return;
+
+    // Check file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
+      toast.error('File size must be less than 50MB');
+      return;
+    }
+
+    toast.info('Uploading file...');
+
+    try {
+      const response = await chatService.uploadFile({
+        file,
+        storageProvider: settings.storageProvider,
+        conversationId: currentConversationId,
+      });
+
+      if (response.success) {
+        setAttachments((prev) => [...prev, response.attachment]);
+        toast.success('File uploaded successfully');
+      } else {
+        toast.error(response.error || 'Failed to upload file');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast.error('Failed to upload file');
     }
   };
 
@@ -79,11 +135,15 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       content,
       timestamp: new Date(),
       status: 'sending',
+      metadata: {
+        attachments: attachments.length > 0 ? attachments : undefined,
+      },
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setIsTyping(true);
     setSuggestions([]);
+    setAttachments([]); // Clear attachments after sending
 
     try {
       // Send to API
@@ -91,6 +151,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         message: content,
         conversation_id: currentConversationId,
         context,
+        settings,
+        attachments: attachments.length > 0 ? attachments : undefined,
       });
 
       // Update user message status
@@ -123,6 +185,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         )
       );
       setIsTyping(false);
+      toast.error('Failed to send message. Please try again.');
     }
   };
 
@@ -139,16 +202,25 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       {showHeader && (
         <div className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto max-w-4xl px-4 py-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
-                <Sparkles className="h-5 w-5 text-white" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold">AI Assistant</h2>
+                  <p className="text-sm text-muted-foreground">
+                    {settings.model === 'gpt-odd-120b'
+                      ? 'Powered by GPT ODD 120B via Groq'
+                      : `Using ${settings.model}`}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-lg font-semibold">AI Assistant</h2>
-                <p className="text-sm text-muted-foreground">
-                  Your construction management copilot
-                </p>
-              </div>
+              <ChatSettingsPanel
+                settings={settings}
+                onSettingsChange={handleSettingsChange}
+                onSave={handleSettingsSave}
+              />
             </div>
           </div>
         </div>
@@ -165,9 +237,16 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                   <MessageSquare className="h-16 w-16 text-primary" />
                 </div>
                 <h3 className="text-2xl font-bold mb-2">Welcome to AI Chat</h3>
-                <p className="text-muted-foreground max-w-md mb-8">
+                <p className="text-muted-foreground max-w-md mb-2">
                   Ask me anything about your construction projects, pipeline metrics, risk
                   analysis, or get insights from your data.
+                </p>
+                <p className="text-sm text-muted-foreground mb-8">
+                  Powered by{' '}
+                  <span className="font-semibold">
+                    {settings.model === 'gpt-odd-120b' ? 'GPT ODD 120B' : settings.model}
+                  </span>{' '}
+                  via Groq
                 </p>
                 <div className="w-full max-w-md">
                   <Suggestions
@@ -205,7 +284,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       {/* Input Area */}
       <ChatInput
         onSendMessage={handleSendMessage}
+        onFileUpload={handleFileUpload}
         disabled={isTyping}
+        attachments={attachments}
+        onRemoveAttachment={(id) => setAttachments((prev) => prev.filter((a) => a.id !== id))}
         placeholder={
           context?.project_id
             ? 'Ask about this project...'
