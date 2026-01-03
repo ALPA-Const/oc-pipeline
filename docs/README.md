@@ -346,6 +346,14 @@ SOFTWARE.
 
 ---
 
+## 📚 References & Resources
+
+### Agent Development Resources
+
+- **[Salesforce Agent Script Recipes](https://github.com/trailheadapps/agent-script-recipes)** - Collection of example scripts and best practices for building AI agents. Useful reference for developers working on the ATLAS agentic infrastructure.
+
+---
+
 ## 📞 Support
 
 - **Documentation**: [docs/](docs/)
