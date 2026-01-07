@@ -1,5 +1,8 @@
 // Core Types for OC Pipeline Dashboard
 
+// Re-export AI Takeoff types
+export * from './ai-takeoff.types';
+
 export interface User {
   id: string;
   email: string;

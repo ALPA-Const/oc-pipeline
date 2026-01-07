@@ -17,6 +17,9 @@ import submittalRoutes from "./routes/submittals";
 import specificationRoutes from "./routes/specifications";
 import closeoutRoutes from "./routes/closeout";
 
+// Import Claude AI routes
+import claudeRoutes from "./routes/claude.routes";
+
 // Import error handler
 import { errorHandler } from "./middleware/errorHandler";
 
@@ -67,7 +70,8 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Request logging
-const loggerFormat = process.env.NODE_ENV === "development" ? "dev" : "combined";
+const loggerFormat =
+  process.env.NODE_ENV === "development" ? "dev" : "combined";
 app.use(morgan(loggerFormat));
 
 // ============================================
@@ -82,7 +86,9 @@ if (useMockAuth) {
   console.warn("[AUTH] This should ONLY be used for local testing");
   app.use(mockAuthenticate);
 } else if (process.env.NODE_ENV === "development") {
-  console.info("[AUTH] Mock authentication disabled. Provide real credentials.");
+  console.info(
+    "[AUTH] Mock authentication disabled. Provide real credentials."
+  );
 }
 // ============================================
 
@@ -104,6 +110,9 @@ app.use("/api/members", memberRoutes);
 app.use("/api/submittals", submittalRoutes);
 app.use("/api/specifications", specificationRoutes);
 app.use("/api/closeout", closeoutRoutes);
+
+// Claude AI routes
+app.use("/api/claude", claudeRoutes);
 
 // Root route
 app.get("/", (_req, res) => {

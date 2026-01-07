@@ -26,6 +26,9 @@ import atlasRoutes from './atlas.routes';
 import portfolioRoutes from './portfolio.routes';
 import dashboardRoutes from './dashboard.routes';
 
+// NEW: Org-level admin / RBAC routes (dual-scope RBAC)
+import orgAdminRoutes from './org/index';
+
 const router = Router();
 
 // Health check
@@ -33,7 +36,7 @@ router.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '1.0.0',
   });
 });
 
@@ -43,7 +46,13 @@ const API_PREFIX = '/api/v1';
 // Register all routes
 router.use(`${API_PREFIX}/auth`, authRoutes);
 router.use(`${API_PREFIX}/users`, userRoutes);
+
+// Existing organization routes (legacy/orgs API)
 router.use(`${API_PREFIX}/orgs`, orgRoutes);
+
+// NEW: Company-level Org Admin routes (RBAC, roles, invitations, etc.)
+router.use(`${API_PREFIX}/org`, orgAdminRoutes);
+
 router.use(`${API_PREFIX}/projects`, projectRoutes);
 router.use(`${API_PREFIX}/precon`, preconRoutes);
 router.use(`${API_PREFIX}/cost`, costRoutes);
@@ -62,4 +71,3 @@ router.use(`${API_PREFIX}/portfolio`, portfolioRoutes);
 router.use(`${API_PREFIX}/dashboard`, dashboardRoutes);
 
 export default router;
-

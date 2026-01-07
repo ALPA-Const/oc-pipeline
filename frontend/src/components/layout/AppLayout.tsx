@@ -1,37 +1,28 @@
-import { ReactNode } from 'react';
-import { useAuth } from '@/hooks/AuthContext';
-import { Sidebar } from './Sidebar';
-import { Header } from './Header';
+// ============================================================
+// APP LAYOUT - Main Application Shell
+// Procore-style layout with TopNav + Contextual Sidebar
+// ============================================================
 
-interface AppLayoutProps {
-  children: ReactNode;
-}
+import { Outlet } from 'react-router-dom';
+import { TopNav, ModuleSidebar } from '@/components/navigation';
+import { useNavigation } from '@/context/NavigationContext';
 
-export function AppLayout({ children }: AppLayoutProps) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return null;
-  }
+export function AppLayout() {
+  const { activeModule } = useNavigation();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-6 overflow-auto">
-          {children}
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      {/* Top Navigation */}
+      <TopNav />
+
+      {/* Main Content Area */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Contextual Sidebar - only show when module is active */}
+        {activeModule && <ModuleSidebar />}
+
+        {/* Page Content */}
+        <main className="flex-1 overflow-auto p-6">
+          <Outlet />
         </main>
       </div>
     </div>

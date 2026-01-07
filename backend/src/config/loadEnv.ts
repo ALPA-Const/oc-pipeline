@@ -1,13 +1,18 @@
-/**
- * Environment Variable Loader
- * 
- * This file MUST be imported FIRST before any other modules that use process.env
- * It loads environment variables from backend/.env file
- */
+// backend/src/config/loadEnv.ts
+import path from "path";
+import dotenv from "dotenv";
 
-import dotenv from 'dotenv';
+// Resolve the path to backend/.env
+const envPath = path.resolve(__dirname, "../../.env");
 
-// Load .env from backend directory
-// process.cwd() will be the backend/ directory when running npm commands from backend/
-dotenv.config();
+// Load environment variables from that file
+const result = dotenv.config({ path: envPath });
 
+if (result.error) {
+  console.error("Failed to load .env file from", envPath, result.error);
+} else {
+  console.log("✅ Loaded environment variables from", envPath);
+}
+
+// Ensure module side-effect
+export {};
