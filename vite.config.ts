@@ -4,10 +4,11 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  root: path.resolve(__dirname, 'frontend'),
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './frontend/src'),
     },
   },
   server: {
@@ -18,5 +19,9 @@ export default defineConfig({
       'localhost',
       '127.0.0.1'
     ]
+  },
+  build: {
+    outDir: path.resolve(__dirname, 'dist'),
+    emptyOutDir: true,
   },
 })
