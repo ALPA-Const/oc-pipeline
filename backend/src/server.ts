@@ -27,7 +27,7 @@ import { mockAuthenticate } from "./middleware/auth";
 dotenv.config();
 
 // Initialize Express app
-const app = express();
+const app: any = express();
 
 // ============================================
 // MIDDLEWARE

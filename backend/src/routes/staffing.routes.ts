@@ -5,7 +5,7 @@
 import { Router } from 'express';
 import { authenticate, requirePermission } from '../middleware/auth';
 
-const router = Router();
+const router: any = Router();
 
 // GET /staffing/resources - List resources
 router.get('/resources', authenticate, async (req, res) => {

@@ -5,7 +5,7 @@
 import { Router } from 'express';
 import { authenticate, requirePermission } from '../middleware/auth';
 
-const router = Router();
+const router: any = Router();
 
 // GET /safety/incidents - List incidents
 router.get('/incidents', authenticate, requirePermission('view_safety'), async (req, res) => {

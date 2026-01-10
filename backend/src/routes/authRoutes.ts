@@ -4,7 +4,7 @@ import { query } from '../config/database';
 import { asyncHandler, AppError, Errors } from '../middleware/errorHandler';
 import { logAuditEvent } from '../middleware/auth';
 
-const router = Router();
+const router: any = Router();
 
 // ============================================================================
 // STANDARD AUTH ROUTES

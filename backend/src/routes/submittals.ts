@@ -2,7 +2,7 @@ import express from 'express';
 import submittalController from '../controllers/submittalController';
 import { authenticate } from '../middleware/auth';
 
-const router = express.Router();
+const router: any = express.Router();
 
 /**
  * Submittal Routes

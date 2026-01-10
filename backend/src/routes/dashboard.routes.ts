@@ -13,7 +13,7 @@
 
 import { Router, Request, Response } from "express";
 
-const router = Router();
+const router: any = Router();
 
 // Types
 interface HeroMetrics {

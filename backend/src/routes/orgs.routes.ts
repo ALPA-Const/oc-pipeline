@@ -5,7 +5,7 @@
 import { Router } from "express";
 import { authenticate, requirePermission } from "../middleware/auth";
 
-const router = Router();
+const router: any = Router();
 
 // GET /orgs - List organizations (admin only)
 router.get(

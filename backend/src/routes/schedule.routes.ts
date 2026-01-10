@@ -6,7 +6,7 @@
 import { Router } from 'express';
 import { authenticate, requirePermission } from '../middleware/auth';
 
-const router = Router();
+const router: any = Router();
 
 // GET /schedule/:projectId - Get project schedule
 router.get('/:projectId', authenticate, requirePermission('view_schedule'), async (req, res) => {
