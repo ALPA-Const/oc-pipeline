@@ -102,7 +102,7 @@ If you discover a security vulnerability, please report it through one of the fo
 2. **Email**: Contact the development team (use GitHub issues for non-sensitive bugs)
 3. **GitHub Issues**: For non-security bugs only
 
-**Response Time**: We aim to respond to security reports within 48 hours.
+**Response Time**: We aim to respond to security reports within 48 business hours (Monday-Friday, excluding holidays).
 
 **Please Include**:
 - Description of the vulnerability

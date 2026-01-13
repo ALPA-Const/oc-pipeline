@@ -149,7 +149,7 @@ npm install
 **Solution**: This is expected for the current codebase. To optimize:
 1. Use dynamic imports for large components
 2. Configure code splitting in `vite.config.ts`
-3. Analyze bundle with `npm run build -- --mode analyze`
+3. Analyze bundle using tools like [rollup-plugin-visualizer](https://www.npmjs.com/package/rollup-plugin-visualizer)
 
 ## Environment Variables
 
@@ -190,10 +190,11 @@ See `.env.example` files in each directory for complete configuration options.
 
 ## Testing
 
+Testing infrastructure is being set up. Check `package.json` for available test scripts.
+
 ```bash
 cd frontend
-npm run test          # Run tests (if configured)
-npm run test:coverage # Generate coverage report
+# Tests will be configured in future updates
 ```
 
 ## Continuous Integration
