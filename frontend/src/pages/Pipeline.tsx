@@ -1,6 +1,5 @@
 import { useState, lazy, Suspense } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Target, 
   Hammer, 
@@ -175,31 +174,33 @@ export function Pipeline() {
     <div className="h-screen flex flex-col">
       {/* Pipeline Type Selector */}
       <div className="bg-white border-b">
-        <Tabs value={selectedPipeline} onValueChange={(value) => setSelectedPipeline(value as PipelineType)}>
-          <div className="px-6 pt-4">
-            <TabsList className="grid w-full max-w-2xl grid-cols-5">
-              <TabsTrigger 
-                value="overview" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  setSelectedPipeline(null);
-                }}
-                className="text-xs"
+        <div className="px-6 pt-4">
+          <div className="flex gap-2 border-b">
+            <button
+              onClick={() => setSelectedPipeline(null)}
+              className={`px-4 py-2 text-xs font-medium border-b-2 transition-colors ${
+                selectedPipeline === null
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Overview
+            </button>
+            {pipelineTypes.map((pipeline) => (
+              <button
+                key={pipeline.id}
+                onClick={() => setSelectedPipeline(pipeline.id)}
+                className={`px-4 py-2 text-xs font-medium border-b-2 transition-colors ${
+                  selectedPipeline === pipeline.id
+                    ? 'border-blue-600 text-blue-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                }`}
               >
-                Overview
-              </TabsTrigger>
-              {pipelineTypes.map((pipeline) => (
-                <TabsTrigger 
-                  key={pipeline.id} 
-                  value={pipeline.id}
-                  className="text-xs"
-                >
-                  {pipeline.name}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+                {pipeline.name}
+              </button>
+            ))}
           </div>
-        </Tabs>
+        </div>
       </div>
 
       {/* Pipeline View Content */}
