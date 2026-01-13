@@ -96,9 +96,24 @@ The following vulnerabilities cannot be immediately resolved due to upstream con
 
 ## Reporting Security Issues
 
-If you discover a security vulnerability, please email security@alpaconstruction.com or create a private security advisory on GitHub.
+If you discover a security vulnerability, please report it through one of the following methods:
 
-**Do not** create public issues for security vulnerabilities.
+1. **Preferred**: Create a [private security advisory on GitHub](https://github.com/ALPA-Const/oc-pipeline/security/advisories/new)
+2. **Email**: Contact the development team (use GitHub issues for non-sensitive bugs)
+3. **GitHub Issues**: For non-security bugs only
+
+**Response Time**: We aim to respond to security reports within 48 hours.
+
+**Please Include**:
+- Description of the vulnerability
+- Steps to reproduce
+- Potential impact
+- Suggested fix (if available)
+
+**Do not**:
+- Create public issues for security vulnerabilities
+- Disclose the vulnerability publicly before it's fixed
+- Exploit the vulnerability beyond proving it exists
 
 ## Security Scan History
 
