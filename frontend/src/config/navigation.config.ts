@@ -3,7 +3,7 @@
 // Header-Based Group Navigation (Procore-Style)
 // ============================================================
 
-import { 
+import {
   Building2,
   DollarSign,
   Calendar,
@@ -166,8 +166,8 @@ export const NAVIGATION_GROUPS: GroupConfig[] = [
       },
       {
         key: 'resource-planning',
-        label: 'Resource Planning',
-        path: '/resource-planning',
+        label: 'Resources',
+        path: '/resources',
         icon: Users,
         description: 'Workforce and equipment planning',
       },
@@ -222,6 +222,60 @@ export const NAVIGATION_GROUPS: GroupConfig[] = [
     ],
   },
 
+  // ----------------------------------------------------------
+  // FIELD OPERATIONS
+  // ----------------------------------------------------------
+  {
+    key: 'field-operations',
+    label: 'Field Operations',
+    icon: ClipboardList,
+    rolesAllowed: ['*'],
+    modules: [
+      {
+        key: 'daily-logs',
+        label: 'Daily Logs',
+        path: '/field/daily-logs',
+        icon: FileText,
+        description: 'Daily project logs',
+      },
+      {
+        key: 'field-reporting',
+        label: 'Field Reporting',
+        path: '/field/reporting',
+        icon: BarChart3,
+        description: 'Field activity reporting',
+      },
+      {
+        key: 'observations',
+        label: 'Observations',
+        path: '/field/observations',
+        icon: AlertTriangle,
+        description: 'Quality and safety observations',
+      },
+      {
+        key: 'photos',
+        label: 'Photos',
+        path: '/field/photos',
+        icon: Layers,
+        description: 'Project photo documentation',
+      },
+      {
+        key: 'punchlist',
+        label: 'Punchlist',
+        path: '/field/punchlist',
+        icon: CheckCircle2,
+        description: 'Punchlist item tracking',
+      },
+      {
+        key: 'inspections',
+        label: 'Inspections',
+        path: '/field/inspections',
+        icon: ClipboardList,
+        description: 'Project inspections',
+      },
+    ],
+  },
+
 
   // ----------------------------------------------------------
   // ESTIMATING & QUANTIFICATION
@@ -263,8 +317,8 @@ export const NAVIGATION_GROUPS: GroupConfig[] = [
   // COMMERCIAL & FINANCIAL MANAGEMENT
   // ----------------------------------------------------------
   {
-    key: 'commercial-financial',
-    label: 'Commercial & Financial',
+    key: 'financials',
+    label: 'Financials',
     icon: DollarSign,
     rolesAllowed: ['*'],
     modules: [
@@ -283,7 +337,7 @@ export const NAVIGATION_GROUPS: GroupConfig[] = [
       {
         key: 'financials',
         label: 'Financials',
-        path: '/financials',
+        path: '/financial',
         icon: DollarSign,
         description: 'Financial management and reporting',
         subPages: [
@@ -304,37 +358,48 @@ export const NAVIGATION_GROUPS: GroupConfig[] = [
 
 
   // ----------------------------------------------------------
-  // CONTRACTS & DOCUMENT CONTROL
+  // CONTRACT ADMINISTRATION
   // ----------------------------------------------------------
   {
-    key: 'contracts-documents',
-    label: 'Contracts & Documents',
+    key: 'contract-administration',
+    label: 'Contract Administration',
     icon: FileText,
     rolesAllowed: ['*'],
     modules: [
       {
-        key: 'contracts',
-        label: 'Contracts',
-        path: '/contracts',
-        icon: Briefcase,
-        description: 'Contract management',
-        subPages: [
-          { key: 'overview', label: 'Overview', path: '', icon: Briefcase },
-          { key: 'prime', label: 'Prime Contracts', path: '/prime', icon: FileText },
-          { key: 'subcontracts', label: 'Subcontracts', path: '/subcontracts', icon: FileText },
-        ],
+        key: 'loi',
+        label: 'Letter of Intent',
+        path: '/contracts/loi',
+        icon: FileText,
+        description: 'Letter of Intent management',
       },
       {
-        key: 'document-control',
-        label: 'Document Control',
-        path: '/documents',
+        key: 'repository',
+        label: 'Contract Repository (e-sign)',
+        path: '/contracts/repository',
         icon: FolderOpen,
-        description: 'Document management and storage',
-        subPages: [
-          { key: 'overview', label: 'All Documents', path: '', icon: FolderOpen },
-          { key: 'specifications', label: 'Specifications', path: '/specifications', icon: FileText },
-          { key: 'reports', label: 'Reports', path: '/reports', icon: BarChart3 },
-        ],
+        description: 'Digital contract storage and signatures',
+      },
+      {
+        key: 'commitments',
+        label: 'Commitments',
+        path: '/contracts/commitments',
+        icon: Briefcase,
+        description: 'Project commitments tracking',
+      },
+      {
+        key: 'compliance',
+        label: 'Compliance Checklists',
+        path: '/contracts/compliance',
+        icon: CheckCircle2,
+        description: 'Compliance verification',
+      },
+      {
+        key: 'correspondence',
+        label: 'Correspondence',
+        path: '/contracts/correspondence',
+        icon: MessageSquare,
+        description: 'Project correspondence logs',
       },
     ],
   },
@@ -429,8 +494,8 @@ export function findModuleByPath(path: string): ModuleConfig | null {
 export function findSubPageByPath(module: ModuleConfig, path: string): SubPageConfig | null {
   if (!module.subPages) return null;
   const relativePath = path.replace(module.path, '');
-  return module.subPages.find(sub => 
-    relativePath === sub.path || 
+  return module.subPages.find(sub =>
+    relativePath === sub.path ||
     (sub.path === '' && relativePath === '')
   ) || null;
 }

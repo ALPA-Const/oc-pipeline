@@ -5,6 +5,7 @@
 
 import { HeaderNav, ContextSidebar } from '@/components/navigation';
 import { NavigationProvider } from '@/context/NavigationContext';
+import { useAuth } from '@/hooks/AuthContext';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -33,8 +34,11 @@ function LayoutContent({ children }: MainLayoutProps) {
 
 // Main layout wrapper with navigation provider
 export function MainLayout({ children }: MainLayoutProps) {
+  const { user } = useAuth();
+  const roles = user?.user_metadata?.roles || ['*'];
+
   return (
-    <NavigationProvider userRoles={['*', 'Admin']}>
+    <NavigationProvider userRoles={roles}>
       <LayoutContent>{children}</LayoutContent>
     </NavigationProvider>
   );

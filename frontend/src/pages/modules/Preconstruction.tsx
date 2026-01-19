@@ -4,11 +4,11 @@
 // ============================================================
 
 import { useState, useEffect } from 'react';
-import { 
-  BarChart3, 
-  Plus, 
-  Search, 
-  Filter, 
+import {
+  BarChart3,
+  Plus,
+  Search,
+  Filter,
   DollarSign,
   Calendar,
   Building2,
@@ -32,6 +32,7 @@ import { PursuitsTable } from '@/components/pursuits';
 import { AIEstimatingForm } from '@/components/ai-estimating';
 import { EstimateEditor } from '@/components/estimating';
 import { PreconstrutionOverview } from './PreconstrutionOverview';
+import PursuitsPage from './Pursuits';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -70,10 +71,10 @@ import {
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { estimatingService } from '@/services/estimating.service';
-import type { 
-  Pursuit, 
-  Estimate, 
-  BidPackage, 
+import type {
+  Pursuit,
+  Estimate,
+  BidPackage,
   EstimatingSummary,
   CSI_DIVISIONS,
 } from '@/types/estimating.types';
@@ -134,12 +135,12 @@ const getPriorityColor = (priority: string): string => {
 // PURSUITS TAB COMPONENT
 // ============================================================
 
-function PursuitsTab({ 
-  pursuits, 
-  loading, 
-  onRefresh 
-}: { 
-  pursuits: Pursuit[]; 
+function PursuitsTab({
+  pursuits,
+  loading,
+  onRefresh
+}: {
+  pursuits: Pursuit[];
   loading: boolean;
   onRefresh: () => void;
 }) {
@@ -154,7 +155,7 @@ function PursuitsTab({
     setAsideType: '',
   });
 
-  const filteredPursuits = pursuits.filter(p => 
+  const filteredPursuits = pursuits.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
     (p.clientName && p.clientName.toLowerCase().includes(search.toLowerCase()))
   );
@@ -210,91 +211,91 @@ function PursuitsTab({
                 New Pursuit
               </Button>
             </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Create New Pursuit</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div>
-                <Label>Project Name *</Label>
-                <Input
-                  value={newPursuit.name}
-                  onChange={(e) => setNewPursuit({ ...newPursuit, name: e.target.value })}
-                  placeholder="Enter project name"
-                />
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Create New Pursuit</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div>
+                  <Label>Project Name *</Label>
+                  <Input
+                    value={newPursuit.name}
+                    onChange={(e) => setNewPursuit({ ...newPursuit, name: e.target.value })}
+                    placeholder="Enter project name"
+                  />
+                </div>
+                <div>
+                  <Label>Client / Agency</Label>
+                  <Input
+                    value={newPursuit.clientName}
+                    onChange={(e) => setNewPursuit({ ...newPursuit, clientName: e.target.value })}
+                    placeholder="Enter client name"
+                  />
+                </div>
+                <div>
+                  <Label>Estimated Value ($)</Label>
+                  <Input
+                    type="number"
+                    value={newPursuit.estimatedValue}
+                    onChange={(e) => setNewPursuit({ ...newPursuit, estimatedValue: e.target.value })}
+                    placeholder="0"
+                  />
+                </div>
+                <div>
+                  <Label>Due Date</Label>
+                  <Input
+                    type="date"
+                    value={newPursuit.dueDate}
+                    onChange={(e) => setNewPursuit({ ...newPursuit, dueDate: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Priority</Label>
+                  <Select
+                    value={newPursuit.priority}
+                    onValueChange={(v) => setNewPursuit({ ...newPursuit, priority: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                      <SelectItem value="critical">Critical</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Set-Aside Type</Label>
+                  <Select
+                    value={newPursuit.setAsideType}
+                    onValueChange={(v) => setNewPursuit({ ...newPursuit, setAsideType: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select set-aside" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="8a">8(a)</SelectItem>
+                      <SelectItem value="SDVOSB">SDVOSB</SelectItem>
+                      <SelectItem value="HUBZone">HUBZone</SelectItem>
+                      <SelectItem value="WOSB">WOSB</SelectItem>
+                      <SelectItem value="small_business">Small Business</SelectItem>
+                      <SelectItem value="full_open">Full & Open</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div>
-                <Label>Client / Agency</Label>
-                <Input
-                  value={newPursuit.clientName}
-                  onChange={(e) => setNewPursuit({ ...newPursuit, clientName: e.target.value })}
-                  placeholder="Enter client name"
-                />
-              </div>
-              <div>
-                <Label>Estimated Value ($)</Label>
-                <Input
-                  type="number"
-                  value={newPursuit.estimatedValue}
-                  onChange={(e) => setNewPursuit({ ...newPursuit, estimatedValue: e.target.value })}
-                  placeholder="0"
-                />
-              </div>
-              <div>
-                <Label>Due Date</Label>
-                <Input
-                  type="date"
-                  value={newPursuit.dueDate}
-                  onChange={(e) => setNewPursuit({ ...newPursuit, dueDate: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label>Priority</Label>
-                <Select
-                  value={newPursuit.priority}
-                  onValueChange={(v) => setNewPursuit({ ...newPursuit, priority: v })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="critical">Critical</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Set-Aside Type</Label>
-                <Select
-                  value={newPursuit.setAsideType}
-                  onValueChange={(v) => setNewPursuit({ ...newPursuit, setAsideType: v })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select set-aside" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="8a">8(a)</SelectItem>
-                    <SelectItem value="SDVOSB">SDVOSB</SelectItem>
-                    <SelectItem value="HUBZone">HUBZone</SelectItem>
-                    <SelectItem value="WOSB">WOSB</SelectItem>
-                    <SelectItem value="small_business">Small Business</SelectItem>
-                    <SelectItem value="full_open">Full & Open</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleCreate} disabled={!newPursuit.name}>
-                Create Pursuit
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleCreate} disabled={!newPursuit.name}>
+                  Create Pursuit
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -363,7 +364,7 @@ function PursuitsTab({
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-red-600"
                             onClick={() => handleDelete(pursuit.id)}
                           >
@@ -389,12 +390,12 @@ function PursuitsTab({
 // ESTIMATES TAB COMPONENT
 // ============================================================
 
-function EstimatesTab({ 
-  estimates, 
+function EstimatesTab({
+  estimates,
   loading,
   onRefresh,
-}: { 
-  estimates: Estimate[]; 
+}: {
+  estimates: Estimate[];
   loading: boolean;
   onRefresh: () => void;
 }) {
@@ -409,7 +410,7 @@ function EstimatesTab({
     contingencyPercent: '5',
   });
 
-  const filteredEstimates = estimates.filter(e => 
+  const filteredEstimates = estimates.filter(e =>
     e.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -444,10 +445,10 @@ function EstimatesTab({
   // Show EstimateEditor when an estimate is selected
   if (selectedEstimateId) {
     return (
-      <EstimateEditor 
-        estimateId={selectedEstimateId} 
-        onBack={() => setSelectedEstimateId(null)} 
-        onSave={onRefresh} 
+      <EstimateEditor
+        estimateId={selectedEstimateId}
+        onBack={() => setSelectedEstimateId(null)}
+        onSave={onRefresh}
       />
     );
   }
@@ -594,7 +595,7 @@ function EstimatesTab({
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-red-600"
                             onClick={() => handleDelete(estimate.id)}
                           >
@@ -620,12 +621,12 @@ function EstimatesTab({
 // BID PACKAGES TAB COMPONENT
 // ============================================================
 
-function BidPackagesTab({ 
-  bidPackages, 
+function BidPackagesTab({
+  bidPackages,
   loading,
   onRefresh,
-}: { 
-  bidPackages: BidPackage[]; 
+}: {
+  bidPackages: BidPackage[];
   loading: boolean;
   onRefresh: () => void;
 }) {
@@ -639,7 +640,7 @@ function BidPackagesTab({
     dueDate: '',
   });
 
-  const filteredBidPackages = bidPackages.filter(bp => 
+  const filteredBidPackages = bidPackages.filter(bp =>
     bp.name.toLowerCase().includes(search.toLowerCase()) ||
     (bp.trade && bp.trade.toLowerCase().includes(search.toLowerCase()))
   );
@@ -827,7 +828,7 @@ function BidPackagesTab({
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-red-600"
                             onClick={() => handleDelete(bp.id)}
                           >
@@ -930,26 +931,21 @@ export default function Preconstruction() {
           <PreconstrutionOverview />
         </TabsContent>
 
-        <TabsContent value="pursuits">
-          <div className="space-y-4">
-            <div className="flex justify-end">
-              <SamGovImport onImportComplete={loadData} />
-            </div>
-            <PursuitsTable onRefresh={loadData} />
-          </div>
+        <TabsContent value="pursuits" className="m-0">
+          <PursuitsPage />
         </TabsContent>
 
         <TabsContent value="estimates">
-          <EstimatesTab 
-            estimates={estimates} 
+          <EstimatesTab
+            estimates={estimates}
             loading={loading}
             onRefresh={loadData}
           />
         </TabsContent>
 
         <TabsContent value="bid-packages">
-          <BidPackagesTab 
-            bidPackages={bidPackages} 
+          <BidPackagesTab
+            bidPackages={bidPackages}
             loading={loading}
             onRefresh={loadData}
           />

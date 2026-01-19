@@ -11,8 +11,10 @@ import { ForgotPassword } from "@/pages/ForgotPassword";
 import { ResetPassword } from "@/pages/ResetPassword";
 import { Dashboard } from "@/pages/Dashboard";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { RoleProtected } from "@/components/RoleProtected";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { RecoveryDetector } from "@/components/RecoveryDetector";
+import { FEATURE_FLAGS } from "@/config/featureFlags";
 
 // Module Pages - using default imports (no curly braces)
 import Preconstruction from "@/pages/modules/Preconstruction";
@@ -24,6 +26,7 @@ import FieldOperations from "@/pages/modules/FieldOperations";
 import FinancialManagement from "@/pages/modules/FinancialManagement";
 import Procurement from "@/pages/modules/Procurement";
 import ProjectManagement from "@/pages/modules/ProjectManagement";
+import Resources from "@/pages/modules/Resources";
 import SafetyCompliance from "@/pages/modules/SafetyCompliance";
 import CloseoutWarranty from "@/pages/modules/CloseoutWarranty";
 import ClientPortal from "@/pages/modules/ClientPortal";
@@ -38,6 +41,9 @@ import Estimating from "@/pages/modules/Estimating";
 
 // Risk Agent Page
 import RiskPage from "@/pages/Risk";
+
+// PM Pages
+import PMCommandCenter from "@/pages/pm/PMCommandCenter";
 
 // OEOC Module Pages
 import {
@@ -170,6 +176,16 @@ function App() {
               }
             />
 
+            {/* Resources Module */}
+            <Route
+              path="/resources"
+              element={
+                <ProtectedPage>
+                  <Resources />
+                </ProtectedPage>
+              }
+            />
+
             {/* Quality Module */}
             <Route
               path="/quality"
@@ -220,6 +236,56 @@ function App() {
               element={
                 <ProtectedPage>
                   <Procurement />
+                </ProtectedPage>
+              }
+            />
+
+            {/* Field Operations (New) */}
+            <Route
+              path="/field/daily-logs"
+              element={
+                <ProtectedPage>
+                  <Resources title="Daily Logs" />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="/field/reporting"
+              element={
+                <ProtectedPage>
+                  <Resources title="Field Reporting" />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="/field/observations"
+              element={
+                <ProtectedPage>
+                  <Resources title="Observations" />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="/field/photos"
+              element={
+                <ProtectedPage>
+                  <Resources title="Photos" />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="/field/punchlist"
+              element={
+                <ProtectedPage>
+                  <Resources title="Punchlist" />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="/field/inspections"
+              element={
+                <ProtectedPage>
+                  <Resources title="Inspections" />
                 </ProtectedPage>
               }
             />
@@ -321,6 +387,17 @@ function App() {
                 <ProtectedPage>
                   <Estimating />
                 </ProtectedPage>
+              }
+            />
+
+            <Route
+              path="/pm-command-center"
+              element={
+                <RoleProtected roles={['ProjectManager', 'ProjectExecutive', 'Superintendent', 'Admin', 'Preconstruction Executive']}>
+                  <ProtectedPage>
+                    <PMCommandCenter />
+                  </ProtectedPage>
+                </RoleProtected>
               }
             />
 
