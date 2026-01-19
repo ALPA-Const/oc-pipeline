@@ -1,0 +1,234 @@
+---
+alwaysApply: true
+---
+
+# === USER INSTRUCTIONS ===
+
+---
+
+description: Specifications for calculating and processing business metrics, KPIs, and analytics for construction project pipeline management
+description: Documentation for construction project metrics calculations, KPIs, pipeline analytics and financial projections
+
+---
+
+# metrics-engine
+
+Core Metrics Components:
+
+1. Pipeline Value Analytics (Importance: 95)
+
+- Weighted pipeline calculations considering win probability
+- Stage-based value aggregation with risk adjustments
+- Project stalling detection with velocity thresholds
+- Multi-dimensional KPIs tracking:
+  - Win rate by project type/size
+  - Stage conversion ratios
+  - Cycle time metrics
+  - Capacity utilization
+
+2. Financial Projections Engine (Importance: 90)
+
+- Fiscal year-end modeling with:
+  - Rolling 90-day win rate analysis
+  - Award size probability distributions
+  - Monthly award pace calculations
+  - What-if scenario modeling
+- Capacity constraint analysis against $30M baseline
+
+3. Geographic Distribution Analytics (Importance: 85)
+
+- Regional concentration metrics
+- Territory-based performance tracking
+- State-level project density analysis
+- Set-aside category distribution mapping
+
+Key Business Calculations:
+
+- Pipeline velocity = (Projects Won / Total Projects) \* (Avg Days to Win)
+- Weighted Pipeline Value = Σ(Project Value _ Win Probability _ Stage Weight)
+- Monthly Award Pace = (90-day Awards / 3) \* (Months Remaining)
+- Capacity Utilization = (Active Project Value / $30M Baseline) \* 100
+
+Threshold Rules:
+
+- Critical capacity warning at 100% utilization
+- High risk alert at 80% capacity
+- Stalled project flag after 30 days in stage
+- Minimum 5 samples for win rate calculation
+
+$END$
+
+If you're using this file in context, clearly say in italics in one small line that "Context added by Giga metrics-engine" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.
+
+---
+
+## description: Specifications for the metrics calculation engine, including KPIs, weighted values, and performance analytics
+
+# metrics-engine
+
+Core Metrics Components:
+
+1. Pipeline Value Calculator
+   Importance Score: 95
+
+- Weighted value calculations incorporating:
+  - Base project value
+  - Win probability multiplier
+  - Stage-specific confidence factors
+  - Set-aside program adjustments
+  - Joint venture share calculations
+
+2. Performance Analytics Engine
+   Importance Score: 90
+
+- Pipeline velocity metrics:
+  - Award pace vs fiscal year targets
+  - Stage-specific conversion rates
+  - Bottleneck detection using duration variance
+  - Stalled project identification
+  - Capacity utilization warnings (80%/100% thresholds)
+
+3. Financial Projection System
+   Importance Score: 85
+
+- Automated projections based on:
+  - 90-day rolling window analysis
+  - Stage-weighted pipeline values
+  - Award probability adjustments
+  - Required volume calculations
+  - Run rate vs annual target comparisons
+
+4. Geographic Distribution Analytics
+   Importance Score: 80
+
+- Multi-dimensional project analysis:
+  - State-level aggregation
+  - Project type distribution
+  - Set-aside program tracking
+  - Value-weighted heat mapping
+  - Regional capacity monitoring
+
+Key Formulas:
+
+```
+Weighted Pipeline Value = Σ(Project Value × Win Probability × Stage Factor)
+Stage Velocity = (Projects Completed / Time Period) × Stage Multiplier
+Capacity Utilization = (Active Project Value / Base Capacity) × 100
+Required Volume = (Annual Target - YTD Awards) / Average Project Value
+```
+
+$END$
+
+If you're using this file in context, clearly say in italics in one small line that "Context added by Giga metrics-engine" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.
+
+---
+
+## description: Technical specification for construction project metrics calculation system, including KPIs, pipeline values, and stage analytics
+
+# metrics-engine
+
+Core Metrics Calculation System:
+
+1. Pipeline Value Calculator
+   Path: src/services/metrics/metrics.service.ts
+
+- Weighted pipeline value based on stage-specific win probabilities
+- Rolling 90-day win rate calculations
+- Project stalling detection with configurable thresholds
+- Capacity utilization formulas incorporating resource constraints
+  Importance Score: 90
+
+2. Construction KPI Framework
+   Path: src/components/dashboard/DashboardKPICards.tsx
+
+- Stage transition analysis with custom filters
+- Project velocity calculations by pipeline phase
+- Geographic distribution metrics for construction projects
+- Custom stalled project identification algorithms
+  Importance Score: 85
+
+3. Financial Projection Engine
+   Path: src/components/dashboard/WhatIfDrawer.tsx
+
+- Win rate impact simulations
+- Award size probability modeling
+- Real-time capacity requirement calculations
+- Annual target projection algorithms
+  Importance Score: 85
+
+4. Stage Performance Analytics
+   Path: src/services/pipeline-admin.service.ts
+
+- Stage-specific conversion rates
+- Average duration calculations per phase
+- Bottleneck identification metrics
+- Custom aging rules for construction phases
+  Importance Score: 80
+
+Key Formulas:
+
+- Weighted Pipeline Value = Σ(Project Value × Stage Win Probability)
+- Stage Velocity = Projects Moved / Time Period
+- Resource Utilization = Active Projects / Max Capacity
+- Geographic Distribution Score = Σ(Regional Project Count × Market Weight)
+
+The metrics engine implements construction-specific calculations focusing on pipeline performance, financial projections, and resource utilization across project stages.
+
+$END$
+
+If you're using this file in context, clearly say in italics in one small line that "Context added by Giga metrics-engine" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.
+
+# === END USER INSTRUCTIONS ===
+
+# metrics-engine
+
+Core metrics calculation components:
+
+1. Pipeline Value Calculator
+   Path: src/services/metrics/pipeline-value.service.ts
+
+- Weighted pipeline value calculations based on stage probabilities
+- Monthly award pace projections using 90-day rolling windows
+- Capacity utilization metrics with industry thresholds (80% warning, 100% critical)
+  Importance Score: 90
+
+2. Performance KPI Engine
+   Path: src/components/dashboard/KPICalculator.ts
+
+- Construction-specific performance indicators
+- Win rate analysis with project value weighting
+- Stage-based conversion rate tracking
+- Bottleneck detection using duration variance analysis
+  Importance Score: 85
+
+3. Financial Projection System
+   Path: src/services/metrics/projections.service.ts
+
+- Fiscal year outcome modeling based on:
+  - Current pipeline velocity
+  - Historical win rates
+  - Average award size
+  - Stage-specific conversion metrics
+    Importance Score: 85
+
+4. Stage Performance Analytics
+   Path: src/components/pipeline/PipelineMetrics.tsx
+
+- Stage-specific efficiency calculations
+- Project velocity tracking through pipeline phases
+- Stalled project detection with risk assessment
+- Multi-dimensional performance scoring system
+  Importance Score: 80
+
+5. Geographic Distribution Analysis
+   Path: src/services/metrics/distribution.service.ts
+
+- Project concentration metrics by state
+- Set-aside type distribution analytics
+- Agency relationship strength scoring
+- Territory coverage calculations
+  Importance Score: 75
+
+$END$
+
+If you're using this file in context, clearly say in italics in one small line that "Context added by Giga metrics-engine" along with specifying exactly what information was used from this file in a human-friendly way, instead of using kebab-case use normal sentence case.

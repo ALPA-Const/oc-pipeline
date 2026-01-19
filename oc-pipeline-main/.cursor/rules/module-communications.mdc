@@ -1,0 +1,56 @@
+---
+description: Communications module - RFIs, submittals, and approvals
+alwaysApply: false
+---
+
+# MODULE: COMMUNICATIONS
+
+## 📋 OVERVIEW
+
+The Communications module handles project correspondence including RFIs, submittals, and meeting documentation.
+
+**Key Entities:** RFIs, Submittals, Transmittals, Meeting Minutes, Daily Reports
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `rfis` | Requests for info |
+| `rfi_responses` | RFI answers |
+| `submittals` | Submittal register |
+| `submittal_reviews` | Review workflow |
+| `transmittals` | Document transmit |
+| `meeting_minutes` | Meeting records |
+| `action_items` | Meeting actions |
+| `daily_reports` | Daily logs |
+| `correspondence` | Letters/emails |
+| `photo_logs` | Progress photos |
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /comms/rfis
+POST   /comms/rfis
+POST   /comms/rfis/:id/respond
+GET    /comms/submittals
+POST   /comms/submittals/:id/review
+GET    /comms/daily-reports
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `comms-001`
+
+**Capabilities:**
+- RFI routing optimization
+- Response drafting
+- Submittal tracking
+- SLA monitoring
+
+$END$

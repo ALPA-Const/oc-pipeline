@@ -1,0 +1,303 @@
+---
+description: ATLAS agentic AI system architecture with 17 specialized agents
+alwaysApply: false
+---
+
+# OC PIPELINE - ATLAS AGENTIC SYSTEM
+
+## 🤖 OVERVIEW
+
+ATLAS (Autonomous Task Learning and Assistance System) is the AI backbone of OC Pipeline, consisting of 17 specialized agents that automate, assist, and optimize construction management workflows.
+
+---
+
+## ⚠️ CRITICAL: THIS IS CORE ARCHITECTURE
+
+**DO NOT ignore the agentic system!**
+- ATLAS is not an add-on feature
+- It's fundamental to the platform architecture
+- All 16 modules have dedicated AI agents
+- Agents communicate via event bus and knowledge graph
+
+---
+
+## 🎯 AGENT ROSTER
+
+### **Master Orchestrator**
+
+| Agent ID | Name | Role |
+|----------|------|------|
+| `atlas-001` | ATLAS Master | Orchestrates all agents, handles complex multi-module tasks |
+
+### **Module Specialists**
+
+| Agent ID | Module | Responsibilities |
+|----------|--------|------------------|
+| `precon-001` | Preconstruction | Bid analysis, estimate validation, pipeline optimization |
+| `cost-001` | Cost | Budget monitoring, forecast generation, variance analysis |
+| `schedule-001` | Schedule | Critical path analysis, delay prediction, resource leveling |
+| `risk-001` | Risk | Risk identification, probability assessment, mitigation suggestions |
+| `quality-001` | Quality | Deficiency detection, inspection scheduling, trend analysis |
+| `safety-001` | Safety | Incident analysis, compliance monitoring, hazard prediction |
+| `procure-001` | Procurement | Vendor recommendations, contract analysis, pricing optimization |
+| `comms-001` | Communications | RFI routing, response drafting, submittal tracking |
+| `staff-001` | Staffing | Resource allocation, utilization optimization, skill matching |
+| `close-001` | Closeout | Warranty tracking, documentation completeness, handover prep |
+| `admin-001` | Administration | User management, permission auditing, system health |
+| `portfolio-001` | Portfolio | Cross-project analytics, KPI aggregation, trend reporting |
+| `docs-001` | Documents | Auto-tagging, version control, search optimization |
+| `tasks-001` | Tasks | Workflow automation, deadline tracking, dependency management |
+| `finance-001` | Finance | Financial analysis, forecasting, reporting |
+| `estimate-001` | AI Estimator | PDF extraction, cost modeling, historical comparison |
+
+---
+
+## 📊 AGENT STATES
+
+```
+┌──────────┐    ┌─────────────┐    ┌────────┐
+│ DORMANT  │───►│ INITIALIZING│───►│ ACTIVE │
+└──────────┘    └─────────────┘    └────────┘
+                                       │
+                      ┌────────────────┼────────────────┐
+                      ▼                ▼                ▼
+                 ┌────────┐      ┌─────────┐      ┌────────────┐
+                 │ PAUSED │      │  ERROR  │      │ TERMINATED │
+                 └────────┘      └─────────┘      └────────────┘
+```
+
+| State | Description |
+|-------|-------------|
+| `DORMANT` | Agent defined but not activated |
+| `INITIALIZING` | Loading configuration and memory |
+| `ACTIVE` | Processing tasks and responding to events |
+| `PAUSED` | Temporarily suspended (manual or automatic) |
+| `ERROR` | Failed state, requires intervention |
+| `TERMINATED` | Permanently stopped |
+
+---
+
+## 🔄 AGENT COMMUNICATION
+
+### **Event Bus Pattern**
+
+```
+┌─────────────┐     publish      ┌─────────────┐
+│   Agent A   │─────────────────►│  Event Bus  │
+└─────────────┘                  └──────┬──────┘
+                                        │
+                    ┌───────────────────┼───────────────────┐
+                    │ subscribe         │ subscribe         │ subscribe
+                    ▼                   ▼                   ▼
+              ┌─────────┐         ┌─────────┐         ┌─────────┐
+              │ Agent B │         │ Agent C │         │ Agent D │
+              └─────────┘         └─────────┘         └─────────┘
+```
+
+### **Event Types**
+
+| Event | Publisher | Subscribers |
+|-------|-----------|-------------|
+| `project.created` | Admin | All module agents |
+| `budget.updated` | Cost | Schedule, Risk, Portfolio |
+| `schedule.delayed` | Schedule | Cost, Risk, Communications |
+| `risk.identified` | Risk | Quality, Safety, Portfolio |
+| `rfi.submitted` | Communications | Schedule, Documents |
+| `incident.reported` | Safety | Risk, Portfolio, Admin |
+| `milestone.completed` | Schedule | Portfolio, Closeout |
+
+---
+
+## 🧠 KNOWLEDGE GRAPH
+
+### **Node Types**
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `project` | Construction project | "Building A Renovation" |
+| `person` | User or contact | "John Smith" |
+| `organization` | Company/vendor | "ABC Contractors" |
+| `document` | File or record | "Spec Section 03300" |
+| `task` | Work item | "Install HVAC Unit 3" |
+| `risk` | Identified risk | "Supply chain delay" |
+| `cost_item` | Budget line | "Concrete - Foundation" |
+
+### **Edge Types**
+
+| Relationship | From | To | Example |
+|--------------|------|-----|---------|
+| `MANAGES` | person | project | PM manages Project X |
+| `WORKS_ON` | person | task | Worker assigned to task |
+| `SUPPLIES` | organization | project | Vendor supplies materials |
+| `DEPENDS_ON` | task | task | Task B depends on Task A |
+| `IMPACTS` | risk | cost_item | Risk impacts budget |
+| `REFERENCES` | document | task | Spec references work |
+| `MITIGATES` | task | risk | Action mitigates risk |
+
+---
+
+## 📋 AGENT TASK STRUCTURE
+
+```typescript
+interface AgentTask {
+  id: string;
+  agent_id: string;
+  task_type: TaskType;
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  payload: Record<string, any>;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  created_at: Date;
+  started_at?: Date;
+  completed_at?: Date;
+  result?: Record<string, any>;
+  error?: string;
+}
+
+type TaskType =
+  | 'analyze'      // Analyze data and provide insights
+  | 'generate'     // Generate content (reports, drafts)
+  | 'validate'     // Validate data or workflows
+  | 'predict'      // Predict outcomes or trends
+  | 'recommend'    // Provide recommendations
+  | 'automate'     // Execute automated workflows
+  | 'notify'       // Send notifications
+  | 'coordinate';  // Coordinate with other agents
+```
+
+---
+
+## 🛡️ SAFETY BOUNDARIES
+
+### **Guardrails**
+
+| Boundary | Description |
+|----------|-------------|
+| `max_actions_per_minute` | Rate limiting for agent actions |
+| `require_human_approval` | Actions that need human confirmation |
+| `restricted_tables` | Tables agents cannot modify directly |
+| `cost_threshold` | Max financial impact without approval |
+| `schedule_threshold` | Max schedule impact without approval |
+
+### **Human-in-the-Loop Actions**
+
+These actions ALWAYS require human approval:
+- Change orders > $50,000
+- Schedule delays > 5 days
+- Safety incident classification
+- Contract modifications
+- User permission changes
+- Data deletions
+
+---
+
+## 🔧 AGENT CONFIGURATION
+
+```typescript
+interface AgentConfig {
+  agent_id: string;
+  enabled: boolean;
+  auto_start: boolean;
+
+  // Processing settings
+  polling_interval_ms: number;
+  max_concurrent_tasks: number;
+  task_timeout_ms: number;
+
+  // AI model settings
+  model: 'gpt-4' | 'claude-3' | 'gemini-pro';
+  temperature: number;
+  max_tokens: number;
+
+  // Safety settings
+  require_approval_threshold: number;
+  max_actions_per_minute: number;
+  restricted_operations: string[];
+
+  // Memory settings
+  memory_retention_days: number;
+  max_memory_entries: number;
+}
+```
+
+---
+
+## 📊 AGENT METRICS
+
+| Metric | Description |
+|--------|-------------|
+| `tasks_processed` | Total tasks completed |
+| `avg_response_time` | Average task completion time |
+| `success_rate` | Percentage of successful tasks |
+| `error_rate` | Percentage of failed tasks |
+| `human_escalations` | Tasks escalated to humans |
+| `recommendations_accepted` | User acceptance rate |
+| `cost_savings_identified` | Financial impact of insights |
+| `time_savings_hours` | Automation time savings |
+
+---
+
+## 🚀 AGENT LIFECYCLE
+
+### **Initialization**
+```
+1. Load agent configuration
+2. Initialize memory from database
+3. Subscribe to relevant events
+4. Load knowledge graph context
+5. Set status to ACTIVE
+6. Begin task polling
+```
+
+### **Task Processing**
+```
+1. Poll task queue for pending tasks
+2. Validate task payload
+3. Check safety boundaries
+4. Execute task logic
+5. Update knowledge graph
+6. Publish result events
+7. Log metrics
+```
+
+### **Shutdown**
+```
+1. Complete in-progress tasks
+2. Persist memory to database
+3. Unsubscribe from events
+4. Set status to TERMINATED
+5. Log shutdown metrics
+```
+
+---
+
+## 💡 EXAMPLE: COST AGENT WORKFLOW
+
+```
+Event: budget.updated (project_id: 123)
+    │
+    ▼
+Cost Agent Receives Event
+    │
+    ├── Load project budget data
+    ├── Calculate variance from baseline
+    ├── Identify cost overruns
+    ├── Check contingency status
+    │
+    ▼
+Analysis Complete
+    │
+    ├── If variance > 10%:
+    │   ├── Generate alert
+    │   ├── Create risk entry
+    │   └── Notify PM
+    │
+    ├── Update knowledge graph
+    ├── Store analysis in memory
+    └── Publish: cost.variance.detected
+```
+
+---
+
+$END$
+
+*Context added by ATLAS agentic system - 17 agents, event bus architecture, knowledge graph, and safety boundaries.*

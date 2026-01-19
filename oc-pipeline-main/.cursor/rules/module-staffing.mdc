@@ -1,0 +1,52 @@
+---
+description: Staffing module - Resources, certifications, and utilization
+alwaysApply: false
+---
+
+# MODULE: STAFFING
+
+## 📋 OVERVIEW
+
+The Staffing module manages human resources, equipment, and utilization tracking.
+
+**Key Entities:** Resources, Assignments, Timesheets, Equipment
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `resources` | Staff/equipment |
+| `resource_assignments` | Project assignments |
+| `timesheets` | Time tracking |
+| `timesheet_entries` | Detailed entries |
+| `labor_rates` | Billing rates |
+| `equipment` | Equipment list |
+| `equipment_usage` | Usage logs |
+| `resource_forecasts` | Staffing plans |
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /staffing/resources
+POST   /staffing/assignments
+GET    /staffing/timesheets
+GET    /staffing/utilization
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `staff-001`
+
+**Capabilities:**
+- Resource allocation
+- Utilization optimization
+- Skill matching
+- Capacity forecasting
+
+$END$

@@ -1,0 +1,77 @@
+services:
+  - type: web
+    name: oc-pipeline-backend
+    runtime: node
+    region: oregon
+    plan: starter
+    branch: master
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    
+    envVars:
+      # Server Configuration
+      - key: PORT
+        value: 10000
+      
+      - key: NODE_ENV
+        value: production
+      
+      # Supabase Configuration
+      - key: SUPABASE_URL
+        sync: false
+      
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      
+      - key: DATABASE_URL
+        sync: false
+      
+      # JWT Configuration
+      - key: JWT_SECRET
+        generateValue: true
+      
+      - key: JWT_ISSUER
+        sync: false
+      
+      - key: JWT_AUDIENCE
+        value: authenticated
+      
+      # CORS Configuration
+      - key: FRONTEND_URL
+        sync: false
+      
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+# Database (Managed externally via Supabase)
+# No database service needed in render.yaml as we use Supabase
+
+# Background Workers (Optional - for future use)
+# - type: worker
+#   name: oc-pipeline-worker
+#   runtime: node
+#   buildCommand: npm install
+#   startCommand: npm run worker
+#   envVars:
+#     - fromService:
+#         type: web
+#         name: oc-pipeline-backend
+#         envVarKey: DATABASE_URL
+
+# Cron Jobs (Optional - for future use)
+# - type: cron
+#   name: oc-pipeline-cleanup
+#   runtime: node
+#   schedule: "0 2 * * *"
+#   buildCommand: npm install
+#   startCommand: npm run cleanup
+#   envVars:
+#     - fromService:
+#         type: web
+#         name: oc-pipeline-backend
+#         envVarKey: DATABASE_URL

@@ -1,0 +1,25 @@
+{
+  "name": "oc-pipeline (Node 20 + pnpm)",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "postCreateCommand": "corepack enable && corepack prepare pnpm@9.15.0 --activate && pnpm -v",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 5173, 8080],
+  "portsAttributes": {
+    "3000": { "label": "App (3000)", "onAutoForward": "openBrowser" },
+    "5173": { "label": "Vite (5173)", "onAutoForward": "openBrowser" },
+    "8080": { "label": "Alt (8080)", "onAutoForward": "notify" }
+  },
+  "remoteUser": "node"
+}

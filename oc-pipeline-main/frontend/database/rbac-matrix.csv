@@ -1,0 +1,9 @@
+role,view,create,edit,delete,approve,export,comment,assign,close,reopen,archive,unarchive,change_status,change_budget,change_schedule,view_budget,view_schedule,view_safety,view_quality,manage_users,manage_roles,manage_org
+admin,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true
+exec,true,false,false,false,true,true,true,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false
+pm,true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false
+pe,true,true,true,false,false,true,true,true,true,true,false,false,true,false,false,true,true,true,true,false,false,false
+super,true,true,true,false,false,true,true,true,true,true,false,false,true,false,false,true,true,true,true,false,false,false
+precon,true,true,true,false,false,true,true,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false
+sub,true,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false
+client,true,false,false,false,false,false,true,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false

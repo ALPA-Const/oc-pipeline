@@ -1,0 +1,55 @@
+---
+description: Procurement module - Vendors, contracts, and subcontracts
+alwaysApply: false
+---
+
+# MODULE: PROCUREMENT
+
+## 📋 OVERVIEW
+
+The Procurement module manages vendor relationships, contracts, and purchase orders.
+
+**Key Entities:** Vendors, Contracts, Subcontracts, POs, Invoices
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `vendors` | Vendor directory |
+| `vendor_contacts` | Contacts |
+| `vendor_certifications` | Certs |
+| `vendor_ratings` | Performance |
+| `contracts` | Prime contracts |
+| `subcontracts` | Subcontracts |
+| `purchase_orders` | POs |
+| `insurance_certs` | COIs |
+| `lien_waivers` | Lien releases |
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /procurement/vendors
+POST   /procurement/vendors
+GET    /procurement/contracts
+POST   /procurement/contracts
+GET    /procurement/pos
+POST   /procurement/pos
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `procure-001`
+
+**Capabilities:**
+- Vendor recommendations
+- Contract analysis
+- Pricing optimization
+- Compliance tracking
+
+$END$

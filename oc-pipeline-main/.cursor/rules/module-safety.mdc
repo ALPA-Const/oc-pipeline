@@ -1,0 +1,64 @@
+---
+description: Safety module - OSHA compliance, incidents, and metrics
+alwaysApply: false
+---
+
+# MODULE: SAFETY
+
+## 📋 OVERVIEW
+
+The Safety module manages OSHA compliance, incident tracking, and safety metrics.
+
+**Key Entities:** Incidents, Observations, Toolbox Talks, JHAs
+
+---
+
+## 🗄️ DATABASE TABLES
+
+| Table | Purpose |
+|-------|---------|
+| `incidents` | Safety incidents |
+| `incident_investigations` | Root cause |
+| `safety_observations` | Field observations |
+| `toolbox_talks` | Safety meetings |
+| `jhas` | Job hazard analysis |
+| `safety_inspections` | Site inspections |
+| `osha_logs` | OSHA 300 logs |
+| `safety_metrics` | TRIR/DART/EMR |
+| `certifications` | Safety certs |
+
+---
+
+## 📊 KEY METRICS
+
+```
+TRIR = (Incidents × 200,000) / Hours Worked
+DART = (DART Cases × 200,000) / Hours Worked
+EMR = Experience Modification Rate
+```
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /safety/incidents
+POST   /safety/incidents
+POST   /safety/incidents/:id/investigation
+GET    /safety/metrics
+GET    /safety/observations
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `safety-001`
+
+**Capabilities:**
+- Incident analysis
+- Compliance monitoring
+- Hazard prediction
+- Safety trend alerts
+
+$END$

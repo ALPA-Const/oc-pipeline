@@ -1,0 +1,4 @@
+{
+    "python.createEnvironment.contentButton": "show",
+    "javascript.referencesCodeLens.enabled": true
+}
