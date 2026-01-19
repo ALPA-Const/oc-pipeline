@@ -1,0 +1,7 @@
+export async function mockAuthenticate(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  print('line?')
+}

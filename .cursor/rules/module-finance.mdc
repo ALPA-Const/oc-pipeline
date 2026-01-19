@@ -1,0 +1,47 @@
+---
+description: Finance module - Detailed financial views and forecasting
+alwaysApply: false
+---
+
+# MODULE: FINANCE
+
+## 📋 OVERVIEW
+
+The Finance module provides detailed financial analysis, reporting, and forecasting capabilities.
+
+**Key Features:** Financial dashboards, Cash flow analysis, Forecasting
+
+---
+
+## 📊 KEY METRICS
+
+- Project profitability
+- Cash flow projections
+- Billing status
+- Payment tracking
+- Financial forecasts
+
+---
+
+## 🔗 API ENDPOINTS
+
+```
+GET    /finance/summary
+GET    /finance/cash-flow
+GET    /finance/forecasts
+GET    /finance/billing
+```
+
+---
+
+## 🤖 ATLAS AGENT
+
+**Agent ID:** `finance-001`
+
+**Capabilities:**
+- Financial analysis
+- Cash flow forecasting
+- Profitability insights
+- Billing optimization
+
+$END$

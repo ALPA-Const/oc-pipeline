@@ -1,0 +1,238 @@
+---
+description: High-level architecture and system design for OC Pipeline
+alwaysApply: false
+---
+
+# OC PIPELINE - PROJECT OVERVIEW
+
+## 🎯 EXECUTIVE SUMMARY
+
+OC Pipeline is a **federal-grade, multi-tenant SaaS platform** for complex healthcare, federal, and mission-critical commercial construction projects.
+
+**Key Differentiators:**
+- 16 integrated modules (full project lifecycle)
+- ATLAS agentic AI system (17 specialized agents)
+- Federal compliance (NIST 800-171, SOC 2, FISMA)
+- 67% reduction in development time/cost vs. traditional approaches
+
+---
+
+## 📊 SYSTEM ARCHITECTURE
+
+### **Three-Tier Architecture**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                 FRONTEND (Vercel)                        │
+│         React 18 + TypeScript + Vite + shadcn/ui        │
+│                https://ocpipeline.vercel.app            │
+└─────────────────────────┬───────────────────────────────┘
+                          │ HTTPS/REST
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                  BACKEND (Render)                        │
+│           Node.js + Express + TypeScript                 │
+│             https://oc-pipeline.onrender.com            │
+└─────────────────────────┬───────────────────────────────┘
+                          │ PostgreSQL Wire Protocol
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                 DATABASE (Supabase)                      │
+│       PostgreSQL 15 + RLS + Real-time + Auth            │
+│           Project: cwrjhtpycynjzeiggyhf                 │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🏗️ MODULE ARCHITECTURE
+
+### **Lifecycle Flow**
+
+```
+PRECONSTRUCTION ──────────────────────────────────────────►
+│
+├── Bids & Pursuits
+├── Estimates & Takeoffs
+├── Bid Packages
+└── Pipeline Management
+
+                    EXECUTION ────────────────────────────►
+                    │
+                    ├── Cost Management
+                    ├── Schedule Control
+                    ├── Risk Mitigation
+                    ├── Quality Assurance
+                    ├── Safety Compliance
+                    ├── Procurement
+                    ├── Communications (RFI/Submittal)
+                    └── Staffing & Resources
+
+                                        CLOSEOUT ─────────►
+                                        │
+                                        ├── Warranties
+                                        ├── As-Builts
+                                        ├── Handover
+                                        └── Lessons Learned
+
+CROSS-CUTTING ◄────────────────────────────────────────────
+│
+├── Administration (Users, Roles, Audit)
+├── Portfolio (Multi-project Analytics)
+├── Documents (Version Control)
+├── Tasks (Workflow Engine)
+├── Finance (Detailed Views)
+└── ATLAS (AI Agents)
+```
+
+---
+
+## 🔗 MODULE DEPENDENCIES
+
+| Module | Depends On | Provides To |
+|--------|------------|-------------|
+| Preconstruction | Admin, Documents | Cost, Schedule, Portfolio |
+| Cost | Preconstruction, Admin | Schedule, Finance, Portfolio |
+| Schedule | Cost, Preconstruction | Risk, Tasks, Portfolio |
+| Risk | Schedule, Cost | Quality, Safety |
+| Quality | Risk, Documents | Closeout |
+| Safety | Risk, Staffing | Quality, Portfolio |
+| Procurement | Cost, Documents | Schedule, Finance |
+| Communications | All modules | Documents, Tasks |
+| Staffing | Admin, Schedule | Safety, Cost |
+| Closeout | All modules | Portfolio, Documents |
+| Admin | - | All modules |
+| Portfolio | All modules | - |
+| Documents | Admin | All modules |
+| Tasks | Admin | All modules |
+| Finance | Cost, Procurement | Portfolio |
+| ATLAS | All modules | All modules |
+
+---
+
+## 📈 DATA FLOW PATTERNS
+
+### **1. Project Creation Flow**
+```
+User creates project
+    │
+    ├── Insert into `projects` table
+    ├── Create default budget structure
+    ├── Initialize schedule milestones
+    ├── Create document folder structure
+    ├── Assign default team members
+    └── Trigger ATLAS agent initialization
+```
+
+### **2. Change Order Flow**
+```
+Change order submitted
+    │
+    ├── Insert into `change_orders` table
+    ├── Update `budgets.contingency`
+    ├── Recalculate `cost_forecasts`
+    ├── Update `schedule_impacts`
+    ├── Trigger risk assessment
+    ├── Notify stakeholders
+    └── Log to audit trail
+```
+
+### **3. RFI Workflow**
+```
+RFI created
+    │
+    ├── Insert into `rfis` table
+    ├── Assign to responsible party
+    ├── Set due date (SLA)
+    ├── Create task in `tasks` table
+    ├── Send notification
+    ├── Track response time
+    └── Link to schedule impact (if any)
+```
+
+---
+
+## 🎯 KEY BUSINESS METRICS
+
+### **Project Health KPIs**
+- **CPI** (Cost Performance Index): EV / AC
+- **SPI** (Schedule Performance Index): EV / PV
+- **TRIR** (Total Recordable Incident Rate): (Incidents × 200,000) / Hours
+- **DART** (Days Away/Restricted/Transfer): (Cases × 200,000) / Hours
+- **EMR** (Experience Modification Rate): Company safety rating
+
+### **Pipeline Metrics**
+- **Weighted Pipeline Value**: Σ(Project Value × Win Probability)
+- **Win Rate**: Rolling 90-day calculation
+- **Capacity Utilization**: Active Value / $30M Baseline
+- **Stage Velocity**: Projects moved / Time period
+
+### **Financial Metrics**
+- **EAC** (Estimate at Completion): AC + ETC
+- **VAC** (Variance at Completion): BAC - EAC
+- **TCPI** (To-Complete Performance Index): (BAC - EV) / (BAC - AC)
+
+---
+
+## 🔐 SECURITY ARCHITECTURE
+
+### **Authentication Flow**
+```
+User login request
+    │
+    ├── Supabase Auth validates credentials
+    ├── Generate JWT (1hr access, 30-day refresh)
+    ├── Set session cookie (httpOnly, secure)
+    ├── Log login to audit trail
+    └── Return user profile + permissions
+```
+
+### **Authorization Flow**
+```
+API request received
+    │
+    ├── Extract JWT from header
+    ├── Verify JWT signature
+    ├── Check token expiration
+    ├── Load user permissions from cache/DB
+    ├── Check RBAC for requested action
+    ├── Apply RLS policies at DB level
+    └── Execute request or return 403
+```
+
+---
+
+## 🚀 DEPLOYMENT ARCHITECTURE
+
+### **Production Environment**
+
+| Component | Service | URL |
+|-----------|---------|-----|
+| Frontend | Vercel | https://ocpipeline.vercel.app |
+| Backend | Render | https://oc-pipeline.onrender.com |
+| Database | Supabase | cwrjhtpycynjzeiggyhf.supabase.co |
+| Storage | Supabase | S3-compatible object storage |
+| Auth | Supabase | Built-in with Google/Microsoft OAuth |
+
+### **Environment Variables**
+
+**Frontend (.env)**
+```
+VITE_SUPABASE_URL=https://cwrjhtpycynjzeiggyhf.supabase.co
+VITE_SUPABASE_ANON_KEY=<anon-key>
+VITE_API_URL=https://oc-pipeline.onrender.com
+```
+
+**Backend (.env)**
+```
+DATABASE_URL=postgresql://...
+SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
+JWT_SECRET=<jwt-secret>
+PORT=3001
+```
+
+---
+
+$END$
+
+*Context added by project overview - High-level architecture, module dependencies, data flow patterns, and deployment configuration.*

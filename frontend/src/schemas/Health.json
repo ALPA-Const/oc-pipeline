@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alpa-construction.com/schemas/Health.json",
+  "title": "Health",
+  "description": "Project health calculation with versioning and audit trail",
+  "type": "object",
+  "required": [
+    "project_id",
+    "overall",
+    "budget",
+    "schedule",
+    "safety",
+    "quality",
+    "as_of",
+    "calc_version",
+    "inputs_hash"
+  ],
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Associated project ID"
+    },
+    "overall": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Overall health score (weighted average)"
+    },
+    "budget": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Budget health: (remaining / total) × 100, capped [0, 100]"
+    },
+    "schedule": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Schedule health: (days_remaining / days_total) × 100, capped [0, 100]"
+    },
+    "safety": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Safety health: 100 − (incidents × 10), capped [0, 100]"
+    },
+    "quality": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Quality health: 100 − (defects × 5), capped [0, 100]"
+    },
+    "as_of": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Calculation timestamp (ISO 8601, UTC)"
+    },
+    "calc_version": {
+      "type": "string",
+      "pattern": "^v\\d+\\.\\d+$",
+      "description": "Health calculation version (e.g., v1.0)",
+      "examples": ["v1.0", "v1.1", "v2.0"]
+    },
+    "inputs_snapshot": {
+      "type": "object",
+      "description": "Snapshot of inputs used in calculation",
+      "required": [
+        "budget_total",
+        "budget_spent",
+        "schedule_days_total",
+        "schedule_days_elapsed",
+        "safety_incidents_count",
+        "quality_defects_count"
+      ],
+      "properties": {
+        "budget_total": {
+          "type": "number",
+          "minimum": 0
+        },
+        "budget_spent": {
+          "type": "number",
+          "minimum": 0
+        },
+        "budget_remaining": {
+          "type": "number"
+        },
+        "schedule_days_total": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "schedule_days_elapsed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "schedule_days_remaining": {
+          "type": "integer"
+        },
+        "safety_incidents_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quality_defects_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "inputs_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 hash of inputs_snapshot for change detection"
+    },
+    "weights": {
+      "type": "object",
+      "description": "Weights used for overall calculation",
+      "required": ["budget", "schedule", "safety", "quality"],
+      "properties": {
+        "budget": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "schedule": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "safety": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "quality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "trace_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Trace ID for debugging calculation issues"
+    },
+    "calculation_duration_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Time taken to calculate health (milliseconds)"
+    }
+  },
+  "additionalProperties": false
+}
