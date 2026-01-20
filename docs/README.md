@@ -60,6 +60,7 @@ curl http://localhost:10000/health/detailed
 - **[Deployment Guide](docs/DEPLOYMENT.md)** - Complete deployment instructions
 - **[API Documentation](docs/API.md)** - Comprehensive API reference
 - **[Database Schema](database/README.md)** - Database structure and migrations
+- **[GitHub Sync Workflow](GITHUB_SYNC_WORKFLOW.md)** - Visual guide for syncing with GitHub Desktop
 
 ---
 
