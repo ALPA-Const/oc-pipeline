@@ -6,7 +6,7 @@
 import { Router } from "express";
 import { authenticate } from "../middleware/auth";
 
-const router = Router();
+const router: any = Router();
 
 // POST /auth/login - Login with email/password
 router.post("/login", async (req, res) => {

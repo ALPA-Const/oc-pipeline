@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-const router = Router();
+const router: any = Router();
 
 // Placeholder route
 router.get("/health", (req, res) => {

@@ -2,7 +2,7 @@ import express from 'express';
 import closeoutController from '../controllers/closeoutController';
 import { authenticate } from '../middleware/auth';
 
-const router = express.Router();
+const router: any = express.Router();
 
 /**
  * Closeout Routes

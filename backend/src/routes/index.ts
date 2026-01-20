@@ -26,7 +26,7 @@ import atlasRoutes from './atlas.routes';
 import portfolioRoutes from './portfolio.routes';
 import dashboardRoutes from './dashboard.routes';
 
-const router = Router();
+const router: any = Router();
 
 // Health check
 router.get('/health', (req, res) => {

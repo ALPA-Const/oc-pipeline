@@ -6,7 +6,7 @@
 import { Router } from 'express';
 import { authenticate, requirePermission } from '../middleware/auth';
 
-const router = Router();
+const router: any = Router();
 
 // GET /portfolio/dashboard - Get portfolio dashboard
 router.get('/dashboard', authenticate, async (req, res) => {

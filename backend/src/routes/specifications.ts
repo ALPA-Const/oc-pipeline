@@ -2,7 +2,7 @@ import express from 'express';
 import specificationController from '../controllers/specificationController';
 import { authenticate } from '../middleware/auth';
 
-const router = express.Router();
+const router: any = express.Router();
 
 /**
  * Specification Routes
