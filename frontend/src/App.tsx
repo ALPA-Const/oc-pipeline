@@ -32,6 +32,8 @@ import { ClientPortal } from "@/pages/ClientPortal";
 import { AIEstimatingDashboard } from "@/pages/AIEstimatingDashboard";
 import { AIChat } from "@/pages/AIChat";
 import { AIChatDemo } from "@/pages/AIChatDemo";
+import AtlasDashboard from "@/pages/AtlasDashboard";
+import AtlasAgentFileAccess from "@/pages/AtlasAgentFileAccess";
 
 import { RecoveryDetector } from "@/components/RecoveryDetector";
 
@@ -105,6 +107,24 @@ function App() {
               element={
                 <ProtectedPage>
                   <AIChat />
+                </ProtectedPage>
+              }
+            />
+
+            {/* ATLAS AI Agent Orchestration */}
+            <Route
+              path="/atlas"
+              element={
+                <ProtectedPage>
+                  <AtlasDashboard />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="/atlas/agents/:agentId/files"
+              element={
+                <ProtectedPage>
+                  <AtlasAgentFileAccess />
                 </ProtectedPage>
               }
             />

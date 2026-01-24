@@ -5,6 +5,7 @@
 
 import { Router } from 'express';
 import { authenticate, requirePermission } from '../middleware/auth';
+import * as agentFileAccessController from '../controllers/agentFileAccessController';
 
 const router = Router();
 
@@ -144,6 +145,40 @@ router.get('/logs', authenticate, requirePermission('view_audit'), async (req, r
     res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'Internal server error' } });
   }
 });
+
+// ============================================================
+// FILE ACCESS
+// ============================================================
+
+// GET /atlas/agents/:agentId/file-access/check - Check file permission
+router.get('/agents/:agentId/file-access/check', authenticate, agentFileAccessController.checkFilePermission);
+
+// GET /atlas/agents/:agentId/file-access - Get agent file access history
+router.get('/agents/:agentId/file-access', authenticate, agentFileAccessController.getAgentFileAccess);
+
+// POST /atlas/agents/:agentId/file-access - Record file access
+router.post('/agents/:agentId/file-access', authenticate, agentFileAccessController.recordFileAccess);
+
+// GET /atlas/agents/:agentId/file-access/stats - Get file access statistics
+router.get('/agents/:agentId/file-access/stats', authenticate, agentFileAccessController.getAgentFileAccessStats);
+
+// GET /atlas/files/:fileId/access-history - Get file access history
+router.get('/files/:fileId/access-history', authenticate, agentFileAccessController.getFileAccessHistory);
+
+// GET /atlas/agents/:agentId/file-permissions - Get agent file permissions
+router.get('/agents/:agentId/file-permissions', authenticate, agentFileAccessController.getAgentPermissions);
+
+// POST /atlas/agents/:agentId/file-permissions - Grant file permission
+router.post('/agents/:agentId/file-permissions', authenticate, requirePermission('manage_org'), agentFileAccessController.grantFilePermission);
+
+// DELETE /atlas/file-permissions/:permissionId - Revoke file permission
+router.delete('/file-permissions/:permissionId', authenticate, requirePermission('manage_org'), agentFileAccessController.revokeFilePermission);
+
+// GET /atlas/agents/:agentId/file-operations - Get agent file operations
+router.get('/agents/:agentId/file-operations', authenticate, agentFileAccessController.getAgentFileOperations);
+
+// POST /atlas/agents/:agentId/file-operations - Record file operation
+router.post('/agents/:agentId/file-operations', authenticate, agentFileAccessController.recordFileOperation);
 
 export default router;
 
