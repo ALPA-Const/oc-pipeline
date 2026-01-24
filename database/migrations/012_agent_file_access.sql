@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS agent_file_permissions (
     can_read BOOLEAN DEFAULT false,
     can_write BOOLEAN DEFAULT false,
     can_delete BOOLEAN DEFAULT false,
-    can_analyze BOOLEAN DEFAULT true, -- Can extract information
+    can_analyze BOOLEAN DEFAULT true, -- Can analyze and extract information from files
     
     -- Scope
     org_id UUID REFERENCES organizations(id),

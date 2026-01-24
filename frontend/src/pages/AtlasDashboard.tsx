@@ -59,10 +59,11 @@ const AtlasDashboard: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      // For now, show placeholder data since the API might not be fully implemented
-      // In production, this would call: const response = await api.get('/atlas/agents');
+      // TODO: Replace with actual API call when backend is fully implemented
+      // const response = await api.get('/atlas/agents');
+      // setAgents(response.data.data);
       
-      // Placeholder data for demonstration
+      // Placeholder data for demonstration until API is implemented
       const placeholderAgents: Agent[] = [
         {
           id: '00000000-0000-0000-0000-000000000001',

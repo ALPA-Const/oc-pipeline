@@ -133,7 +133,7 @@ class AgentFileAccessService {
           access.projectId || null,
           access.orgId || null,
           access.durationMs || null,
-          access.success !== false, // Default to true
+          access.success ?? true, // Default to true if undefined
           access.errorMessage || null,
           access.metadata || {}
         ]
@@ -316,7 +316,7 @@ class AgentFileAccessService {
           permission.canRead || false,
           permission.canWrite || false,
           permission.canDelete || false,
-          permission.canAnalyze !== false, // Default to true
+          permission.canAnalyze ?? true, // Default to true if undefined
           permission.orgId || null,
           permission.projectId || null,
           permission.grantedBy,
@@ -439,7 +439,7 @@ class AgentFileAccessService {
           operation.mimeType || null,
           operation.sizeBytes || null,
           operation.changes || null,
-          operation.success !== false,
+          operation.success ?? true, // Default to true if undefined
           operation.errorMessage || null
         ]
       );
@@ -531,14 +531,9 @@ class AgentFileAccessService {
           COUNT(DISTINCT file_id) as unique_files,
           COUNT(CASE WHEN success = true THEN 1 END) as successful_accesses,
           COUNT(CASE WHEN success = false THEN 1 END) as failed_accesses,
-          AVG(duration_ms) as avg_duration_ms,
-          jsonb_object_agg(access_type, access_count) as accesses_by_type
-        FROM (
-          SELECT 
-            afa.*,
-            COUNT(*) OVER (PARTITION BY access_type) as access_count
-          FROM agent_file_access afa
-          WHERE agent_id = $1
+          AVG(duration_ms) as avg_duration_ms
+        FROM agent_file_access
+        WHERE agent_id = $1
       `;
       const params: any[] = [agentId];
       let paramCount = 2;
@@ -555,17 +550,48 @@ class AgentFileAccessService {
         paramCount++;
       }
 
-      query += `) sub GROUP BY access_type`;
-
-      const result = await this.db.query(query, params);
+      const statsResult = await this.db.query(query, params);
       
-      return result.rows.length > 0 ? result.rows[0] : {
+      // Get accesses by type separately
+      let typeQuery = `
+        SELECT access_type, COUNT(*) as count
+        FROM agent_file_access
+        WHERE agent_id = $1
+      `;
+      const typeParams: any[] = [agentId];
+      let typeParamCount = 2;
+
+      if (startDate) {
+        typeQuery += ` AND accessed_at >= $${typeParamCount}`;
+        typeParams.push(startDate);
+        typeParamCount++;
+      }
+
+      if (endDate) {
+        typeQuery += ` AND accessed_at <= $${typeParamCount}`;
+        typeParams.push(endDate);
+      }
+
+      typeQuery += ` GROUP BY access_type`;
+
+      const typeResult = await this.db.query(typeQuery, typeParams);
+      
+      const accessesByType: Record<string, number> = {};
+      typeResult.rows.forEach(row => {
+        accessesByType[row.access_type] = parseInt(row.count);
+      });
+
+      const stats = statsResult.rows.length > 0 ? statsResult.rows[0] : {
         total_accesses: 0,
         unique_files: 0,
         successful_accesses: 0,
         failed_accesses: 0,
         avg_duration_ms: null,
-        accesses_by_type: {}
+      };
+
+      return {
+        ...stats,
+        accesses_by_type: accessesByType
       };
     } catch (error) {
       logger.error('Error getting agent file access stats:', { agentId, error: (error as Error).message });
