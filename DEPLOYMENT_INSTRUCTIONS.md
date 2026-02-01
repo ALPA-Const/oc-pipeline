@@ -26,9 +26,35 @@ This is a **complete construction pipeline management web application** with:
 
 ## 🌐 Deployment Options
 
-### Option 1: Vercel (Recommended - FREE) ⭐
+### Option 1: AWS EC2 (Production-Grade) 🚀
 
-Vercel is the easiest way to deploy this application online.
+Deploy on your own infrastructure with full control. Perfect for production environments.
+
+#### Benefits:
+- ✅ Full control over infrastructure
+- ✅ Custom domain with SSL
+- ✅ Scalable to any traffic level
+- ✅ Both frontend and backend on one platform
+- ✅ Cost-effective for long-term use
+
+#### Quick Deploy:
+```bash
+# See AWS_EC2_DEPLOYMENT.md for complete guide
+# Or use Quick Start: AWS_EC2_QUICK_START.md
+```
+
+**Documentation**:
+- 📚 **Complete Guide**: [AWS_EC2_DEPLOYMENT.md](./AWS_EC2_DEPLOYMENT.md) - Full deployment instructions
+- ⚡ **Quick Start**: [AWS_EC2_QUICK_START.md](./AWS_EC2_QUICK_START.md) - 5-minute setup
+- 🐳 **Docker Version**: [DOCKER_DEPLOYMENT.md](./DOCKER_DEPLOYMENT.md) - Containerized deployment
+
+**Estimated Cost**: $15-50/month (depending on instance size)
+
+---
+
+### Option 2: Vercel (Frontend Only - FREE) ⭐
+
+Vercel is the easiest way to deploy the frontend online.
 
 #### Quick Deploy with Vercel:
 
