@@ -57,9 +57,20 @@ curl http://localhost:10000/health/detailed
 
 ## 📚 Documentation
 
+### Core Documentation
 - **[Deployment Guide](docs/DEPLOYMENT.md)** - Complete deployment instructions
 - **[API Documentation](docs/API.md)** - Comprehensive API reference
 - **[Database Schema](database/README.md)** - Database structure and migrations
+
+### AI Agent Framework Research
+- **[AI Agent Research Summary](AI_AGENT_RESEARCH_SUMMARY.md)** - Executive summary and recommendations
+- **[Comprehensive Framework Analysis](AI_AGENT_FRAMEWORKS_RESEARCH.md)** - Detailed analysis of 15 top frameworks
+- **[Quick Reference Guide](TOP_AI_AGENT_APPS_QUICK_REFERENCE.md)** - Fast framework selection guide
+
+### AI Agent Deployment
+- **[🚀 Quick Start Guide](AI_AGENT_QUICK_START.md)** - Deploy an AI agent in 5 minutes
+- **[Complete Deployment Guide](AI_AGENT_DEPLOYMENT_GUIDE.md)** - Comprehensive deployment documentation
+- **[Automated Script](../scripts/deploy-ai-agent.sh)** - One-command deployment automation
 
 ---
 
