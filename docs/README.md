@@ -67,6 +67,11 @@ curl http://localhost:10000/health/detailed
 - **[Comprehensive Framework Analysis](AI_AGENT_FRAMEWORKS_RESEARCH.md)** - Detailed analysis of 15 top frameworks
 - **[Quick Reference Guide](TOP_AI_AGENT_APPS_QUICK_REFERENCE.md)** - Fast framework selection guide
 
+### AI Agent Deployment
+- **[🚀 Quick Start Guide](AI_AGENT_QUICK_START.md)** - Deploy an AI agent in 5 minutes
+- **[Complete Deployment Guide](AI_AGENT_DEPLOYMENT_GUIDE.md)** - Comprehensive deployment documentation
+- **[Automated Script](../scripts/deploy-ai-agent.sh)** - One-command deployment automation
+
 ---
 
 ## 🏗️ Architecture
