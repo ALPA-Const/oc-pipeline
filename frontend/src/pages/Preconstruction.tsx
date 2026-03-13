@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import { ModulePlaceholder } from './ModulePlaceholder';
 
 export function Preconstruction() {
+  const navigate = useNavigate();
   return (
     <ModulePlaceholder
       moduleName="Preconstruction"
@@ -11,7 +13,14 @@ export function Preconstruction() {
         "Bid Management",
         "Subcontractor Prequalification",
         "Proposal Generation",
-        "Risk Assessment"
+        "Risk Assessment",
+        "AI-Driven Apps Intelligence",
+      ]}
+      extraActions={[
+        {
+          label: "Top 10 AI Preconstruction Apps",
+          onClick: () => navigate('/preconstruction/ai-apps'),
+        },
       ]}
     />
   );
