@@ -30,6 +30,7 @@ import { Pipeline } from "@/pages/Pipeline";
 import { Import } from "@/pages/Import";
 import { ClientPortal } from "@/pages/ClientPortal";
 import { AIEstimatingDashboard } from "@/pages/AIEstimatingDashboard";
+import { AIPreconApps } from "@/pages/AIPreconApps";
 import { AIChat } from "@/pages/AIChat";
 import { AIChatDemo } from "@/pages/AIChatDemo";
 
@@ -95,6 +96,16 @@ function App() {
               element={
                 <ProtectedPage>
                   <AIEstimatingDashboard />
+                </ProtectedPage>
+              }
+            />
+
+            {/* AI Preconstruction Apps — Competitive Intelligence */}
+            <Route
+              path="/preconstruction/ai-apps"
+              element={
+                <ProtectedPage>
+                  <AIPreconApps />
                 </ProtectedPage>
               }
             />
