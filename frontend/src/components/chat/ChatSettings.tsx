@@ -12,6 +12,8 @@ import {
   AVAILABLE_MODELS,
   ModelConfig,
   StorageProvider,
+  AIProvider,
+  PROVIDER_DEFAULTS,
 } from '@/types/chat';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -44,6 +46,7 @@ import {
   HardDrive,
   Save,
   RotateCcw,
+  Server,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -109,20 +112,153 @@ export const ChatSettingsPanel: React.FC<ChatSettingsPanelProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="model" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="provider" className="w-full">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="provider">Provider</TabsTrigger>
             <TabsTrigger value="model">Model</TabsTrigger>
             <TabsTrigger value="parameters">Parameters</TabsTrigger>
             <TabsTrigger value="behavior">Behavior</TabsTrigger>
             <TabsTrigger value="storage">Storage</TabsTrigger>
           </TabsList>
 
+          {/* Provider Selection Tab */}
+          <TabsContent value="provider" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">AI Provider</CardTitle>
+                <CardDescription>
+                  Choose where your AI requests are sent. Supports Groq, OpenAI, Anthropic,
+                  Ollama, OpenWebUI, LibreChat, or any custom OpenAI-compatible endpoint.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Provider</Label>
+                  <Select
+                    value={localSettings.provider ?? 'groq'}
+                    onValueChange={(value) => {
+                      const provider = value as AIProvider;
+                      const defaults = PROVIDER_DEFAULTS[provider];
+                      updateSetting('provider', provider);
+                      // Keep the existing API key; only reset the endpoint URL
+                      updateSetting('providerConfig', {
+                        baseUrl: defaults.defaultUrl,
+                        apiKey: localSettings.providerConfig?.apiKey ?? '',
+                      });
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(Object.keys(PROVIDER_DEFAULTS) as AIProvider[]).map((p) => (
+                        <SelectItem key={p} value={p}>
+                          <div className="flex items-center gap-2">
+                            <Server className="h-4 w-4 text-muted-foreground" />
+                            <span>{PROVIDER_DEFAULTS[p].label}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Endpoint URL */}
+                <div className="space-y-2">
+                  <Label>API Endpoint URL</Label>
+                  <Input
+                    value={localSettings.providerConfig?.baseUrl ?? PROVIDER_DEFAULTS[localSettings.provider ?? 'groq']?.defaultUrl ?? ''}
+                    onChange={(e) =>
+                      updateSetting('providerConfig', {
+                        ...localSettings.providerConfig,
+                        baseUrl: e.target.value,
+                      })
+                    }
+                    placeholder={PROVIDER_DEFAULTS[localSettings.provider ?? 'groq']?.defaultUrl}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Leave blank to use the default endpoint for the selected provider.
+                  </p>
+                </div>
+
+                {/* API Key */}
+                {PROVIDER_DEFAULTS[localSettings.provider ?? 'groq']?.apiKeyRequired && (
+                  <div className="space-y-2">
+                    <Label>API Key</Label>
+                    <Input
+                      type="password"
+                      value={localSettings.providerConfig?.apiKey ?? ''}
+                      onChange={(e) =>
+                        updateSetting('providerConfig', {
+                          ...localSettings.providerConfig,
+                          apiKey: e.target.value,
+                        })
+                      }
+                      placeholder="Enter your API key…"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      You can also set this via the{' '}
+                      <code className="bg-muted px-1 rounded text-xs">
+                        {localSettings.provider === 'openai'
+                          ? 'VITE_OPENAI_API_KEY'
+                          : localSettings.provider === 'anthropic'
+                          ? 'VITE_ANTHROPIC_API_KEY'
+                          : 'VITE_GROQ_API_KEY'}
+                      </code>{' '}
+                      environment variable.
+                    </p>
+                  </div>
+                )}
+
+                {/* Self-hosted platform info boxes */}
+                {(localSettings.provider === 'ollama' || localSettings.provider === 'openwebui') && (
+                  <div className="p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg text-sm text-green-900 dark:text-green-100 space-y-1">
+                    <p className="font-semibold">
+                      {localSettings.provider === 'openwebui' ? 'OpenWebUI' : 'Ollama'} — Self-hosted
+                    </p>
+                    <p>
+                      {localSettings.provider === 'openwebui'
+                        ? 'OpenWebUI provides a ChatGPT-style UI on top of Ollama. Make sure your OpenWebUI instance is running and accessible.'
+                        : 'Ollama lets you run LLMs locally. Install it from https://ollama.com and pull a model with `ollama pull llama3.2`.'}
+                    </p>
+                    <p>No API key is required for local deployments.</p>
+                  </div>
+                )}
+                {localSettings.provider === 'librechat' && (
+                  <div className="p-3 bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-lg text-sm text-purple-900 dark:text-purple-100 space-y-1">
+                    <p className="font-semibold">LibreChat — Self-hosted</p>
+                    <p>
+                      LibreChat is an open-source platform supporting OpenAI, Anthropic, Ollama,
+                      and many more providers. It exposes an OpenAI-compatible API.
+                    </p>
+                    <p>
+                      Source:{' '}
+                      <a
+                        href="https://github.com/LibreChat-AI/librechat.ai"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline"
+                      >
+                        github.com/LibreChat-AI/librechat.ai
+                      </a>
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Model Selection Tab */}
           <TabsContent value="model" className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm">Model Selection</CardTitle>
-                <CardDescription>Choose the AI model for your conversations</CardDescription>
+                <CardDescription>
+                  Choose the AI model for your conversations.
+                  {localSettings.provider && localSettings.provider !== 'groq' && (
+                    <> Showing models for <strong>{PROVIDER_DEFAULTS[localSettings.provider]?.label}</strong>.</>
+                  )}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -135,16 +271,18 @@ export const ChatSettingsPanel: React.FC<ChatSettingsPanelProps> = ({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {AVAILABLE_MODELS.map((model) => (
-                        <SelectItem key={model.id} value={model.id}>
-                          <div className="flex flex-col">
-                            <span className="font-medium">{model.name}</span>
-                            <span className="text-xs text-muted-foreground">
-                              {model.description}
-                            </span>
-                          </div>
-                        </SelectItem>
-                      ))}
+                      {AVAILABLE_MODELS
+                        .filter((m) => m.provider === (localSettings.provider ?? 'groq'))
+                        .map((model) => (
+                          <SelectItem key={model.id} value={model.id}>
+                            <div className="flex flex-col">
+                              <span className="font-medium">{model.name}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {model.description}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </div>

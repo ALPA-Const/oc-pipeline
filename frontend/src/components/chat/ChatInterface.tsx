@@ -10,6 +10,8 @@ import {
   ChatSettings,
   DEFAULT_CHAT_SETTINGS,
   FileAttachment,
+  PROVIDER_DEFAULTS,
+  AIProvider,
 } from '@/types/chat';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
@@ -24,6 +26,11 @@ import { toast } from 'sonner';
 
 // Constants
 const AI_RESPONSE_DELAY = 500; // ms - delay before showing AI response for natural feel
+
+/** Returns a human-readable label for the active AI provider. */
+function getProviderLabel(provider: AIProvider | undefined): string {
+  return PROVIDER_DEFAULTS[provider ?? 'groq']?.label ?? (provider ?? 'Groq');
+}
 
 interface ChatInterfaceProps {
   conversationId?: string;
@@ -210,9 +217,11 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 <div>
                   <h2 className="text-lg font-semibold">AI Assistant</h2>
                   <p className="text-sm text-muted-foreground">
+                    {getProviderLabel(settings.provider)}
+                    {' · '}
                     {settings.model === 'gpt-odd-120b'
-                      ? 'Powered by GPT ODD 120B via Groq'
-                      : `Using ${settings.model}`}
+                      ? 'GPT ODD 120B'
+                      : settings.model}
                   </p>
                 </div>
               </div>
@@ -246,7 +255,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                   <span className="font-semibold">
                     {settings.model === 'gpt-odd-120b' ? 'GPT ODD 120B' : settings.model}
                   </span>{' '}
-                  via Groq
+                  via{' '}
+                  <span className="font-semibold">{getProviderLabel(settings.provider)}</span>
                 </p>
                 <div className="w-full max-w-md">
                   <Suggestions
