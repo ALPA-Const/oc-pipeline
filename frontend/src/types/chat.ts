@@ -68,23 +68,50 @@ export type GroqModel =
   | 'mixtral-8x7b-32768'
   | 'gemma-7b-it';
 
+// =====================================================
+// MULTI-PROVIDER SUPPORT
+// Platforms similar to OpenWebUI and LibreChat
+// =====================================================
+
+export type AIProvider =
+  | 'groq'       // Groq fast inference (default)
+  | 'openai'     // OpenAI direct API
+  | 'anthropic'  // Anthropic Claude
+  | 'ollama'     // Ollama local LLM server (used by OpenWebUI)
+  | 'openwebui'  // OpenWebUI self-hosted interface (Ollama-compatible)
+  | 'librechat'  // LibreChat multi-provider platform (OpenAI-compatible)
+  | 'custom';    // Any OpenAI-compatible endpoint
+
+export type AnyModel = GroqModel | string;
+
 export interface ModelConfig {
   id: string;
   name: string;
   description: string;
   maxTokens: number;
   contextWindow: number;
-  provider: 'groq' | 'openai' | 'custom';
+  provider: AIProvider;
+}
+
+export interface ProviderConfig {
+  /** Base URL for the provider's API endpoint */
+  baseUrl?: string;
+  /** API key for the provider */
+  apiKey?: string;
 }
 
 export interface ChatSettings {
   // Model Configuration
-  model: GroqModel;
+  model: AnyModel;
   temperature: number; // 0-2, controls randomness
   maxTokens: number; // Maximum tokens to generate
   topP: number; // 0-1, nucleus sampling
   frequencyPenalty: number; // -2 to 2, penalize frequent tokens
   presencePenalty: number; // -2 to 2, penalize repeated topics
+
+  // Provider Selection (OpenWebUI / LibreChat / Ollama / etc.)
+  provider: AIProvider;
+  providerConfig?: ProviderConfig;
   
   // System Behavior
   systemPrompt?: string; // Custom system instructions
@@ -106,6 +133,7 @@ export const DEFAULT_CHAT_SETTINGS: ChatSettings = {
   topP: 1,
   frequencyPenalty: 0,
   presencePenalty: 0,
+  provider: 'groq',
   contextWindow: 10,
   includeSystemContext: true,
   autoSaveConversations: true,
@@ -152,7 +180,7 @@ export interface FileUploadResponse {
 // =====================================================
 
 export interface GroqChatRequest {
-  model: GroqModel;
+  model: AnyModel;
   messages: GroqMessage[];
   temperature?: number;
   max_tokens?: number;
@@ -186,6 +214,48 @@ export interface GroqChoice {
   message: GroqMessage;
   finish_reason: string;
 }
+
+// =====================================================
+// PROVIDER DEFAULT ENDPOINTS
+// =====================================================
+
+export const PROVIDER_DEFAULTS: Record<AIProvider, { label: string; defaultUrl: string; apiKeyRequired: boolean }> = {
+  groq: {
+    label: 'Groq',
+    defaultUrl: 'https://api.groq.com/openai/v1',
+    apiKeyRequired: true,
+  },
+  openai: {
+    label: 'OpenAI',
+    defaultUrl: 'https://api.openai.com/v1',
+    apiKeyRequired: true,
+  },
+  anthropic: {
+    label: 'Anthropic',
+    defaultUrl: 'https://api.anthropic.com/v1',
+    apiKeyRequired: true,
+  },
+  ollama: {
+    label: 'Ollama (local)',
+    defaultUrl: 'http://localhost:11434/v1',
+    apiKeyRequired: false,
+  },
+  openwebui: {
+    label: 'OpenWebUI (self-hosted)',
+    defaultUrl: 'http://localhost:3000/ollama/v1',
+    apiKeyRequired: false,
+  },
+  librechat: {
+    label: 'LibreChat (self-hosted)',
+    defaultUrl: 'http://localhost:3080/api',
+    apiKeyRequired: false,
+  },
+  custom: {
+    label: 'Custom Endpoint',
+    defaultUrl: '',
+    apiKeyRequired: false,
+  },
+};
 
 // =====================================================
 // SETTINGS PRESETS
@@ -251,13 +321,14 @@ export const SETTINGS_PRESETS: SettingsPreset[] = [
 // =====================================================
 
 export const AVAILABLE_MODELS: ModelConfig[] = [
+  // ── Groq ─────────────────────────────────────────────────────────────────
   {
     id: 'gpt-odd-120b',
     name: 'GPT ODD 120B',
     description: 'Custom 120B parameter model optimized for construction domain',
     maxTokens: 8192,
     contextWindow: 32768,
-    provider: 'custom',
+    provider: 'groq',
   },
   {
     id: 'llama-3.3-70b-versatile',
@@ -290,6 +361,105 @@ export const AVAILABLE_MODELS: ModelConfig[] = [
     maxTokens: 8192,
     contextWindow: 8192,
     provider: 'groq',
+  },
+  // ── OpenAI ───────────────────────────────────────────────────────────────
+  {
+    id: 'gpt-4o',
+    name: 'GPT-4o',
+    description: 'OpenAI\'s most capable multimodal model',
+    maxTokens: 16384,
+    contextWindow: 128000,
+    provider: 'openai',
+  },
+  {
+    id: 'gpt-4o-mini',
+    name: 'GPT-4o Mini',
+    description: 'Lightweight and cost-efficient GPT-4o variant',
+    maxTokens: 16384,
+    contextWindow: 128000,
+    provider: 'openai',
+  },
+  {
+    id: 'gpt-3.5-turbo',
+    name: 'GPT-3.5 Turbo',
+    description: 'Fast and affordable OpenAI chat model',
+    maxTokens: 4096,
+    contextWindow: 16385,
+    provider: 'openai',
+  },
+  // ── Anthropic ────────────────────────────────────────────────────────────
+  {
+    id: 'claude-3-5-sonnet-20241022',
+    name: 'Claude 3.5 Sonnet',
+    description: 'Anthropic\'s most intelligent model for complex tasks',
+    maxTokens: 8192,
+    contextWindow: 200000,
+    provider: 'anthropic',
+  },
+  {
+    id: 'claude-3-5-haiku-20241022',
+    name: 'Claude 3.5 Haiku',
+    description: 'Anthropic\'s fastest and most compact model',
+    maxTokens: 8192,
+    contextWindow: 200000,
+    provider: 'anthropic',
+  },
+  // ── Ollama / OpenWebUI ───────────────────────────────────────────────────
+  // Ollama is the local LLM server powering OpenWebUI.
+  // Models below are pulled via `ollama pull <name>`.
+  {
+    id: 'llama3.2',
+    name: 'Llama 3.2 (Ollama)',
+    description: 'Meta Llama 3.2 running locally via Ollama / OpenWebUI',
+    maxTokens: 8192,
+    contextWindow: 128000,
+    provider: 'ollama',
+  },
+  {
+    id: 'llama3.1',
+    name: 'Llama 3.1 (Ollama)',
+    description: 'Meta Llama 3.1 running locally via Ollama / OpenWebUI',
+    maxTokens: 8192,
+    contextWindow: 128000,
+    provider: 'ollama',
+  },
+  {
+    id: 'mistral',
+    name: 'Mistral (Ollama)',
+    description: 'Mistral 7B running locally via Ollama / OpenWebUI',
+    maxTokens: 8192,
+    contextWindow: 32768,
+    provider: 'ollama',
+  },
+  {
+    id: 'codellama',
+    name: 'Code Llama (Ollama)',
+    description: 'Meta\'s code-specialized Llama model via Ollama',
+    maxTokens: 4096,
+    contextWindow: 16384,
+    provider: 'ollama',
+  },
+  // ── OpenWebUI ────────────────────────────────────────────────────────────
+  // OpenWebUI exposes an OpenAI-compatible API and can serve any Ollama model.
+  // Configure the endpoint URL in Provider Settings (default: http://localhost:3000).
+  {
+    id: 'openwebui-default',
+    name: 'OpenWebUI Default Model',
+    description: 'Active model in your self-hosted OpenWebUI instance',
+    maxTokens: 8192,
+    contextWindow: 32768,
+    provider: 'openwebui',
+  },
+  // ── LibreChat ────────────────────────────────────────────────────────────
+  // LibreChat exposes an OpenAI-compatible /api/ask endpoint.
+  // Configure the endpoint URL in Provider Settings (default: http://localhost:3080).
+  {
+    id: 'librechat-default',
+    name: 'LibreChat Default Model',
+    description: 'Active model in your self-hosted LibreChat instance',
+    maxTokens: 8192,
+    contextWindow: 32768,
+    provider: 'librechat',
   },
 ];
 
