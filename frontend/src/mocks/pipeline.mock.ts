@@ -5,7 +5,7 @@ export const mockOpportunityProjects: PipelineProject[] = [
   {
     id: '1',
     name: 'Regional Medical Center Expansion',
-    stageId: 'qualified',
+    stageId: 'opp_negotiation',
     pipelineType: PipelineType.OPPORTUNITY,
     value: 45000000,
     winProbability: 75,
@@ -26,7 +26,7 @@ export const mockOpportunityProjects: PipelineProject[] = [
   {
     id: '2',
     name: 'Behavioral Health Facility - Phoenix',
-    stageId: 'bidding',
+    stageId: 'opp_proposal',
     pipelineType: PipelineType.OPPORTUNITY,
     value: 120000000,
     winProbability: 60,
@@ -48,7 +48,7 @@ export const mockOpportunityProjects: PipelineProject[] = [
   {
     id: '3',
     name: 'Outpatient Imaging Center',
-    stageId: 'lead',
+    stageId: 'opp_lead_gen',
     pipelineType: PipelineType.OPPORTUNITY,
     value: 8500000,
     winProbability: 40,
@@ -69,7 +69,7 @@ export const mockOpportunityProjects: PipelineProject[] = [
   {
     id: '4',
     name: 'County Civic Center Renovation',
-    stageId: 'qualified',
+    stageId: 'opp_negotiation',
     pipelineType: PipelineType.OPPORTUNITY,
     value: 22000000,
     winProbability: 55,
@@ -79,20 +79,20 @@ export const mockOpportunityProjects: PipelineProject[] = [
     enteredStageAt: '2025-09-01T00:00:00Z',
     daysInStage: 55,
     isStalled: true,
+    stalledReason: 'Awaiting board approval',
+    stalledAt: '2025-10-15T00:00:00Z',
     priority: 'medium',
     tags: ['public-sector', 'renovation'],
     metadata: {
       client: 'Cook County',
       location: 'Chicago, IL',
       type: 'Civic Building',
-      stalledReason: 'Awaiting board approval',
-      stalledAt: '2025-10-15T00:00:00Z',
     },
   },
   {
     id: '5',
     name: 'Ambulatory Surgery Center',
-    stageId: 'awarded',
+    stageId: 'opp_award',
     pipelineType: PipelineType.OPPORTUNITY,
     value: 18000000,
     winProbability: 100,
@@ -116,7 +116,7 @@ export const mockPreconstructionProjects: PipelineProject[] = [
   {
     id: '6',
     name: 'University Hospital ER Expansion',
-    stageId: 'design-review',
+    stageId: 'pre_design',
     pipelineType: PipelineType.PRECONSTRUCTION,
     value: 32000000,
     agency: 'Private',
@@ -134,7 +134,7 @@ export const mockPreconstructionProjects: PipelineProject[] = [
   {
     id: '7',
     name: 'Behavioral Health Unit - 60 Beds',
-    stageId: 'estimating',
+    stageId: 'pre_permitting',
     pipelineType: PipelineType.PRECONSTRUCTION,
     value: 85000000,
     agency: 'State',
@@ -142,13 +142,13 @@ export const mockPreconstructionProjects: PipelineProject[] = [
     enteredStageAt: '2025-08-20T00:00:00Z',
     daysInStage: 67,
     isStalled: true,
+    stalledReason: 'Waiting for final design documents',
+    stalledAt: '2025-10-10T00:00:00Z',
     priority: 'critical',
     tags: ['behavioral-health'],
     metadata: {
       architect: 'EYP Health',
       estimator: 'Lisa Anderson',
-      stalledReason: 'Waiting for final design documents',
-      stalledAt: '2025-10-10T00:00:00Z',
     },
   },
 ];
@@ -157,7 +157,7 @@ export const mockExecutionProjects: PipelineProject[] = [
   {
     id: '10',
     name: 'Central Hospital Patient Tower',
-    stageId: 'foundation',
+    stageId: 'exec_construction',
     pipelineType: PipelineType.EXECUTION,
     value: 95000000,
     agency: 'Private',
@@ -179,7 +179,7 @@ export const mockCloseoutProjects: PipelineProject[] = [
   {
     id: '14',
     name: 'Community Hospital Renovation',
-    stageId: 'punch-list',
+    stageId: 'exec_punchlist',
     pipelineType: PipelineType.CLOSEOUT,
     value: 28000000,
     agency: 'Private',
@@ -200,8 +200,8 @@ export const mockTransitions: StageTransition[] = [
   {
     id: 't1',
     projectId: '1',
-    fromStageId: 'lead',
-    toStageId: 'qualified',
+    fromStageId: 'opp_lead_gen',
+    toStageId: 'opp_negotiation',
     transitionedAt: '2025-10-01T00:00:00Z',
     duration: 18,
     notes: 'Go/no-go approved by executive team',
@@ -209,8 +209,8 @@ export const mockTransitions: StageTransition[] = [
   {
     id: 't2',
     projectId: '2',
-    fromStageId: 'qualified',
-    toStageId: 'bidding',
+    fromStageId: 'opp_negotiation',
+    toStageId: 'opp_proposal',
     transitionedAt: '2025-09-15T00:00:00Z',
     duration: 22,
     notes: 'Bid team assembled, estimating in progress',
@@ -224,8 +224,8 @@ export const mockMetrics: PipelineMetrics = {
   conversionRate: 68.5,
   bottlenecks: [
     {
-      stageId: 'qualified',
-      stageName: 'Qualified',
+      stageId: 'opp_negotiation',
+      stageName: 'Negotiation',
       averageDuration: 32,
       expectedDuration: 21,
       variance: 11,
@@ -235,8 +235,8 @@ export const mockMetrics: PipelineMetrics = {
   ],
   stageMetrics: [
     {
-      stageId: 'lead',
-      stageName: 'Lead',
+      stageId: 'opp_lead_gen',
+      stageName: 'Lead Generation',
       projectCount: 1,
       totalValue: 8500000,
       averageDuration: 6,
@@ -244,8 +244,8 @@ export const mockMetrics: PipelineMetrics = {
       dropOffRate: 15.0,
     },
     {
-      stageId: 'qualified',
-      stageName: 'Qualified',
+      stageId: 'opp_negotiation',
+      stageName: 'Negotiation',
       projectCount: 2,
       totalValue: 67000000,
       averageDuration: 40,
