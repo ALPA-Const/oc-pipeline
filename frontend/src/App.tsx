@@ -32,6 +32,7 @@ import { ClientPortal } from "@/pages/ClientPortal";
 import { AIEstimatingDashboard } from "@/pages/AIEstimatingDashboard";
 import { AIChat } from "@/pages/AIChat";
 import { AIChatDemo } from "@/pages/AIChatDemo";
+import { GitHubAIChatRepos } from "@/pages/GitHubAIChatRepos";
 
 import { RecoveryDetector } from "@/components/RecoveryDetector";
 
@@ -58,6 +59,7 @@ function App() {
             
             {/* Demo Routes (No Auth Required) */}
             <Route path="/demo/ai-chat" element={<AIChatDemo />} />
+            <Route path="/demo/github-ai-chat-repos" element={<GitHubAIChatRepos />} />
 
             {/* Protected Routes - All with ProtectedPage wrapper */}
 
@@ -105,6 +107,16 @@ function App() {
               element={
                 <ProtectedPage>
                   <AIChat />
+                </ProtectedPage>
+              }
+            />
+
+            {/* GitHub AI Chat Repos */}
+            <Route
+              path="/github-ai-chat-repos"
+              element={
+                <ProtectedPage>
+                  <GitHubAIChatRepos />
                 </ProtectedPage>
               }
             />

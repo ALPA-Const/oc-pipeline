@@ -34,6 +34,7 @@ import {
   UsersRound,
   FolderCog,
   Sparkles,
+  Github,
 } from 'lucide-react';
 import { usePermissions, PermissionGate } from '@/contexts/PermissionContext';
 
@@ -50,6 +51,12 @@ const moduleNavigation = [
     href: '/ai-chat',
     icon: Sparkles,
     description: 'Elite AI Assistant',
+  },
+  {
+    name: 'Top AI Chat Repos',
+    href: '/github-ai-chat-repos',
+    icon: Github,
+    description: 'Top 10 AI chat platforms on GitHub',
   },
   {
     name: 'Preconstruction',
