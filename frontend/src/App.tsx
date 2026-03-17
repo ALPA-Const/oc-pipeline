@@ -32,6 +32,7 @@ import { ClientPortal } from "@/pages/ClientPortal";
 import { AIEstimatingDashboard } from "@/pages/AIEstimatingDashboard";
 import { AIChat } from "@/pages/AIChat";
 import { AIChatDemo } from "@/pages/AIChatDemo";
+import { Ecosystem } from "@/pages/admin/Ecosystem";
 
 import { RecoveryDetector } from "@/components/RecoveryDetector";
 
@@ -313,6 +314,14 @@ function App() {
               element={
                 <ProtectedPage>
                   <Administration />
+                </ProtectedPage>
+              }
+            />
+            <Route
+              path="/admin/integrations"
+              element={
+                <ProtectedPage>
+                  <Ecosystem />
                 </ProtectedPage>
               }
             />
