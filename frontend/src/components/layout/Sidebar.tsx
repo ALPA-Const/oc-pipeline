@@ -502,7 +502,7 @@ export function Sidebar() {
       {!collapsed && (
         <div className="border-t border-gray-200 p-4">
           <div className="text-xs text-gray-500">
-            <div className="font-semibold text-gray-700">OC Pipeline v1.0.0</div>
+            <div className="font-semibold text-gray-700">Civora v1.0.0</div>
             <div className="mt-1">© 2025 O'Neill Contractors</div>
           </div>
         </div>

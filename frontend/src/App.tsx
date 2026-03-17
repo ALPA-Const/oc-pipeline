@@ -9,7 +9,7 @@ import {
 import { AuthProvider } from "@/hooks/useAuth";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { AuthCallback } from "@/pages/AuthCallback";
-import { Dashboard } from "@/pages/Dashboard";
+import { CivoraDashboard } from "@/pages/CivoraDashboard";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // Adjust these imports to match your actual file paths:
@@ -66,7 +66,7 @@ function App() {
               path="/dashboard"
               element={
                 <ProtectedPage>
-                  <Dashboard />
+                  <CivoraDashboard />
                 </ProtectedPage>
               }
             />
